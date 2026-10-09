@@ -48,3 +48,17 @@ npm run preview
 ## Current scope
 
 The Demand Intelligence section explains the workflow and user experience. Real-time global social listening, lead qualification, notifications and CRM follow-up require selected data sources, a backend, credentials and compliance review; these integrations are not represented as already connected.
+
+
+## Cloudflare Pages contact endpoint setup
+
+The site includes a Pages Function at `functions/api/contact.js` and a D1 schema at `migrations/0001_leads.sql`. The endpoint will deliberately return a configuration error until its database binding exists.
+
+1. In Cloudflare, create or select the Pages project connected to this repository. Set build command to `npm run build`, output directory to `dist`, and production branch to `main`. Deploy a preview of this branch first.
+2. Create a Cloudflare D1 database. Apply `migrations/0001_leads.sql` to it using the D1 console or Wrangler.
+3. In the Pages project settings, add a D1 binding named `LEADS_DB` pointing to that database for both preview and production environments.
+4. Add these runtime variables/secrets to the matching environment: `RESEND_API_KEY` (secret), `RESEND_FROM_EMAIL` (verified sender, e.g. a domain you control), `LEAD_NOTIFICATION_EMAIL` (destination inbox), and `RATE_LIMIT_SALT` (long random secret). Do not prefix secrets with `VITE_`.
+5. Redeploy after adding bindings/secrets. Test valid submission, invalid email, cross-origin request, oversized payload, honeypot, rate limit and missing configuration. Confirm the row is saved in D1 and the notification arrives.
+6. Confirm domain verification and sender authorization in Resend before expecting notification emails. Configure retention and database access policies before collecting real leads.
+
+If the endpoint returns an error, the visitor is shown an email fallback. The endpoint does not silently discard a valid lead when D1 storage fails. Notification failures do not erase a saved lead; inspect the `notification_status` column and Cloudflare logs during setup.
