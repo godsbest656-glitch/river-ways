@@ -1,0 +1,7 @@
+# Cloudflare Pages configuration for the Vite static site.
+# In Cloudflare Pages, connect this repository and set the production branch to main.
+# Build command: npm run build
+# Build output directory: dist
+name = "riverwayse-website"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-09"
