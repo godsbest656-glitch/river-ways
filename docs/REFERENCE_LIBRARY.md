@@ -84,6 +84,13 @@ These are discovery sources. Do not blindly copy a gallery's style ranking or as
 | Growth.Design | https://growth.design/ | Behavioral design, product storytelling and case-study framing | Treat psychology claims as hypotheses to validate, not universal conversion laws |
 | Nielsen Norman Group | https://www.nngroup.com/articles/ | Usability heuristics, journey mapping, UX research and testing | Consider the context/sample behind individual findings |
 
+### Current trend and interaction research (inspiration, not proof)
+- Figma — 2026 web design trends: https://www.figma.com/resource-library/web-design-trends/
+- Figma — 2026 web development trends: https://www.figma.com/resource-library/web-development-trends/
+- Figma reports explore immersive/3D elements, experimental navigation, vivid visual approaches, motion, gamified patterns and AI-assisted workflows. Treat these as a catalogue of directions to prototype—not independent evidence that a given pattern raises conversion or works for every audience. Validate against user research, accessibility, actual performance and measured outcomes.
+- Apple HIG motion principles: purposeful, brief, optional/cancellable where possible: https://developer.apple.com/design/human-interface-guidelines/motion
+- NN/g usability heuristics: https://www.nngroup.com/articles/ten-usability-heuristics/
+
 ### Product and service sites to benchmark by behavior
 
 These are representative research targets; inspect current implementations directly rather than treating any one site as a permanent template:
