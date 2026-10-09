@@ -67,11 +67,15 @@ export default function App() {
             <div className="hero-actions"><a className="button button-lime" href="#contact">Build your growth system <ArrowRight size={17} /></a><a className="text-link text-link-light" href="#approach">See how we work <ArrowDownRight size={17} /></a></div>
             <div className="hero-note"><span className="note-line" /> Strategy-led. Signal-informed. Outcome-focused.</div>
           </div>
-          <div className="hero-visual" aria-label="Abstract illustration of a connected demand system">
-            <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" /><div className="visual-glow" />
-            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> DEMAND SIGNALS</span><div className="signal-bars">{Array.from({length:12}, (_,i) => <i key={i} />)}</div><div className="signal-footer"><span>Intent captured</span><span className="signal-status">ACTIVE</span></div></div>
-            <div className="visual-core"><div className="core-ring"><Target size={37} strokeWidth={1.35} /></div><span>DEMAND<br />ENGINE</span></div>
-            <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={19} /></div><div><span className="mini-label">THE OUTCOME</span><strong>Connected growth</strong><small>Discover → Convert → Learn</small></div></div><span className="visual-caption">A system, not a silo.</span>
+          <div className="hero-visual demand-map" aria-label="Editorial diagram showing how market signals become focused action and measurable learning">
+            <div className="map-heading"><span>THE DEMAND ENGINE</span><span>01 — 04</span></div>
+            <div className="map-stage map-stage-source"><span className="map-index">01</span><span className="map-stage-title">Market signals</span><span className="map-detail">Questions · searches · conversations</span></div>
+            <div className="map-connector"><span /></div>
+            <div className="map-stage map-stage-middle"><span className="map-index">02</span><span className="map-stage-title">Commercial meaning</span><span className="map-detail">Context · fit · timing</span></div>
+            <div className="map-connector map-connector-offset"><span /></div>
+            <div className="map-stage map-stage-action"><span className="map-index">03</span><span className="map-stage-title">Focused action</span><span className="map-detail">Message · channel · experience</span></div>
+            <div className="map-outcome"><span className="map-outcome-rule" /><div><span className="map-index">04 / LEARN</span><strong>Measure what moves.</strong><small>Evidence informs the next decision.</small></div></div>
+            <span className="map-side-note">SIGNAL → DECISION → MOMENTUM</span>
           </div>
         </div>
         <div className="container hero-bottom"><span>BUILT AROUND YOUR BUSINESS GOALS</span><div className="hero-capabilities"><span><Check size={14} /> Strategy</span><span><Check size={14} /> Digital</span><span><Check size={14} /> Intelligence</span><span><Check size={14} /> Performance</span></div></div>
@@ -115,6 +119,6 @@ export default function App() {
         </form>
       </div></section>
     </main>
-    <footer className="site-footer"><div className="container footer-top"><Brand /><p>Engineer demand. Create momentum.</p><a href="#home" className="back-top">Back to top <ArrowUpRight size={15} /></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} River Ways. All rights reserved.</span><span>Built around purposeful growth.</span><a href="mailto:oluwafemi@riverwayse.com">Contact River Ways</a></div></footer>
+    <footer className="site-footer"><div className="container footer-top"><Brand /><p>Engineer demand. Create momentum.</p><a href="#home" className="back-top">Back to top <ArrowUpRight size={15} /></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Riverwayse. All rights reserved.</span><span>Built around purposeful growth.</span><a href="mailto:oluwafemi@riverwayse.com">Contact River Ways</a></div></footer>
   </>;
 }
