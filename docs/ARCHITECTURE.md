@@ -1,10 +1,11 @@
-# Riverwayse Website — Architecture
+# River Ways Website — Architecture
 
 ## Product objective
-Build a conversion-focused, accessible, responsive marketing website that positions Riverwayse around demand generation and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
+Build a conversion-focused, accessible, responsive marketing website that positions River Ways around demand generation and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
 
 ## Initial stack
 - React + Vite for a lightweight component-based frontend.
+- The official Cloudflare Vite plugin and Wrangler configuration for a Worker plus static assets deployment.
 - Plain CSS with design tokens to keep styling fast and maintainable.
 - Semantic HTML and accessible interactions; respect reduced-motion preferences.
 - Static-first delivery with no secrets or credentials in client code.
@@ -23,7 +24,9 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - One primary action repeated consistently.
 - Secondary action for exploring services.
 - Clear service descriptions and outcomes without fabricated testimonials, clients, performance figures, or guarantees.
-- Contact form validates inputs and opens a prefilled email draft as a no-backend fallback. Replace with a secured server-side form endpoint before production lead capture.
+- Contact form includes a prefilled mailto fallback. A Cloudflare Worker endpoint is implemented but fails closed until the Turnstile site/secret keys and Resend delivery credentials/sender are configured.
+- Server-side validation, origin checks, request limits and Turnstile Siteverify are required before email delivery.
+- End-to-end email delivery is not considered live until a test enquiry has been received and the exact production sender/recipient flow is verified.
 
 ## Search and discovery
 - Descriptive title and meta description, canonical placeholder to be replaced with the verified production URL, Open Graph metadata, robots.txt, sitemap, and Organization/ProfessionalService JSON-LD with only verified details.
@@ -31,7 +34,8 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - GEO/AIO/answer-engine optimization is treated as content clarity and entity consistency, not a guarantee of inclusion in AI answers.
 
 ## Security and quality
-- Add production hosting security headers through the deployment configuration.
+- Apply security headers to Cloudflare static assets via `public/_headers` and to Worker responses in `src/worker.js`; verify the actual preview responses.
+- `netlify.toml` remains a legacy host-specific configuration and does not configure the Cloudflare Worker runtime.
 - Never place API keys, provider tokens, analytics secrets, or customer data in the frontend or repository.
 - Use dependency lockfiles and CI build checks once dependencies are installed.
 - Validate form input client-side for usability; validate and rate-limit again on the server when a real endpoint is connected.
