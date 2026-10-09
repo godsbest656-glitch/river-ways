@@ -23,6 +23,7 @@ The configured Cloudflare Worker deployment command is `npm run deploy`; use it 
 
 - `src/App.jsx` — page sections, accessible workflow tabs and enquiry UI.
 - `src/GrowthDiagnostic.jsx` — five-question, client-side growth readiness diagnostic; answers are not submitted.
+- `src/DemandEngineExplorer.jsx` — accessible six-stage interactive explainer of the River Ways Demand Engineering method.
 - `src/styles.css` — responsive design system, animation, reduced-motion and diagnostic/form states.
 - `src/worker.js` — Cloudflare Worker static-asset serving, security headers and contact API.
 - `src/contact-validation.js` — server-side enquiry validation.
