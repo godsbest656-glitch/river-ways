@@ -42,7 +42,7 @@ The Demand Intelligence section explains the workflow and user experience. Real-
 
 ## Website standards and resource library
 
-The governing standards and implementation resources are in [docs/README.md](docs/README.md). Start with:
+Repository-wide AI/developer operating rules are in [AGENTS.md](AGENTS.md), and the review workflow uses [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md). The governing standards and implementation resources are in [docs/README.md](docs/README.md). Start with:
 - [Website Constitution](docs/WEBSITE_CONSTITUTION.md)
 - [Curated Reference Library](docs/REFERENCE_LIBRARY.md)
 - [Interactive Experience Playbook](docs/INTERACTIVE_EXPERIENCE_PLAYBOOK.md)
@@ -53,5 +53,7 @@ The governing standards and implementation resources are in [docs/README.md](doc
 - [Security, Privacy and Compliance](docs/SECURITY_PRIVACY_COMPLIANCE.md)
 - [QA and Release Gates](docs/QUALITY_ASSURANCE_RELEASE_GATES.md)
 - [Roadmap and Backlog](docs/ROADMAP_AND_BACKLOG.md)
+- [Client Website Brief Template](docs/CLIENT_WEBSITE_BRIEF_TEMPLATE.md)
+- [Interaction Specification Template](docs/INTERACTION_SPEC_TEMPLATE.md)
 
 Use these standards as release requirements, not as evidence that any control has already been implemented or tested. The production domain and email/DNS infrastructure must remain unchanged until the redesign passes the release gates.
