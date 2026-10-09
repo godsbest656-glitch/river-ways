@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "node --test",
     "check": "npm test && npm run build",
-    "deploy": "npm run build && wrangler deploy --config dist/wrangler.json"
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
