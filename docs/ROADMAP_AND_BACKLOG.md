@@ -35,7 +35,7 @@ Prioritisation uses P0 (must close before production), P1 (high value next), P2 
 ### WS2 — Enquiry pipeline and conversion (P0)
 **Tasks**
 - [ ] Replace or explicitly retain the current mailto draft only as a temporary fallback; do not call it confirmed server-side lead capture.
-- [ ] Implement a server-side enquiry endpoint (Cloudflare Worker or another approved endpoint) with input validation, rate limits, anti-abuse, safe errors and request size limits.
+- [x] Implement a same-origin Cloudflare Worker enquiry endpoint with server-side validation, origin checks, body limits, honeypot handling and Turnstile verification. (The endpoint is code-complete but still requires provider setup and review.)
 - [ ] Connect one approved delivery destination (email/CRM) with secrets stored server-side.
 - [ ] Add idempotency/deduplication where needed, a clear success/error state, retry path and alert for delivery failures.
 - [ ] Add a spam quarantine and owner for lead follow-up.
@@ -96,8 +96,8 @@ Prioritisation uses P0 (must close before production), P1 (high value next), P2 
 
 ### WS7 — Creative interactive experiences (P1/P2)
 **Tasks**
-- [ ] Design and build Demand Engineering Explorer as the flagship interaction.
-- [ ] Build Growth Readiness Diagnostic with transparent scoring and useful outputs.
+- [x] Build the first accessible Demand Engineering Explorer with six stages, input/output explanations and a decision checkpoint for each stage. Browser/mobile acceptance review remains pending.
+- [x] Build the five-question Growth Readiness Diagnostic with transparent local scoring and suggested priorities; answers remain in the browser. Usability validation remains pending.
 - [ ] Build Service Fit Navigator and downloadable project brief.
 - [ ] Build interactive case study framework with evidence and static/text path.
 - [ ] Build a clearly labelled synthetic-data Demand Intelligence Sandbox.
@@ -176,3 +176,10 @@ Each ADR should include context, options, decision, trade-offs, risks, owner, da
 ## 7. Definition of excellence
 
 River Ways will be the model not by shipping the most motion or the most tools, but by consistently combining distinctive creative work, genuinely useful interactions, responsible data practice, fast and accessible engineering, credible evidence, well-governed AI assistance, and measurable commercial outcomes. The framework should be reusable for client sites while each execution remains grounded in that client's audience, niche and brand.
+
+
+## Implementation update — 9 October 2026
+
+The current implementation branch adds the initial Demand Engineering Explorer and Growth Readiness Diagnostic, plus the Cloudflare Worker contact endpoint and automated input/endpoint tests. The latest CI run passed `npm test` and `npm run build`.
+
+Still required before public production launch: configure Turnstile and Resend, verify a sender identity without unreviewed DNS changes, configure edge rate limiting, review the privacy notice, run the complete preview/browser/accessibility/performance/security checklist, and receive a real test enquiry end-to-end. The main domain/DNS has not been switched.
