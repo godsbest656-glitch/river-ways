@@ -17,6 +17,7 @@ This folder is the working knowledge base for turning River Ways into a benchmar
 10. **[Roadmap and Backlog](ROADMAP_AND_BACKLOG.md)** — prioritised workstreams, delivery order, status definitions and architecture decision records.
 11. **[Client Website Brief Template](CLIENT_WEBSITE_BRIEF_TEMPLATE.md)** — discovery template for brand, audience, content, interactive features, niche, integration and release requirements.
 12. **[Interaction Specification Template](INTERACTION_SPEC_TEMPLATE.md)** — reusable specification for states, accessibility, privacy, performance, metrics and acceptance tests.
+13. **[Multi-Lens Strategy Playbook](MULTI_LENS_STRATEGY_PLAYBOOK.md)** — applies lessons from Steve Jobs, Elon Musk, Donald Trump, David Ogilvy, Alex Hormozi, Steven Bartlett and other relevant design, growth, copywriting, sales and behavioural frameworks.
 
 ## How the documents work together
 
@@ -51,4 +52,4 @@ The redesign remains a test project until its actual deployment, full user journ
 
 ## Change log
 
-- **1.0 — 2026-10-09:** Initial constitution, creative/interactive playbook, niche playbooks, source library, MCP tooling policy, search/discoverability standards, security/privacy standard, QA/release gates, and roadmap.
+- **1.0 — 2026-10-09:** Initial constitution, creative/interactive playbook, niche playbooks, source library, MCP tooling policy, search/discoverability standards, security/privacy standard, QA/release gates, roadmap and multi-lens strategy playbook.
