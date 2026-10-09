@@ -72,8 +72,8 @@ Do not build a comment-feed clone, engagement bait, addictive streaks or algorit
 ## 5. River Ways interactive product roadmap
 
 ### First experiences to build
-1. **Demand Engineering Explorer:** a clear interactive map linking strategy, audience, discovery, content, paid activation, conversion and measurement.
-2. **Growth Readiness Diagnostic:** approximately 8–12 well-designed questions across positioning, discovery, conversion, measurement and follow-up. Score transparently, return three priority improvements, explain that the result is directional, and offer a next step.
+1. **Demand Engineering Explorer — implemented in the current branch:** a keyboard-operable six-stage interactive explanation linking alignment, discovery, channel connection, conversion, measurement and improvement. Each stage explains its input, output and decision checkpoint. Complete browser/mobile acceptance testing before release.
+2. **Growth Readiness Diagnostic — implemented in the current branch:** five questions across discovery, conversion, measurement, demand intelligence and follow-up. It scores locally, returns three suggested areas to review, discloses limitations, and offers a next step. Answers are not submitted or stored by River Ways; validate usability with representative visitors.
 3. **Website Opportunity Mapper:** collect a goal and current constraints; generate a prioritised project brief. No access to third-party accounts needed in v1.
 4. **Demand Intelligence Sandbox:** use synthetic records with a persistent “DEMO / SAMPLE DATA” label to demonstrate signal → context → qualification → alert → human follow-up.
 5. **Service Fit Navigator:** let a visitor choose a challenge, audience, timeline and expected deliverable; map to the most relevant service page.
@@ -178,3 +178,8 @@ Measure tool-start rate, completion rate, abandonment point, output usefulness, 
 - Lottie: https://airbnb.io/lottie/
 - Core Web Vitals: https://web.dev/articles/vitals
 - Site inspiration: https://www.awwwards.com/, https://www.cssdesignawards.com/, https://thefwa.com/, https://godly.design/, https://www.siteinspire.com/
+
+
+## Current implementation evidence
+
+The website now contains an interactive six-stage Demand Engineering Explorer and a five-question Growth Readiness Diagnostic. These are front-end experiences in the implementation branch; their presence does not mean external listening sources, CRM systems, analytics or live monitoring are connected. The Demand Intelligence graphic is explicitly labelled as an illustrative signal. See the implementation PR for automated build/test evidence; manual cross-device, accessibility, and performance verification remains a release gate.
