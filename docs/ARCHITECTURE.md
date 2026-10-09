@@ -53,3 +53,13 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - Vite build output is `dist/`.
 - Cloudflare Pages target: build command `npm run build`, output directory `dist`, production branch `main`. The existing `netlify.toml` is retained but is not the Cloudflare deployment configuration.
 - Verify the final domain, contact destination, privacy policy, service claims, image choices, and form endpoint before production.
+
+
+## Enquiry backend (Cloudflare Pages Functions + D1)
+
+- `functions/api/contact.js` handles same-origin JSON submissions with input bounds, an anti-spam honeypot, a short-window hashed-IP rate limit, D1 persistence, and optional Resend notifications.
+- `migrations/0001_leads.sql` creates the leads table and rate-limit lookup indexes.
+- Configure the D1 binding `LEADS_DB` and runtime values/secrets `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `LEAD_NOTIFICATION_EMAIL`, and `RATE_LIMIT_SALT` in both Cloudflare preview and production. The endpoint is intentionally not operational until configured.
+- Saved enquiries remain stored if Resend is unavailable; notification status is recorded for operational follow-up.
+- This initial endpoint is not a full CRM, marketing automation system, or global social listening engine. Add those only as separately scoped, authenticated integrations.
+- Publish the privacy notice at `/privacy/` and maintain retention/deletion practices before launch.
