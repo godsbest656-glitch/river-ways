@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowDownRight, ArrowRight, ArrowUpRight, AudioWaveform, BarChart3, Check, ChevronDown, Compass, Globe2, Menu, MessageCircle, MousePointer2, Search, ShieldCheck, Sparkles, Target, TrendingUp, X, Zap } from 'lucide-react';
 import GrowthDiagnostic from './GrowthDiagnostic.jsx';
+import DemandEngineExplorer from './DemandEngineExplorer.jsx';
 
 const services = [
   { number: '01', icon: Target, title: 'Demand Engineering', description: 'Build the strategy, signals and systems that turn attention into a repeatable path to revenue.', tags: ['Go-to-market strategy', 'Demand architecture', 'Growth planning'] },
@@ -203,7 +204,7 @@ export default function App() {
           </div>
           <div className="hero-visual" aria-label="Abstract illustration of a connected demand system">
             <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" /><div className="visual-glow" />
-            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> DEMAND SIGNALS</span><div className="signal-bars">{Array.from({length:12}, (_,i) => <i key={i} />)}</div><div className="signal-footer"><span>Intent captured</span><span className="signal-status">ACTIVE</span></div></div>
+            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> SIGNAL PREVIEW</span><div className="signal-bars">{Array.from({length:12}, (_,i) => <i key={i} />)}</div><div className="signal-footer"><span>Illustrative signal</span><span className="signal-status">SAMPLE</span></div></div>
             <div className="visual-core"><div className="core-ring"><Target size={37} strokeWidth={1.35} /></div><span>DEMAND<br />ENGINE</span></div>
             <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={19} /></div><div><span className="mini-label">THE OUTCOME</span><strong>Connected growth</strong><small>Discover → Convert → Learn</small></div></div><span className="visual-caption">A system, not a silo.</span>
           </div>
@@ -219,6 +220,7 @@ export default function App() {
         <article className="principle-card"><span className="principle-num">02 / CONNECTION</span><Globe2 size={24} /><h3>Make every channel connect.</h3><p>Build a joined-up path from first signal to meaningful customer action.</p></article>
         <article className="principle-card"><span className="principle-num">03 / LEARNING</span><BarChart3 size={24} /><h3>Improve what matters.</h3><p>Measure outcomes, learn from the evidence and invest with more intent.</p></article>
       </div></section>
+      <DemandEngineExplorer />
       <section className="section services-section" id="services"><div className="container">
         <div className="section-heading-row"><div><Eyebrow>What we do</Eyebrow><h2>One growth system.<br /><em>Connected capabilities.</em></h2></div><p>Choose the capability you need now. We design the work to connect with the bigger picture.</p></div>
         <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href="#contact" className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
