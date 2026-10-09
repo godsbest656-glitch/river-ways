@@ -10,6 +10,9 @@ Social platforms have trained people to expect fast hooks, clear payoffs, media-
 
 The hook earns attention; the experience rewards attention. If an experience uses a strong visual opening but withholds its value, blocks browsing, or needs a giant script to run, it has failed the model.
 
+### Current trend signals and interpretation
+Figma's 2026 design/development trend articles highlight directions such as immersive/3D elements, experimental navigation, expressive typography, motion, gamified interaction, AI-assisted workflows and agentic interfaces. These are useful prompts for a design exploration backlog, not independent proof of consumer demand or conversion impact. For River Ways, every trend must pass a user-task test, brand-fit test, accessibility review, performance budget and measurable experiment. [Figma web design trends](https://www.figma.com/resource-library/web-design-trends/) · [Figma web development trends](https://www.figma.com/resource-library/web-development-trends/)
+
 ## 2. Interaction strategy: each technique needs a job
 
 | Pattern | Use when | Examples for River Ways and client work | Avoid |
