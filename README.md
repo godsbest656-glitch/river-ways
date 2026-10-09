@@ -22,7 +22,9 @@ npm run preview
 - `src/styles.css` — responsive design system, animation and reduced-motion handling.
 - `index.html` — metadata, social sharing tags and Organization JSON-LD.
 - `public/robots.txt` and `public/sitemap.xml` — initial crawler files.
-- `netlify.toml` — SPA fallback and baseline response security headers.
+- `public/_headers` and `public/_redirects` — Cloudflare Pages response headers and SPA fallback.
+- `public/field-guide/index.html` — lightweight editorial Demand Engineering guide; static, accessible, and dependency-free.
+- `netlify.toml` — retained for the existing Netlify configuration; Cloudflare Pages is the target hosting path.
 - `docs/ARCHITECTURE.md` — architecture and future integration plan.
 
 ## Before production launch
@@ -31,9 +33,17 @@ npm run preview
 2. Confirm the public contact email. The current enquiry form uses a `mailto:` draft as a no-backend fallback; it does not transmit data directly.
 3. Add a privacy notice and consent-aware analytics only after selecting relevant providers.
 4. Replace the mailto flow with a secured server-side form endpoint if direct submission, spam protection, storage or CRM integration is required.
-5. Test CSP and security headers on the actual hosting provider.
+5. Deploy a preview on Cloudflare Pages and verify CSP, headers, redirects, and cache behavior in the browser/network panel.
 6. Review all claims, service descriptions, imagery and brand details with Riverwayse.
 7. Run CI and accessibility/performance checks on the deployment preview.
+
+## Cloudflare Pages deployment
+
+- Connect the `godsbest656-glitch/river-ways` repository to Cloudflare Pages.
+- Build command: `npm run build`; output directory: `dist`; production branch: `main`.
+- The `public/_headers` and `public/_redirects` files are copied into `dist` by Vite. Confirm the resulting deployed response headers and fallback behavior before promoting the deployment.
+- Do not add secrets to Vite variables prefixed with `VITE_`; these are exposed to browser code. The current static site has no server-side lead endpoint.
+- The contact form remains a `mailto:` draft. Durable lead storage, email delivery, CRM, global listening, and alerts are not live until their backend and provider configuration are implemented and tested.
 
 ## Current scope
 
