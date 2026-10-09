@@ -55,5 +55,6 @@ Repository-wide AI/developer operating rules are in [AGENTS.md](AGENTS.md), and 
 - [Roadmap and Backlog](docs/ROADMAP_AND_BACKLOG.md)
 - [Client Website Brief Template](docs/CLIENT_WEBSITE_BRIEF_TEMPLATE.md)
 - [Interaction Specification Template](docs/INTERACTION_SPEC_TEMPLATE.md)
+- [Multi-Lens Strategy Playbook](docs/MULTI_LENS_STRATEGY_PLAYBOOK.md)
 
 Use these standards as release requirements, not as evidence that any control has already been implemented or tested. The production domain and email/DNS infrastructure must remain unchanged until the redesign passes the release gates.
