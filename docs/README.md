@@ -15,9 +15,12 @@ This folder is the working knowledge base for turning River Ways into a benchmar
 8. **[Security, Privacy and Compliance](SECURITY_PRIVACY_COMPLIANCE.md)** — threat model, forms, access, hosting headers, privacy, niche risks and launch security.
 9. **[Quality Assurance and Release Gates](QUALITY_ASSURANCE_RELEASE_GATES.md)** — test matrix, acceptance gates, severity and evidence template.
 10. **[Roadmap and Backlog](ROADMAP_AND_BACKLOG.md)** — prioritised workstreams, delivery order, status definitions and architecture decision records.
+11. **[Client Website Brief Template](CLIENT_WEBSITE_BRIEF_TEMPLATE.md)** — discovery template for brand, audience, content, interactive features, niche, integration and release requirements.
+12. **[Interaction Specification Template](INTERACTION_SPEC_TEMPLATE.md)** — reusable specification for states, accessibility, privacy, performance, metrics and acceptance tests.
 
 ## How the documents work together
 
+- The root [AGENTS.md](../AGENTS.md) provides repository-specific operating rules for AI agents and developers; the [pull-request template](../.github/PULL_REQUEST_TEMPLATE.md) makes release evidence part of the review workflow.
 - The Constitution states **what must be true**.
 - The Reference Library states **where to research and verify**.
 - The Interactive and Content playbooks state **what kinds of experiences to build and why**.
