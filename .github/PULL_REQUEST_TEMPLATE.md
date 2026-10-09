@@ -8,6 +8,7 @@
 - [ ] Brand spelling and approved tokens are consistent
 - [ ] Interactive states, error paths and acceptance criteria are defined
 - [ ] No unsupported claim, fake proof or undisclosed simulated capability
+- [ ] Relevant lenses from docs/MULTI_LENS_STRATEGY_PLAYBOOK.md considered (focus, positioning, copy, offer, trust, usability, evidence, measurement)
 - [ ] Docs/resource references updated where decisions changed
 
 ## Verification evidence
