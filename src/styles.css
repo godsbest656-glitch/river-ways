@@ -3,3 +3,6 @@
 /* Paper-inspired editorial guide entry point and keyboard focus. */
 .field-guide-link{display:inline-flex;align-items:center;gap:8px;margin-top:18px;text-underline-offset:4px}
 :where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #789b3b;outline-offset:3px}
+
+/* Contact form states and off-screen anti-spam field. */
+.form-success{padding:12px 14px;border:1px solid #a8bd8b;background:#edf4e4;color:#263c1d;font-size:13px;line-height:1.5}.form-error a,.form-note a{color:inherit;text-underline-offset:3px}.form-submit:disabled{opacity:.65;cursor:wait}.contact-honeypot{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
