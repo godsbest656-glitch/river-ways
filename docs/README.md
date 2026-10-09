@@ -18,6 +18,7 @@ This folder is the working knowledge base for turning River Ways into a benchmar
 11. **[Client Website Brief Template](CLIENT_WEBSITE_BRIEF_TEMPLATE.md)** — discovery template for brand, audience, content, interactive features, niche, integration and release requirements.
 12. **[Interaction Specification Template](INTERACTION_SPEC_TEMPLATE.md)** — reusable specification for states, accessibility, privacy, performance, metrics and acceptance tests.
 13. **[Multi-Lens Strategy Playbook](MULTI_LENS_STRATEGY_PLAYBOOK.md)** — applies lessons from Steve Jobs, Elon Musk, Donald Trump, David Ogilvy, Alex Hormozi, Steven Bartlett and other relevant design, growth, copywriting, sales and behavioural frameworks.
+14. **[Contact Pipeline Setup](CONTACT_PIPELINE_SETUP.md)** — documents Turnstile, Resend, secret configuration, DNS approval boundaries and end-to-end acceptance tests.
 
 ## How the documents work together
 
@@ -30,6 +31,7 @@ This folder is the working knowledge base for turning River Ways into a benchmar
 - The SEO and Security documents define the applicable specialist constraints.
 - The QA gates define **how to prove the work is ready**.
 - The Roadmap turns the standards into **prioritised implementation work**.
+- The Contact Pipeline Setup guide explains the current implementation dependencies; it does not mean the provider credentials, sender DNS or email delivery have already been configured.
 
 ## How to use this system on a client website
 
@@ -53,3 +55,4 @@ The redesign remains a test project until its actual deployment, full user journ
 ## Change log
 
 - **1.0 — 2026-10-09:** Initial constitution, creative/interactive playbook, niche playbooks, source library, MCP tooling policy, search/discoverability standards, security/privacy standard, QA/release gates, roadmap and multi-lens strategy playbook.
+- **Implementation addendum — 2026-10-09:** Cloudflare Worker contact pipeline scaffold, client-side growth diagnostic, deployment/test configuration and contact-provider setup guide.
