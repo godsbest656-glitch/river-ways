@@ -33,21 +33,40 @@ function Eyebrow({ children, light = false }) {
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const [form, setForm] = useState({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '' });
+  const [form, setForm] = useState({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '', website: '' });
   const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const updateForm = (event) => setForm({ ...form, [event.target.name]: event.target.value });
   const closeMenu = () => setMenuOpen(false);
 
-  function submitBrief(event) {
+  async function submitBrief(event) {
     event.preventDefault();
     setFormError('');
+    setFormSuccess('');
+    if (isSubmitting) return;
     if (!form.name.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       setFormError('Add your name and a valid email address to continue.');
       return;
     }
-    const subject = encodeURIComponent('River Ways consultation — ' + (form.company || form.name));
-    const body = encodeURIComponent('Name: ' + form.name + '\nEmail: ' + form.email + '\nCompany: ' + (form.company || 'Not provided') + '\nPrimary goal: ' + form.goal + '\n\nContext:\n' + (form.details || 'Not provided'));
-    window.location.href = 'mailto:oluwafemi@riverwayse.com?subject=' + subject + '&body=' + body;
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'We could not send your enquiry. Please email us directly.');
+      }
+      setFormSuccess('Your enquiry has been received. River Ways will review the brief and follow up using the email address you provided.');
+      setForm({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '', website: '' });
+    } catch (error) {
+      setFormError((error instanceof Error ? error.message : 'Something went wrong.') + ' Email oluwafemi@riverwayse.com if you need another way to reach us.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return <>
@@ -110,8 +129,12 @@ export default function App() {
           <div className="form-row"><label>Your name<input name="name" autoComplete="name" value={form.name} onChange={updateForm} placeholder="Name" required /></label><label>Work email<input name="email" type="email" autoComplete="email" value={form.email} onChange={updateForm} placeholder="you@company.com" required /></label></div>
           <label>Company or brand<input name="company" autoComplete="organization" value={form.company} onChange={updateForm} placeholder="Your business" /></label>
           <label>What do you want to improve?<select name="goal" value={form.goal} onChange={updateForm}><option>Generate more qualified demand</option><option>Improve search and AI visibility</option><option>Increase website conversion</option><option>Build a Demand Intelligence system</option><option>Connect marketing and measurement</option><option>Something else</option></select></label>
-          <label>Anything we should know? <span className="optional">(optional)</span><textarea name="details" value={form.details} onChange={updateForm} rows="3" placeholder="Share a little context about the challenge or opportunity." /></label>
-          {formError && <p className="form-error" role="alert">{formError}</p>}<button className="button button-lime form-submit" type="submit">Prepare my enquiry <ArrowRight size={17} /></button><p className="form-note">This opens your email app with your brief prefilled. No details are sent from this page. A secure server-side form will be needed for direct submission.</p>
+          <label>Anything we should know? <span className="optional">(optional)</span><textarea name="details" value={form.details} onChange={updateForm} rows="3" maxLength="3000" placeholder="Share a little context about the challenge or opportunity." /></label>
+          <div className="contact-honeypot" aria-hidden="true"><label>Leave this field empty<input name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={updateForm} /></label></div>
+          {formError && <p className="form-error" role="alert">{formError}</p>}
+          {formSuccess && <p className="form-success" role="status">{formSuccess}</p>}
+          <button className="button button-lime form-submit" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Sending enquiry…' : 'Send my enquiry'} <ArrowRight size={17} /></button>
+          <p className="form-note">Your brief is sent securely to River Ways for follow-up. Please do not include passwords, financial account details or confidential third-party information. See our <a href="/privacy/">privacy notice</a>.</p>
         </form>
       </div></section>
     </main>
