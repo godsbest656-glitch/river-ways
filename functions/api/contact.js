@@ -33,7 +33,7 @@ async function hash(value) {
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
   const requestUrl = new URL(request.url);
-  if (origin && new URL(origin).origin !== requestUrl.origin) return json({ error: "Request origin is not allowed." }, 403);
+  if (origin) { try { if (new URL(origin).origin !== requestUrl.origin) return json({ error: "Request origin is not allowed." }, 403); } catch { return json({ error: "Request origin is not allowed." }, 403); } }
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) return json({ error: "Expected JSON request." }, 415);
   const declaredLength = Number(request.headers.get("content-length") || 0);
   if (declaredLength > MAX_BODY_BYTES) return json({ error: "Request is too large." }, 413);
@@ -49,6 +49,7 @@ export async function onRequestPost({ request, env }) {
 
   let body;
   try { body = JSON.parse(raw); } catch { return json({ error: "Invalid request body." }, 400); }
+  if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "Invalid request body." }, 400);
   // Honeypot: acknowledge bots without storing or notifying anyone.
   if (clean(body.website, 200)) return json({ ok: true });
   const name = clean(body.name, 120);
