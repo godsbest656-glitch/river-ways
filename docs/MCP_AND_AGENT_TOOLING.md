@@ -36,6 +36,13 @@ Use MCP to shorten repetitive work while keeping human ownership of design decis
 - **Cloudflare docs:** https://developers.cloudflare.com/; evaluate official/registry integrations for the exact operations required rather than trusting an unofficial server with broad production access.
 - **Reference implementations:** https://github.com/modelcontextprotocol/servers. The maintainers explicitly position these as reference implementations, not production-ready integrations; add production safeguards before adoption.
 
+### Tier A2 — official hosted MCP services to evaluate for specialist work
+- **Cloudflare managed MCP servers** — https://developers.cloudflare.com/agents/model-context-protocol/cloudflare/servers-for-cloudflare/; can read configurations and propose/apply changes across Cloudflare services. Treat write capabilities as privileged production access; start with read-only scopes, test targets and explicit approval.
+- **Ahrefs MCP (official hosted service)** — https://docs.ahrefs.com/en/mcp/docs/introduction and https://ahrefs.com/mcp/; candidate for keyword research, competitor analysis, backlink and search-data workflows. Account plans/usage limits apply; SEO estimates are not guaranteed Google ranking data.
+- **Semrush MCP** — https://www.semrush.com/mcp/; candidate for keyword/content research and competitor analysis, subject to actual plan, data limits and connected account access.
+- **Playwright MCP official guide** — https://playwright.dev/mcp/introduction; use the official docs rather than relying solely on a generic registry summary.
+- **Chrome DevTools MCP official repository** — https://github.com/ChromeDevTools/chrome-devtools-mcp; reads browser content and may inspect/modify data in its browser session. Keep sensitive accounts/session data out of testing profiles and review its telemetry/settings.
+
 ### Tier B — documentation, QA or specialist support (not all are MCP servers)
 - MDN Web Docs: https://developer.mozilla.org/en-US/docs/Web
 - React and Vite docs: https://react.dev/ and https://vite.dev/
