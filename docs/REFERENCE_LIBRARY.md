@@ -60,6 +60,29 @@ Each design reference should become a record: source URL, specific page/pattern 
 
 ---
 
+## 2A. Strategic, marketing, sales and design thinkers
+These sources are perspectives to interrogate, not infallible playbooks. Read the multi-lens interpretation in [MULTI_LENS_STRATEGY_PLAYBOOK.md](MULTI_LENS_STRATEGY_PLAYBOOK.md) before turning a tactic into implementation.
+
+| Thinker / framework | Primary resource | Study for | Guardrail |
+|---|---|---|---|
+| Steve Jobs | https://allaboutstevejobs.com/videos/misc/wwdc_1997_closing_chat | Product focus, saying no, coherent experience | Keep needed content/accessibility; simplicity is not omission |
+| Elon Musk / first principles | https://www.tesla.com/about | Question requirements, remove before optimizing, then automate | Do not sacrifice safety, quality or worker/customer welfare for speed |
+| Donald Trump / case study | https://direct.mit.edu/ngtn/article/35/1/65/121440/Art-of-the-Power-Deal-The-Four-Negotiation-Roles | Persona, message salience, theatrical contrast and negotiation style as studied phenomena | Descriptive analysis only; do not copy coercion, falsehood or polarisation |
+| David Ogilvy | https://www.ogilvy.com/ | Research-led copy, clear promise, memorable idea, testing | Match copy length and format to user need and evidence |
+| Alex Hormozi | https://shop.acquisition.com/products/100m-offers-hardcover | Offer clarity, value, acquisition and lead generation | No fake scarcity or delivery promises the business cannot fulfil |
+| Steven Bartlett / FlightStory | https://stevenbartlett.com/steven-bartlett-launches-flight-story-a-media-and-investment-company/ | Storytelling, repeatable media formats, content distribution | Views and audience size are not automatically business outcomes |
+| Dieter Rams | https://rams-foundation.org/foundation/design-comprehension/ | Useful, understandable, honest and durable design | Minimalism must not obscure user tasks |
+| April Dunford | https://www.aprildunford.com/ | Positioning, best-fit market, alternatives and differentiation | A category label alone is not positioning |
+| Byron Sharp / Ehrenberg-Bass | https://marketingscience.info/learn-with-us/commercial-research | Mental availability, distinctiveness and buying situations | Do not reduce brand strategy to logo/color repetition only |
+| Robert Cialdini | https://www.influenceatwork.com/ | Evidence-based principles of ethical persuasion | Never fabricate social proof, authority, scarcity or consent |
+| Donald Miller / StoryBrand | https://storybrand.com/learn-the-framework/ | Customer-as-hero, guide role, problem-plan-action clarity | Narrative structure is not proof of product quality |
+| Joanna Wiebe / Copyhackers | https://cs.copyhackers.com/ | Voice-of-customer research and conversion copy strategy | Quotes require context, permission and representative evidence |
+| Chris Voss / Black Swan | https://www.blackswanltd.com/ | Listening, tactical empathy and calibrated questions | Do not use empathy as a disguise for pressure |
+| Peep Laja / CXL | https://cxl.com/ | CRO research, experimentation and diagnosis | Avoid overclaiming results from low-sample tests |
+| Seth Godin | https://seths.blog/ | Permission marketing, audience relevance and trust | Permission must be real, specific and respected |
+| Marketing Examples | https://marketingexamples.com/ | Short practical examples across copy, landing pages, sales and content | Case examples inspire hypotheses; they are not universal laws |
+| Shopify CRO / customer journey | https://www.shopify.com/blog/120261189-conversion-rate-optimization | Journey friction and ecommerce conversion practices | Translate ecommerce advice to other niches only where relevant |
+
 ## 3. Creative inspiration and live pattern libraries
 
 These are discovery sources. Do not blindly copy a gallery's style ranking or assume an award-winning page has strong conversion, accessibility, or performance.
