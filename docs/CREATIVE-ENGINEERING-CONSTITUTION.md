@@ -90,3 +90,20 @@ A security-critical defect cannot be waived as a design preference. No approval 
 ## 8. Change record
 
 For each meaningful release, record the purpose, files changed, build/test evidence, known risks, preview URL, reviewer and production approval.
+
+
+## 9. Anti-template and anti-AI-aesthetic standard
+
+The public website must not look or read like a generic AI-generated agency site. AI may assist internal research or implementation, but it is not the brand's art direction.
+
+Reject by default:
+- Glowing neural networks, robot/brain imagery, synthetic dashboards, meaningless data visualizations, generic purple/blue gradients, glassmorphism used as decoration, and floating 3D objects without a specific communication purpose.
+- Repeated pill badges, identical rounded cards, formulaic feature grids, endless ticker loops, stock "team high-five" imagery, and generic AI copy such as "unlock your potential" or "revolutionize your business".
+- Claims that AI, automation, intelligence or data capabilities are live unless the corresponding implementation is connected, tested and approved.
+
+Prefer:
+- Editorial typography, deliberate asymmetry, confident negative space, restrained colour, image-making with a point of view, tactile detail, purposeful diagrams and varied section compositions.
+- Language grounded in the established Riverwayse Demand Engineering position: market understanding, demand signals, strategic decisions, acquisition, conversion, measurement and learning.
+- Visuals that explain a commercial idea or show real craft. A visual should still make sense if the word "AI" is removed from the page.
+
+**Review question:** Does this look like Riverwayse expressing a specific point of view—or like an anonymous AI/marketing template with the logo changed? If the latter, redesign it before release.
