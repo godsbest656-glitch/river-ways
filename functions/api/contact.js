@@ -33,7 +33,13 @@ async function hash(value) {
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
   const requestUrl = new URL(request.url);
-  if (origin) { try { if (new URL(origin).origin !== requestUrl.origin) return json({ error: "Request origin is not allowed." }, 403); } catch { return json({ error: "Request origin is not allowed." }, 403); } }
+  if (origin) {
+    try {
+      if (new URL(origin).origin !== requestUrl.origin) return json({ error: "Request origin is not allowed." }, 403);
+    } catch {
+      return json({ error: "Request origin is not allowed." }, 403);
+    }
+  }
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) return json({ error: "Expected JSON request." }, 415);
   const declaredLength = Number(request.headers.get("content-length") || 0);
   if (declaredLength > MAX_BODY_BYTES) return json({ error: "Request is too large." }, 413);
@@ -48,10 +54,15 @@ export async function onRequestPost({ request, env }) {
   }
 
   let body;
-  try { body = JSON.parse(raw); } catch { return json({ error: "Invalid request body." }, 400); }
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    return json({ error: "Invalid request body." }, 400);
+  }
   if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "Invalid request body." }, 400);
   // Honeypot: acknowledge bots without storing or notifying anyone.
   if (clean(body.website, 200)) return json({ ok: true });
+
   const name = clean(body.name, 120);
   const email = clean(body.email, 254).toLowerCase();
   const company = clean(body.company, 160);
@@ -59,10 +70,13 @@ export async function onRequestPost({ request, env }) {
   const details = clean(body.details, 3000);
   if (!name || !EMAIL_RE.test(email) || !ALLOWED_GOALS.has(goal)) return json({ error: "Please provide your name, a valid email, and select a listed goal." }, 400);
   if (details.length > 3000) return json({ error: "Please shorten your project context." }, 400);
+  if (!env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
+    return json({ error: "Enquiry service is not fully configured yet. Please email oluwafemi@riverwayse.com instead." }, 503);
+  }
 
   // Hash the platform-provided client IP before using it for short-window rate limiting.
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-  const ipHash = await hash(ip + (env.RATE_LIMIT_SALT || "riverways-contact-v1"));
+  const ipHash = await hash(ip + env.RATE_LIMIT_SALT);
   const now = new Date().toISOString();
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
@@ -109,11 +123,15 @@ export async function onRequestPost({ request, env }) {
         notificationStatus = "failed";
       }
       if (leadId != null) {
-        await env.LEADS_DB.prepare("UPDATE leads SET notification_status = ? WHERE id = ?")
-          .bind(notificationStatus, leadId).run();
+        try {
+          await env.LEADS_DB.prepare("UPDATE leads SET notification_status = ? WHERE id = ?")
+            .bind(notificationStatus, leadId).run();
+        } catch (error) {
+          console.error("Could not update notification status", error instanceof Error ? error.message : "unknown error");
+        }
       }
     }
-    // A saved lead remains successful even if email notification is temporarily unavailable.
+    // A saved lead remains successful even if email notification or its status update is temporarily unavailable.
     return json({ ok: true, notification: notificationStatus });
   } catch (error) {
     console.error("Contact submission failed", error instanceof Error ? error.message : "unknown error");
