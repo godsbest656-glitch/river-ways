@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/cloudflare-hallmark-foundation
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,6 +15,7 @@ concurrency:
 
 jobs:
   deploy-preview:
+    if: github.ref_name == 'feat/cloudflare-hallmark-foundation'
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
