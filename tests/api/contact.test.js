@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { onRequestPost } from "../../functions/api/contact.js";
 
+const RATE_LIMIT_SALT = "test-only-salt-that-is-long-enough-123";
 const validBody = {
   name: "Ada Example",
   email: "ada@example.com",
@@ -85,7 +86,7 @@ test("validates email and allowed goal before database writes", async () => {
   const { db, calls } = fakeDatabase();
   const response = await onRequestPost({
     request: request({ ...validBody, email: "not-an-email", goal: "admin" }),
-    env: { LEADS_DB: db },
+    env: { LEADS_DB: db, RATE_LIMIT_SALT },
   });
   assert.equal(response.status, 400);
   assert.equal(calls.length, 0);
@@ -102,11 +103,21 @@ test("honeypot submissions receive a neutral response and are not stored", async
   assert.equal(calls.length, 0);
 });
 
+test("refuses to store enquiries without a strong rate-limit salt", async () => {
+  const { db, calls } = fakeDatabase();
+  const response = await onRequestPost({
+    request: request(validBody),
+    env: { LEADS_DB: db },
+  });
+  assert.equal(response.status, 503);
+  assert.equal(calls.length, 0);
+});
+
 test("stores a valid enquiry when notifications are not configured", async () => {
   const { db, calls } = fakeDatabase();
   const response = await onRequestPost({
     request: request(validBody, { origin: "https://riverwayse.example" }),
-    env: { LEADS_DB: db },
+    env: { LEADS_DB: db, RATE_LIMIT_SALT },
   });
   assert.equal(response.status, 200);
   assert.deepEqual(await readJson(response), { ok: true, notification: "not_configured" });
@@ -119,7 +130,7 @@ test("rate-limits repeated enquiries from the same connection", async () => {
   const { db, calls } = fakeDatabase({ recentCount: 5 });
   const response = await onRequestPost({
     request: request(validBody),
-    env: { LEADS_DB: db },
+    env: { LEADS_DB: db, RATE_LIMIT_SALT },
   });
   assert.equal(response.status, 429);
   assert.equal(calls.some((call) => call.sql.startsWith("INSERT")), false);
