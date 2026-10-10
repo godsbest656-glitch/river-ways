@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "river-ways",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-11",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "LEADS_DB",
+      "database_name": "riverwayse-leads",
+      "database_id": "195d3511-224c-4ac3-b033-28aef990c549",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
