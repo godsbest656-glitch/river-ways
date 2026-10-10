@@ -226,3 +226,39 @@
   .ticker-track { animation:none !important; }
   .hero-visual.demand-map { animation:none !important; }
 }
+
+
+/* Anti-template refinement: static editorial rhythm, restrained surfaces, no ambient tech effects. */
+.site-header { backdrop-filter:none; background:var(--paper); }
+.hero-grid { background-image:none; }
+.eyebrow-dot { box-shadow:none; }
+.intelligence-section { background:var(--forest); }
+.ticker {
+  height:auto;
+  min-height:56px;
+  padding:13px 24px;
+  overflow:visible;
+}
+.ticker-track {
+  animation:none !important;
+  min-width:0;
+  width:min(1160px,100%);
+  margin-inline:auto;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  white-space:normal;
+  gap:10px 22px;
+}
+.ticker-track span { white-space:nowrap; }
+.ticker-track span:nth-of-type(n+6), .ticker-track b:nth-of-type(n+6) { display:none; }
+.service-card, .principle-card, .signal-panel { border-radius:0; box-shadow:none; }
+.service-icon, .step-symbol, .conversion-icon { border-radius:2px; }
+@media (max-width:760px) {
+  .ticker { padding:15px 24px; }
+  .ticker-track { justify-content:flex-start; gap:10px 16px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .hero-copy, .hero-visual, .step-detail { animation:none !important; }
+  .button, .principle-card, .service-card { transition:none !important; }
+  .ticker-track { animation:none !important; }
+}
