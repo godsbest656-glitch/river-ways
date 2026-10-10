@@ -15,5 +15,15 @@
       "database_id": "195d3511-224c-4ac3-b033-28aef990c549",
       "migrations_dir": "migrations"
     }
-  ]
+  ],
+  "previews": {
+    "d1_databases": [
+      {
+        "binding": "LEADS_DB",
+        "database_name": "riverwayse-leads-preview",
+        "database_id": "3233e117-d7ae-4e41-ac27-c172aab71e6d",
+        "migrations_dir": "migrations"
+      }
+    ]
+  }
 }
