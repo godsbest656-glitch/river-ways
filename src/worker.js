@@ -40,7 +40,17 @@ export default {
       return withSecurityHeaders(notFound());
     }
 
-    const response = await env.ASSETS.fetch(request);
+    // Resolve directory-style static pages explicitly in Worker asset mode.
+    // This keeps the standalone editorial pages separate from the React SPA.
+    const requestedPath = url.pathname;
+    if (url.pathname === "/field-guide" || url.pathname === "/field-guide/") {
+      url.pathname = "/field-guide/index.html";
+    } else if (url.pathname === "/privacy" || url.pathname === "/privacy/") {
+      url.pathname = "/privacy/index.html";
+    }
+
+    const assetRequest = url.pathname === requestedPath ? request : new Request(url, request);
+    const response = await env.ASSETS.fetch(assetRequest);
     return withSecurityHeaders(response);
   },
 };
