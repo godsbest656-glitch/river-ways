@@ -4,11 +4,16 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('homepage communicates the Demand Engineering proposition', async ({ page }) => {
+test('homepage communicates the Demand Engineering proposition', async ({ page, isMobile }) => {
   await expect(page).toHaveTitle(/Riverwayse.*Engineer Demand/i);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Engineer demand.');
   await expect(page.getByRole('link', { name: /Build your growth system/i })).toHaveAttribute('href', '#contact');
-  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
+
+  if (isMobile) {
+    await expect(page.getByRole('button', { name: 'Open navigation' })).toBeVisible();
+  } else {
+    await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
+  }
 });
 
 test('primary sections and service offerings are present', async ({ page }) => {
@@ -30,7 +35,7 @@ test('Demand Intelligence workflow tabs update the panel', async ({ page }) => {
 test('enquiry form explains invalid input without navigating away', async ({ page }) => {
   await page.getByRole('button', { name: /Prepare my enquiry/i }).click();
   await expect(page.getByRole('alert')).toContainText('Add your name and a valid email address');
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\\/$/);
 });
 
 test('mobile navigation can be opened and closed', async ({ page, isMobile }) => {
