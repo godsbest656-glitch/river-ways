@@ -1,7 +1,7 @@
 # River Ways Website — Architecture
 
 ## Product objective
-Build a conversion-focused, accessible, responsive marketing website that positions River Ways around Demand Engineering and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
+Build a conversion-focused, accessible, responsive marketing website that positions River Ways around Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
 
 ## Initial stack
 - React + Vite for a lightweight component-based frontend.
@@ -27,7 +27,7 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - The project enquiry form validates input in the browser and submits to a same-origin Cloudflare Pages Function. A direct email fallback is shown when the endpoint is unavailable; do not collect real enquiries until D1 and runtime secrets are configured and tested.
 
 ## Search and discovery
-- Descriptive title and meta description, canonical placeholder to be replaced with the verified production URL, Open Graph metadata, robots.txt, sitemap, and Organization/ProfessionalService JSON-LD with only verified details.
+- Descriptive title and meta description, canonical URLs must be checked against the verified production domain before cutover, Open Graph metadata, robots.txt, sitemap, and Organization/ProfessionalService JSON-LD with only verified details.
 - Semantic headings, descriptive links, useful service copy, crawlable internal anchors, and performance-conscious media.
 - GEO/AIO/answer-engine optimization is treated as content clarity and entity consistency, not a guarantee of inclusion in AI answers.
 
