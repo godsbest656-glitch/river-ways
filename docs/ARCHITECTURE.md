@@ -1,7 +1,7 @@
-# Riverwayse Website — Architecture
+# River Ways Website — Architecture
 
 ## Product objective
-Build a conversion-focused, accessible, responsive marketing website that positions Riverwayse around demand generation and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
+Build a conversion-focused, accessible, responsive marketing website that positions River Ways around Demand Engineering and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
 
 ## Initial stack
 - React + Vite for a lightweight component-based frontend.
