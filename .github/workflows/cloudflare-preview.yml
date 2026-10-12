@@ -3,7 +3,7 @@ name: Cloudflare Pages preview
 on:
   push:
     branches:
-      - feat/cloudflare-paper-inspired-field-guide
+      - feat/river-ways-pages-integration
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   deploy-preview:
-    if: github.ref_name == 'feat/cloudflare-paper-inspired-field-guide'
+    if: github.ref_name == 'feat/river-ways-pages-integration'
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
