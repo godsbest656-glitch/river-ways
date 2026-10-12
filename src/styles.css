@@ -9,7 +9,7 @@
 
 
 /* River Ways identity route: confluence, pressure and directed movement. */
-:root{--ink:#1b211e;--forest:#171d1a;--lime:#e8b76d;--paper:#f4f0e7;--line:#ded8cc;--muted:#6f756d}
+:root{--ink:#1b211e;--forest:#171d1a;--paper:#f4f0e7;--surface:#f7f3eb;--line:#ded8cc;--muted:#6f756d;--terracotta:#c65c3a;--ochre:#e8b76d;--accent:var(--terracotta);--action:var(--ochre)}
 body{background:var(--paper);color:var(--ink)}
 .site-header{background:rgba(244,240,231,.94);border-bottom-color:rgba(27,33,30,.12)}
 .brand{gap:11px;letter-spacing:-.8px}
@@ -21,7 +21,7 @@ body{background:var(--paper);color:var(--ink)}
 .brand-mark{display:none}
 .hero{background:#171d1a}
 .hero-grid{opacity:.38;background-image:linear-gradient(rgba(244,240,231,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(244,240,231,.045) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(90deg,transparent,black 45%,transparent)}
-.hero h1 span{color:#e8b76d}
+.hero h1 span{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-3.4px;color:#e8b76d}
 .eyebrow-dot,.note-line{background:#c65c3a;box-shadow:0 0 0 4px rgba(198,92,58,.13)}
 .button-lime{background:#e8b76d;color:#171d1a}
 .button-lime:hover{background:#f0ca8d}
@@ -61,6 +61,8 @@ body{background:var(--paper);color:var(--ink)}
 .river-visual-meta{position:absolute;left:4%;right:4%;display:flex;justify-content:space-between;gap:12px;color:#8f9a90;font-size:8px;font-weight:700;letter-spacing:1.4px}
 .river-meta-top{top:10px}.river-meta-bottom{bottom:14px}
 .river-visual .visual-caption{right:4%;bottom:-3px;color:#c3b7a3;font-size:9px}
+/* Editorial contrast: a typographic current inside the otherwise precise display system. */
+@media(max-width:760px){.hero h1 span{letter-spacing:-2px}}
 @keyframes riverDrift{to{stroke-dashoffset:-120}}
 @media(max-width:760px){
   .river-visual{height:330px;margin:0 -7px}
