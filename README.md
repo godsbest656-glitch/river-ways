@@ -1,6 +1,6 @@
-# Riverwayse Website
+# River Ways Website
 
-A responsive, conversion-focused agency website built with React and Vite. It introduces Riverwayse's Demand Engineering approach, services, Demand Intelligence workflow, editorial field guide, and project enquiry flow.
+A responsive, conversion-focused agency website built with React and Vite. It introduces River Ways' Demand Engineering approach, services, Demand Intelligence workflow, editorial field guide, and project enquiry flow.
 
 ## Run locally
 
