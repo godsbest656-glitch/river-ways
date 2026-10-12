@@ -28,7 +28,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Test contact endpoint
         run: npm run test:api
@@ -78,3 +78,16 @@ jobs:
             exit 1
           fi
           echo "OK /api/contact function route ($api_status for GET)"
+          # Exercise the Pages Function's runtime binding without creating a lead.
+          # The honeypot response is neutral and must never persist or notify.
+          contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' \
+            "$BASE_URL/api/contact")"
+          if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
+            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding."
+            cat /tmp/contact-smoke.json
+            exit 1
+          fi
+          echo "OK /api/contact runtime binding (honeypot safely acknowledged; no lead stored)"
