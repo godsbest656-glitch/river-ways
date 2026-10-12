@@ -53,3 +53,28 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=riverwayse-website --branch=${{ github.ref_name }}
+
+      - name: Smoke-test deployed preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_URL="https://feat-river-ways-pages-integr.riverwayse-website.pages.dev"
+          for route in "/" "/privacy/" "/field-guide/"; do
+            status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL$route")"
+            if [ "$status" != "200" ]; then
+              echo "Preview route $route returned HTTP $status"
+              exit 1
+            fi
+            echo "OK $route ($status)"
+          done
+          headers="$(curl --silent --show-error --head "$BASE_URL/")"
+          printf '%s\n' "$headers" | grep -qi '^x-frame-options: DENY' || {
+            echo "Missing X-Frame-Options: DENY on homepage"
+            exit 1
+          }
+          api_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
+          if [ "$api_status" != "405" ]; then
+            echo "Contact function GET smoke test returned HTTP $api_status (expected 405)"
+            exit 1
+          fi
+          echo "OK /api/contact function route ($api_status for GET)"
