@@ -67,7 +67,13 @@ export default function App() {
       if (!response.ok || !result.ok) {
         throw new Error(result.error || 'We could not send your enquiry. Please email us directly.');
       }
-      setFormSuccess('Your enquiry has been received. River Ways will review the brief and follow up using the email address you provided.');
+      if (result.notification === 'sent') {
+        setFormSuccess('Your enquiry has been received and the River Ways team has been notified. We will follow up using the email address you provided.');
+      } else if (result.notification === 'failed') {
+        setFormSuccess('Your enquiry has been saved, but we could not confirm the email notification to our team. For a prompt response, email oluwafemi@riverwayse.com and mention that you submitted the website form.');
+      } else {
+        setFormSuccess('Your enquiry has been saved, but email notifications are not fully configured yet. For a prompt response, email oluwafemi@riverwayse.com and mention that you submitted the website form.');
+      }
       setForm({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '', website: '' });
     } catch (error) {
       setFormError((error instanceof Error ? error.message : 'Something went wrong.') + ' Email oluwafemi@riverwayse.com if you need another way to reach us.');
@@ -168,7 +174,7 @@ export default function App() {
           {formError && <p className="form-error" role="alert">{formError}</p>}
           {formSuccess && <p className="form-success" role="status">{formSuccess}</p>}
           <button className="button button-lime form-submit" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Sending enquiry…' : 'Send my enquiry'} <ArrowRight size={17} /></button>
-          <p className="form-note">Your brief is sent securely to River Ways for follow-up. Please do not include passwords, financial account details or confidential third-party information. See our <a href="/privacy/">privacy notice</a>.</p>
+          <p className="form-note">We use your brief to respond to your enquiry. A submission is confirmed only when you see a status message. Please do not include passwords, financial account details or confidential third-party information. See our <a href="/privacy/">privacy notice</a>.</p>
         </form>
       </div></section>
     </main>
