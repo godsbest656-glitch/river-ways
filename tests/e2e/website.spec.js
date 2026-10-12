@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('homepage communicates the Demand Engineering proposition', async ({ page, isMobile }) => {
-  await expect(page).toHaveTitle(/Riverwayse.*Engineer Demand/i);
+  await expect(page).toHaveTitle(/River Ways.*Engineer Demand/i);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Engineer demand.');
   await expect(page.getByRole('link', { name: /Build your growth system/i })).toHaveAttribute('href', '#contact');
 
@@ -33,7 +33,7 @@ test('Demand Intelligence workflow tabs update the panel', async ({ page }) => {
 });
 
 test('enquiry form explains invalid input without navigating away', async ({ page }) => {
-  await page.getByRole('button', { name: /Prepare my enquiry/i }).click();
+  await page.getByRole('button', { name: /Send my enquiry/i }).click();
   await expect(page.getByRole('alert')).toContainText('Add your name and a valid email address');
   await expect(page).toHaveURL(/\/$/);
 });
