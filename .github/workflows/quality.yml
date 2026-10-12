@@ -23,6 +23,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
+      - name: Run contact API tests
+        run: npm run test:api
       - name: Build production bundle
         run: npm run build
       - name: Install Playwright Chromium
