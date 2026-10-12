@@ -44,7 +44,7 @@ test('mobile navigation can be opened and closed', async ({ page, isMobile }) =>
   await toggle.click();
   await expect(page.getByRole('button', { name: 'Close navigation' })).toHaveAttribute('aria-expanded', 'true');
   await page.getByRole('link', { name: 'What we do' }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/#services$/);
   await expect(page.getByRole('button', { name: 'Open navigation' })).toHaveAttribute('aria-expanded', 'false');
 });
 
