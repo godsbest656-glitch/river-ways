@@ -48,6 +48,31 @@ test('mobile navigation can be opened and closed', async ({ page, isMobile }) =>
   await expect(page.getByRole('button', { name: 'Open navigation' })).toHaveAttribute('aria-expanded', 'false');
 });
 
+test('enquiry confirmation is honest when email notification is not configured', async ({ page }) => {
+  await page.route('**/api/contact', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ ok: true, notification: 'not_configured' }),
+  }));
+  await page.getByLabel('Your name').fill('Preview Test');
+  await page.getByLabel('Work email').fill('preview@example.com');
+  await page.getByRole('button', { name: /Send my enquiry/i }).click();
+  await expect(page.getByRole('status')).toContainText('email notifications are not fully configured');
+  await expect(page.getByRole('status')).toContainText('oluwafemi@riverwayse.com');
+});
+
+test('enquiry confirmation reports team notification only when it was sent', async ({ page }) => {
+  await page.route('**/api/contact', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ ok: true, notification: 'sent' }),
+  }));
+  await page.getByLabel('Your name').fill('Preview Test');
+  await page.getByLabel('Work email').fill('preview@example.com');
+  await page.getByRole('button', { name: /Send my enquiry/i }).click();
+  await expect(page.getByRole('status')).toContainText('the River Ways team has been notified');
+});
+
 test('page has no horizontal overflow on the tested viewport', async ({ page }) => {
   const dimensions = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
