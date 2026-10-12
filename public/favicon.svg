@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#101c18"/><g transform="translate(14 12) skewY(-24)"><rect x="0" y="23" width="8" height="15" rx="2" fill="#d7fb69"/><rect x="13" y="13" width="8" height="25" rx="2" fill="#d7fb69"/><rect x="26" y="2" width="8" height="36" rx="2" fill="#d7fb69"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="River Ways">
+  <rect width="64" height="64" rx="8" fill="#292825"/>
+  <path d="M12 17H29L22 28H49M12 32H25L18 44H49" fill="none" stroke="#F0E8DC" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M36 14V49" fill="none" stroke="#C7D451" stroke-width="4" stroke-linecap="square"/>
+  <circle cx="36" cy="32" r="3" fill="#C7D451"/>
+</svg>
