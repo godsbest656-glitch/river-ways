@@ -1,9 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="index,follow"><meta name="description" content="How River Ways handles information submitted through its website enquiry form.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="How River Ways handles information submitted through its website enquiry form.">
   <link rel="canonical" href="https://riverwayse.com/privacy/">
+  <meta name="theme-color" content="#f7f8f4">
   <title>Privacy Notice — River Ways</title>
   <style>
     :root{color-scheme:light;--paper:#f7f8f4;--ink:#18221c;--muted:#69756e;--line:#dfe4d9;--olive:#698743}
@@ -13,16 +16,26 @@
 <body>
   <header class="wrap top"><a href="/">← River Ways</a><span>Privacy notice</span></header>
   <main class="wrap sheet">
-    <div class="eyebrow">Trust & transparency</div><h1>Privacy notice</h1>
-    <p class="muted">Last reviewed: 9 October 2026</p>
+    <div class="eyebrow">Trust &amp; transparency</div>
+    <h1>Privacy notice</h1>
+    <p class="muted">Last reviewed: 12 October 2026</p>
     <p>This notice explains how River Ways handles information you choose to submit through the website enquiry form.</p>
-    <h2>Information you provide</h2><p>When you submit an enquiry, we process your name and email address, and any company, business goal or project context you choose to include. We use this information to respond to your request and manage a potential business relationship. Please do not submit passwords, financial account details, sensitive personal information or confidential third-party material.</p>
-    <h2>Security and abuse prevention</h2><p>The form service uses a short-window abuse-prevention check. It stores a hash of the connecting IP address for rate limiting rather than intentionally storing the raw address in the enquiry record. Website enquiries are stored in a Cloudflare D1 database configured by the site operator. Appropriate access, retention, deletion and backup settings must be maintained by the operator.</p>
-    <h2>Email notifications and service providers</h2><p>If configured, an enquiry notification is sent through Resend to River Ways' designated business inbox. These providers process information under their applicable service terms and privacy policies. If the service is not configured or temporarily unavailable, the form may not be able to accept your enquiry; you can email <a href="mailto:oluwafemi@riverwayse.com">oluwafemi@riverwayse.com</a>.</p>
-    <h2>Retention and your requests</h2><p>Enquiry information should be kept only as long as needed for follow-up, business records and applicable legal requirements. Contact <a href="mailto:oluwafemi@riverwayse.com">oluwafemi@riverwayse.com</a> to request access, correction or deletion, subject to applicable law.</p>
-    <h2>Analytics and demand intelligence</h2><p>This notice does not claim that analytics or social-listening integrations are currently active. If such services are introduced, this notice should be updated to describe the information collected, purposes, providers and any consent choices required by applicable law.</p>
-    <h2>Changes to this notice</h2><p>We may update this notice as the website and its integrations evolve. The review date above indicates the latest stated revision.</p>
+
+    <h2>Information you provide</h2>
+    <p>When you submit an enquiry, we process your name and email address, and any company, business goal or project context you choose to include. We use this information to respond to your request and manage a potential business relationship. Please do not submit passwords, financial account details, sensitive personal information or confidential third-party material.</p>
+
+    <h2>Storage and abuse prevention</h2>
+    <p>When the enquiry service is configured, submitted enquiries are stored in a Cloudflare D1 database operated for River Ways. The endpoint uses a short-window abuse-prevention check based on a hash of the connecting IP address rather than storing the raw address for that check. Enquiry storage is disabled until the required database binding and a strong rate-limit secret are configured.</p>
+
+    <h2>Email notifications</h2>
+    <p>If email notification is configured, enquiry details are sent through Resend to River Ways’ designated business inbox. A notification can fail even when an enquiry has been saved, so the operator must review stored enquiries and notification status and follow up appropriately. Do not assume a submission has been received unless the form confirms success.</p>
+
+    <h2>Retention and requests</h2>
+    <p>River Ways must configure and periodically review retention, deletion, access controls and backup policies for the enquiry database and notification provider. To request access to, correction of, or deletion of enquiry information, contact <a href="mailto:oluwafemi@riverwayse.com">oluwafemi@riverwayse.com</a>. Requests are handled subject to applicable law.</p>
+
+    <h2>Analytics and third parties</h2>
+    <p>This notice does not claim that analytics or social-listening services are active. If additional services are introduced, this notice should be updated to explain what information is collected, why it is processed, which providers are involved, and any consent choices required by applicable law.</p>
   </main>
-  <footer class="wrap">River Ways — Engineer demand. Create momentum.</footer>
+  <footer class="wrap">River Ways · Demand Engineering</footer>
 </body>
 </html>
