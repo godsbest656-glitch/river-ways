@@ -16,4 +16,4 @@ The site operator must configure and periodically review retention, deletion, ac
 
 This notice does not claim that analytics or social-listening services are active. If those services are added, this notice must be updated to explain the data collected, purposes, providers, and any consent choices required by applicable law.
 
-Last reviewed: 11 October 2026.
+Last reviewed: 12 October 2026.
