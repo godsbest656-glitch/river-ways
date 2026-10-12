@@ -1,0 +1,104 @@
+/* River Ways — Directed Confluence visual identity layer
+   Exploratory implementation: basalt + chalk + signal mineral.
+   Kept separate so the identity can be reviewed and rolled back cleanly. */
+:root{
+  --ink:#292825;
+  --forest:#292825;
+  --lime:#C7D451;
+  --muted:#71756B;
+  --paper:#F0E8DC;
+  --line:#D2D0C6;
+  --serif:Georgia,'Times New Roman',serif;
+  color:#292825;
+  background:#F0E8DC;
+}
+body{background:#F0E8DC;color:#292825}
+.site-header{background:rgba(240,232,220,.96);border-bottom:1px solid #D2D0C6}
+.brand{color:#292825;font-weight:750;letter-spacing:-.055em}
+.brand-mark{width:34px;height:34px;position:relative;display:inline-block;flex:none;transform:none!important}
+.brand-mark span{display:none!important}
+.brand-mark:before,.brand-mark:after{content:"";position:absolute;display:block;box-sizing:border-box}
+.brand-mark:before{left:3px;top:5px;width:27px;height:23px;border-left:3px solid #292825;border-bottom:3px solid #292825;clip-path:polygon(0 0,100% 0,100% 15%,15% 15%,15% 85%,100% 85%,100% 100%,0 100%)}
+.brand-mark:after{left:11px;top:3px;width:21px;height:25px;border-top:3px solid #C7D451;border-right:3px solid #C7D451;transform:skew(-27deg)}
+.menu-toggle{color:#292825}
+.main-nav>a:not(.nav-cta){color:#4D4B44}
+.main-nav>a:not(.nav-cta):hover{color:#292825}
+.nav-cta{background:#292825;color:#F0E8DC;border-radius:2px}
+.nav-cta:hover{background:#414039}
+.section-dark,.hero,.intelligence-section,.contact-section{background-color:#292825;color:#F0E8DC}
+.hero{background-image:radial-gradient(ellipse at 80% 38%,rgba(199,212,81,.12),transparent 39%)}
+.hero-grid{background-image:linear-gradient(rgba(240,232,220,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(240,232,220,.035) 1px,transparent 1px)}
+h1,h2{font-family:'Manrope','DM Sans',sans-serif}
+h1 span{color:#C7D451}
+.eyebrow-dot,.live-dot{background:#C7D451;box-shadow:0 0 0 4px rgba(199,212,81,.13)}
+.button-lime{background:#C7D451;color:#292825;border-radius:2px}
+.button-lime:hover{background:#d7e56b}
+.text-link-light{border-color:#77766c;color:#F0E8DC}
+.note-line{background:#C7D451}
+.hero-note,.hero-bottom{color:#C2C0B5}
+.hero-capabilities svg,.intelligence-points svg,.contact-promise svg{color:#C7D451}
+.hero-visual{isolation:isolate}
+.visual-glow{background:rgba(199,212,81,.13);filter:blur(62px)}
+.visual-orbit{border-radius:0;transform:rotate(-24deg);border-color:rgba(199,212,81,.22)}
+.orbit-one{width:420px;height:220px;border-width:1px}
+.orbit-two{width:320px;height:320px;border-style:solid;border-color:rgba(240,232,220,.12);transform:rotate(45deg) skew(-9deg)}
+.visual-core{border-radius:2px;width:158px;height:158px;background:#33322D;border:1px solid rgba(199,212,81,.7);box-shadow:10px 10px 0 rgba(199,212,81,.09),0 0 0 1px rgba(199,212,81,.12)}
+.core-ring{border-radius:2px;border-color:#C7D451;color:#C7D451}
+.visual-card{border-radius:2px;background:rgba(48,47,41,.97);border-color:rgba(240,232,220,.2);backdrop-filter:blur(10px)}
+.signal-bars i{border-radius:0;background:#C7D451}
+.signal-status{color:#C7D451}
+.conversion-icon{border-radius:2px;background:rgba(199,212,81,.12);color:#C7D451}
+.visual-caption{color:#C2C0B5}
+.ticker{background:#C7D451;color:#292825}
+.problem-section,.faq-section{background:#F0E8DC}
+.problem-copy>p:not(.large-copy),.section-heading-row>p,.method-heading>p,.faq-layout>div:first-child>p{color:#68675F}
+.section-intro h2 em,.section-heading-row h2 em,.method-heading h2 em,.faq-layout h2 em{color:#71756B}
+.principle-grid{gap:14px}
+.principle-card{background:#F7F2E9;border-color:#D2D0C6;border-radius:0}
+.principle-card:hover{border-color:#71756B}
+.principle-card>svg{color:#71756B}
+.principle-num{color:#71756B}
+.services-section{background:#E5E1D7}
+.service-card{background:#F0E8DC;border-color:#D2D0C6;border-radius:0;box-shadow:none}
+.service-card:hover{border-color:#71756B;box-shadow:8px 8px 0 rgba(41,40,37,.06)}
+.service-icon{border-radius:2px;border-color:#D2D0C6;color:#55564C}
+.service-tags span{border-radius:0;color:#55564C;border-color:#D2D0C6}
+.service-link svg{color:#71756B}
+.intelligence-section{background-image:linear-gradient(115deg,transparent 0 58%,rgba(199,212,81,.06) 58% 58.15%,transparent 58.15%),radial-gradient(ellipse at 78% 45%,rgba(199,212,81,.09),transparent 45%)}
+.intelligence-copy h2 em,.contact-copy h2 em{color:#C7D451}
+.signal-panel{border-radius:2px;background:#302F29;border-color:rgba(240,232,220,.2)}
+.step-tab.active{border-color:#C7D451}
+.step-tab.active span,.step-detail .mini-label,.step-symbol,.panel-footer svg{color:#C7D451}
+.step-symbol{border-radius:2px;background:rgba(199,212,81,.1)}
+.rail-node{border-radius:0;background:#55554A}
+.rail-active{background:#C7D451}
+.method-section{background:#F0E8DC}
+.method-steps{border-color:#D2D0C6}
+.method-steps article{border-color:#D2D0C6}
+.method-steps article>span,.method-steps article>svg{color:#71756B}
+.belief-section{background:#D2D0C6}
+.belief-layout blockquote em{color:#55564C}
+.belief-mark>span:last-child,.belief-layout>p{color:#5E5D55}
+.faq-item{border-color:#D2D0C6}
+.faq-item summary svg{color:#71756B}
+.faq-item p{color:#68675F}
+.contact-section{background-image:linear-gradient(125deg,transparent 0 68%,rgba(199,212,81,.07) 68% 68.2%,transparent 68.2%),radial-gradient(ellipse at 5% 90%,rgba(199,212,81,.08),transparent 42%)}
+.contact-form{background:#F0E8DC;border-radius:2px;color:#292825}
+.contact-form input,.contact-form select,.contact-form textarea{border-radius:0;border-color:#D2D0C6;background:#FFFCF5;color:#292825}
+.form-heading{color:#71756B;border-color:#D2D0C6}
+.form-note{color:#68675F}
+.site-footer{background:#201F1B;color:#F0E8DC}
+.footer-top{border-color:rgba(240,232,220,.17)}
+.footer-top>p,.footer-bottom{color:#B9B6AA}
+.footer-bottom a{color:#D2D0C6}
+.footer-bottom a:hover,.back-top:hover{color:#C7D451}
+:focus-visible{outline-color:#C7D451!important}
+::selection{background:#C7D451;color:#292825}
+@media(max-width:760px){
+ .main-nav{background:#F0E8DC;border-color:#D2D0C6}
+ .main-nav>a:not(.nav-cta){border-color:#D2D0C6}
+ .belief-layout .brand-mark{transform:none!important}
+ .visual-orbit.orbit-one{width:310px;height:175px}
+ .orbit-two{width:265px;height:265px}
+}
+@media(prefers-reduced-motion:reduce){.visual-orbit,.visual-core,.brand-mark:before,.brand-mark:after{transition:none!important}}
