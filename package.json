@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check": "vite build",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test:api": "node --test tests/api/*.test.js"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
