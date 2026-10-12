@@ -24,7 +24,7 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - One primary action repeated consistently.
 - Secondary action for exploring services.
 - Clear service descriptions and outcomes without fabricated testimonials, clients, performance figures, or guarantees.
-- Contact form validates inputs and opens a prefilled email draft as a no-backend fallback. Replace with a secured server-side form endpoint before production lead capture.
+- The project enquiry form validates input in the browser and submits to a same-origin Cloudflare Pages Function. A direct email fallback is shown when the endpoint is unavailable; do not collect real enquiries until D1 and runtime secrets are configured and tested.
 
 ## Search and discovery
 - Descriptive title and meta description, canonical placeholder to be replaced with the verified production URL, Open Graph metadata, robots.txt, sitemap, and Organization/ProfessionalService JSON-LD with only verified details.
