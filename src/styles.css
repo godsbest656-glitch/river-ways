@@ -6,3 +6,66 @@
 
 /* Contact form states and off-screen anti-spam field. */
 .form-success{padding:12px 14px;border:1px solid #a8bd8b;background:#edf4e4;color:#263c1d;font-size:13px;line-height:1.5}.form-error a,.form-note a{color:inherit;text-underline-offset:3px}.form-submit:disabled{opacity:.65;cursor:wait}.contact-honeypot{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+
+/* River Ways identity route: confluence, pressure and directed movement. */
+:root{--ink:#1b211e;--forest:#171d1a;--lime:#e8b76d;--paper:#f4f0e7;--line:#ded8cc;--muted:#6f756d}
+body{background:var(--paper);color:var(--ink)}
+.site-header{background:rgba(244,240,231,.94);border-bottom-color:rgba(27,33,30,.12)}
+.brand{gap:11px;letter-spacing:-.8px}
+.river-mark{display:block;width:31px;height:24px;overflow:visible;fill:none;stroke:#c65c3a;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.river-mark path{transition:stroke-dasharray .25s ease,transform .25s ease}
+.brand:hover .river-mark path:nth-child(2){transform:translateY(2px)}
+.brand:hover .river-mark path:nth-child(3){transform:translateY(-2px)}
+.river-mark-large{width:46px;height:34px;stroke:#c65c3a;stroke-width:2}
+.brand-mark{display:none}
+.hero{background:#171d1a}
+.hero-grid{opacity:.38;background-image:linear-gradient(rgba(244,240,231,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(244,240,231,.045) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(90deg,transparent,black 45%,transparent)}
+.hero h1 span{color:#e8b76d}
+.eyebrow-dot,.note-line{background:#c65c3a;box-shadow:0 0 0 4px rgba(198,92,58,.13)}
+.button-lime{background:#e8b76d;color:#171d1a}
+.button-lime:hover{background:#f0ca8d}
+.nav-cta{background:#171d1a}
+.nav-cta:hover{background:#c65c3a}
+.ticker{background:#c65c3a;color:#fff7ee}
+.ticker-track b{color:#e8b76d}
+.section-intro h2 em,.section-heading-row h2 em,.method-heading h2 em,.faq-layout h2 em{color:#a64f35}
+.principle-card>svg,.service-link svg,.service-icon,.method-steps article>span,.faq-item summary svg{color:#a64f35}
+.principle-card:hover,.service-card:hover{border-color:#c77a5e}
+.services-section{background:#eae4d8}
+.service-card{background:#f7f3eb;border-color:#ddd5c8}
+.service-icon{border-color:#e2c6b8}
+.service-tags span{color:#75412f;border-color:#e2d1c5}
+.intelligence-section{background:radial-gradient(ellipse at 78% 45%,rgba(198,92,58,.16),transparent 45%),#171d1a}
+.intelligence-copy h2 em{color:#e8b76d}
+.step-tab.active{border-color:#e8b76d}
+.step-tab.active span,.step-symbol,.intelligence-points svg,.panel-footer svg{color:#e8b76d}
+.rail-active{background:#e8b76d}
+.belief-section{background:#e9dfcd}
+.belief-layout blockquote em{color:#a64f35}
+.contact-section{background:radial-gradient(ellipse at 5% 90%,rgba(198,92,58,.14),transparent 42%),#171d1a}
+.contact-copy h2 em{color:#e8b76d}
+.form-note a{color:#a64f35}
+.form-success{border-color:#b5c1a3;background:#edf0e4;color:#293a2a}
+.form-error{color:#a13c2d}
+.river-visual{isolation:isolate;height:490px;transform:none!important}
+.river-visual::before{content:"";position:absolute;inset:9% 8%;border:1px solid rgba(232,183,109,.15);border-radius:50%;transform:rotate(-19deg);z-index:-1}
+.river-visual::after{content:"";position:absolute;width:62%;height:1px;left:19%;top:50%;background:linear-gradient(90deg,transparent,#c65c3a,#e8b76d,transparent);opacity:.45;z-index:-1}
+.river-diagram{width:100%;height:100%;overflow:visible;color:#a5afa5}
+.river-contours{opacity:.22}
+.river-channels{filter:drop-shadow(0 0 8px rgba(232,183,109,.12))}
+.river-current{stroke-dasharray:12 18;animation:riverDrift 8s linear infinite}
+.river-nodes circle{fill:#171d1a;stroke:#e8b76d;stroke-width:1.6}
+.river-nodes circle:nth-child(2),.river-nodes circle:nth-child(4){fill:#c65c3a;stroke:#e8b76d}
+.river-diagram-labels{font:700 9px 'DM Sans',sans-serif;letter-spacing:1.5px;opacity:.85}
+.river-visual-meta{position:absolute;left:4%;right:4%;display:flex;justify-content:space-between;gap:12px;color:#8f9a90;font-size:8px;font-weight:700;letter-spacing:1.4px}
+.river-meta-top{top:10px}.river-meta-bottom{bottom:14px}
+.river-visual .visual-caption{right:4%;bottom:-3px;color:#c3b7a3;font-size:9px}
+@keyframes riverDrift{to{stroke-dashoffset:-120}}
+@media(max-width:760px){
+  .river-visual{height:330px;margin:0 -7px}
+  .river-diagram-labels{font-size:10px}
+  .river-visual-meta{font-size:7px;letter-spacing:1px}
+  .river-meta-top{top:0}.river-meta-bottom{bottom:8px}
+}
+@media(prefers-reduced-motion:reduce){.river-current{animation:none}}
