@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 test('homepage communicates the River Ways positioning', async ({ page, isMobile }) => {
   await expect(page).toHaveTitle(/River Ways.*Engineer Demand/i);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Find the current.');
-  await expect(page.getByRole('link', { name: /Start a conversation/i })).toHaveAttribute('href', '#contact');
+  await expect(page.getByRole('link', { name: /Build your growth system/i })).toHaveAttribute('href', '#contact');
 
   if (isMobile) {
     await expect(page.getByRole('button', { name: 'Open navigation' })).toBeVisible();
