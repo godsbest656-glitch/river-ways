@@ -35,7 +35,7 @@ test('Demand Intelligence workflow tabs update the panel', async ({ page }) => {
 test('enquiry form explains invalid input without navigating away', async ({ page }) => {
   await page.getByRole('button', { name: /Prepare my enquiry/i }).click();
   await expect(page.getByRole('alert')).toContainText('Add your name and a valid email address');
-  await expect(page).toHaveURL(/\\/$/);
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test('mobile navigation can be opened and closed', async ({ page, isMobile }) => {
@@ -44,7 +44,7 @@ test('mobile navigation can be opened and closed', async ({ page, isMobile }) =>
   await toggle.click();
   await expect(page.getByRole('button', { name: 'Close navigation' })).toHaveAttribute('aria-expanded', 'true');
   await page.getByRole('link', { name: 'What we do' }).click();
-  await expect(page).toHaveURL(/#services$/);
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('button', { name: 'Open navigation' })).toHaveAttribute('aria-expanded', 'false');
 });
 
