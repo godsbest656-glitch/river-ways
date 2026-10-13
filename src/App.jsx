@@ -47,7 +47,7 @@ export default function App() {
     }
     const subject = encodeURIComponent('River Ways consultation — ' + (form.company || form.name));
     const body = encodeURIComponent('Name: ' + form.name + '\nEmail: ' + form.email + '\nCompany: ' + (form.company || 'Not provided') + '\nPrimary goal: ' + form.goal + '\n\nContext:\n' + (form.details || 'Not provided'));
-    window.location.href = 'mailto:oluwafemi@riverwayse.com?subject=' + subject + '&body=' + body;
+    window.location.href = 'mailto:akinsify0511@gmail.com?subject=' + subject + '&body=' + body;
   }
 
   return <>
@@ -115,6 +115,6 @@ export default function App() {
         </form>
       </div></section>
     </main>
-    <footer className="site-footer"><div className="container footer-top"><Brand /><p>Engineer demand. Create momentum.</p><a href="#home" className="back-top">Back to top <ArrowUpRight size={15} /></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} River Ways. All rights reserved.</span><span>Built around purposeful growth.</span><a href="mailto:oluwafemi@riverwayse.com">Contact River Ways</a></div></footer>
+    <footer className="site-footer"><div className="container footer-top"><Brand /><p>Engineer demand. Create momentum.</p><a href="#home" className="back-top">Back to top <ArrowUpRight size={15} /></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} River Ways. All rights reserved.</span><span>Built around purposeful growth.</span><a href="mailto:akinsify0511@gmail.com">Contact River Ways</a></div></footer>
   </>;
 }
