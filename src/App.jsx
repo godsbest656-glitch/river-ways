@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { ArrowDownRight, ArrowRight, ArrowUpRight, AudioWaveform, BarChart3, Check, ChevronDown, Compass, Globe2, Menu, MessageCircle, MousePointer2, Search, ShieldCheck, Sparkles, Target, TrendingUp, X, Zap } from 'lucide-react';
 
 const services = [
-  { number: '01', icon: Target, title: 'Demand Engineering', description: 'Build the strategy, signals and systems that turn attention into a repeatable path to revenue.', tags: ['Go-to-market strategy', 'Demand architecture', 'Growth planning'] },
-  { number: '02', icon: Search, title: 'Search & AI Discovery', description: 'Make your business easier to discover across search engines, local results and AI-powered answers.', tags: ['Technical SEO', 'GEO & AIO', 'Content strategy'] },
-  { number: '03', icon: TrendingUp, title: 'Performance Marketing', description: 'Connect paid media, landing pages and measurement around business outcomes—not vanity metrics.', tags: ['Paid acquisition', 'Conversion optimization', 'Measurement'] },
-  { number: '04', icon: MousePointer2, title: 'Websites That Convert', description: 'Create fast, useful digital experiences that make the next step obvious and friction-free.', tags: ['Web design', 'Landing pages', 'CRO'] },
-  { number: '05', icon: Sparkles, title: 'Content & Creative', description: 'Turn your point of view into distinctive creative that earns attention and helps buyers decide.', tags: ['Brand storytelling', 'Creative systems', 'Campaigns'] },
-  { number: '06', icon: AudioWaveform, title: 'Demand Intelligence', description: 'Identify public intent signals, qualify opportunities and help your team respond while interest is fresh.', tags: ['Social listening', 'Intent monitoring', 'Lead workflows'] }
+  { number: '01', icon: Target, image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team collaborating around a strategy table', title: 'Demand Engineering', description: 'Build the strategy, signals and systems that turn attention into a repeatable path to revenue.', tags: ['Go-to-market strategy', 'Demand architecture', 'Growth planning'] },
+  { number: '02', icon: Search, image: 'https://images.unsplash.com/photo-1460925895917-af0d2a3f6e4d?auto=format&fit=crop&w=900&q=82', imageAlt: 'Analytics dashboard on a laptop', title: 'Search & AI Discovery', description: 'Make your business easier to discover across search engines, local results and AI-powered answers.', tags: ['Technical SEO', 'GEO & AIO', 'Content strategy'] },
+  { number: '03', icon: TrendingUp, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=82', imageAlt: 'Business performance analytics on a screen', title: 'Performance Marketing', description: 'Connect paid media, landing pages and measurement around business outcomes—not vanity metrics.', tags: ['Paid acquisition', 'Conversion optimization', 'Measurement'] },
+  { number: '04', icon: MousePointer2, image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=900&q=82', imageAlt: 'Designer working on a digital interface', title: 'Websites That Convert', description: 'Create fast, useful digital experiences that make the next step obvious and friction-free.', tags: ['Web design', 'Landing pages', 'CRO'] },
+  { number: '05', icon: Sparkles, image: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=900&q=82', imageAlt: 'Creative visual installation with bold colour and light', title: 'Content & Creative', description: 'Turn your point of view into distinctive creative that earns attention and helps buyers decide.', tags: ['Brand storytelling', 'Creative systems', 'Campaigns'] },
+  { number: '06', icon: AudioWaveform, image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team reviewing information and discussing business opportunities', title: 'Demand Intelligence', description: 'Identify public intent signals, qualify opportunities and help your team respond while interest is fresh.', tags: ['Social listening', 'Intent monitoring', 'Lead workflows'] }
 ];
 const steps = [
   { label: 'Discover', title: 'Find the signal.', text: 'Monitor relevant public conversations, search themes and market questions across selected sources and regions.' },
@@ -60,7 +60,7 @@ export default function App() {
       </nav>
     </div></header>
     <main id="main">
-      <section className="hero section-dark" id="home"><div className="hero-grid" aria-hidden="true" />
+      <section className="hero section-dark" id="home"><div className="hero-atmosphere" aria-hidden="true" />
         <div className="container hero-layout">
           <div className="hero-copy"><Eyebrow light>Growth is engineered, not guessed</Eyebrow><h1>Engineer demand.<br /><span>Create momentum.</span></h1>
             <p className="hero-lede">We connect strategy, discovery and digital experiences into a system that helps the right people find you—and gives them a reason to act.</p>
@@ -87,7 +87,7 @@ export default function App() {
       </div></section>
       <section className="section services-section" id="services"><div className="container">
         <div className="section-heading-row"><div><Eyebrow>What we do</Eyebrow><h2>One growth system.<br /><em>Connected capabilities.</em></h2></div><p>Choose the capability you need now. We design the work to connect with the bigger picture.</p></div>
-        <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href="#contact" className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
+        <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><img className="service-card-image" src={service.image} alt={service.imageAlt} loading="lazy" decoding="async" /><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href="#contact" className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
       </div></section>
       <section className="intelligence-section section-dark" id="intelligence"><div className="container intelligence-layout">
         <div className="intelligence-copy"><Eyebrow light>Demand Intelligence</Eyebrow><h2>Meet your market<br />at the <em>moment of intent.</em></h2><p>People leave clues when they’re comparing options, asking for recommendations or describing a problem your business solves. A thoughtful listening system helps you find those signals, understand context and respond usefully.</p>
