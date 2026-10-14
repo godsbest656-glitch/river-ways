@@ -71,7 +71,8 @@ body,button,input,textarea,select{font-family:'Manrope',sans-serif}
   display:flex;flex-direction:column;align-items:flex-start;gap:0;overflow:hidden;
   color:#F3EDE3;background:rgba(48,46,41,.93);border:1px solid rgba(243,237,227,.18);border-radius:0;
   box-shadow:0 16px 38px rgba(0,0,0,.13);cursor:pointer;
-  transform:translate3d(calc(var(--card-x,0px) + var(--pointer-x)),calc(var(--card-y,0px) + var(--pointer-y) + var(--scroll-y)),0) rotate(var(--card-rotate,0deg));
+  --card-pointer-x:0px;--card-pointer-y:0px;
+  transform:translate3d(calc(var(--card-x,0px) + var(--card-pointer-x)),calc(var(--card-y,0px) + var(--card-pointer-y) + var(--scroll-y)),0) rotate(var(--card-rotate,0deg));
   transition:transform .65s cubic-bezier(.2,.7,.2,1),background .35s ease,border-color .35s ease,box-shadow .35s ease,color .35s ease;
   will-change:transform;
 }
@@ -79,7 +80,7 @@ body,button,input,textarea,select{font-family:'Manrope',sans-serif}
 .current-card-connect{--card-x:-2px;--card-y:7px;--card-rotate:1.5deg;top:27%;right:1%;z-index:3}
 .current-card-direction{--card-x:10px;--card-y:-3px;--card-rotate:1deg;bottom:11%;left:11%;z-index:4}
 .current-card-momentum{--card-x:-2px;--card-y:6px;--card-rotate:-1.6deg;right:2%;bottom:3%;z-index:5}
-.current-card:hover,.current-card:focus-visible,.current-card.is-current{z-index:8;background:#F3EDE3;color:#20201d;border-color:#D07A53;box-shadow:0 24px 48px rgba(0,0,0,.24);transform:translate3d(calc(var(--card-x,0px) + var(--pointer-x)),calc(var(--card-y,0px) + var(--pointer-y) + var(--scroll-y-reverse)),0) rotate(0deg) scale(1.025)}
+.current-card:hover,.current-card:focus-visible,.current-card.is-current{z-index:8;background:#F3EDE3;color:#20201d;border-color:#D07A53;box-shadow:0 24px 48px rgba(0,0,0,.24);transform:translate3d(calc(var(--card-x,0px) + var(--card-pointer-x)),calc(var(--card-y,0px) + var(--card-pointer-y) + var(--scroll-y-reverse)),0) rotate(0deg) scale(1.025)}
 .current-card:focus-visible{outline:2px solid #E8B76D;outline-offset:4px}
 .current-card-index{font-size:8px;letter-spacing:1.4px;color:#DDA078;font-weight:700}
 .current-card-index span{color:#bdb0a2;font-weight:500}
@@ -136,8 +137,8 @@ body,button,input,textarea,select{font-family:'Manrope',sans-serif}
 }
 @media(hover:none){
  .current-card-stream{touch-action:pan-y}
- .current-card:hover{transform:translate3d(var(--card-x,0px),var(--card-y,0px),0) rotate(var(--card-rotate,0deg))}
- .current-card.is-current{transform:translate3d(var(--card-x,0px),var(--card-y,0px),0) rotate(0deg) scale(1.015)}
+ .current-card:hover{transform:translate3d(calc(var(--card-x,0px) + var(--card-pointer-x)),calc(var(--card-y,0px) + var(--card-pointer-y)),0) rotate(var(--card-rotate,0deg))}
+ .current-card.is-current{transform:translate3d(calc(var(--card-x,0px) + var(--card-pointer-x)),calc(var(--card-y,0px) + var(--card-pointer-y)),0) rotate(0deg) scale(1.015)}
 }
 @media(prefers-reduced-motion:reduce){
  .current-field-lines,.current-field-lines path{animation:none!important;transition:none!important}
