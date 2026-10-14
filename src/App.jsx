@@ -49,6 +49,29 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const field = document.querySelector('.river-card-current');
+    if (!field || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    let frame = 0;
+    const updateFlow = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const bounds = field.getBoundingClientRect();
+        const viewport = window.innerHeight || 1;
+        const progress = Math.max(-1, Math.min(1, (viewport * 0.72 - bounds.top) / (viewport + bounds.height)));
+        field.style.setProperty('--scroll-flow', progress.toFixed(3));
+      });
+    };
+    updateFlow();
+    window.addEventListener('scroll', updateFlow, { passive: true });
+    window.addEventListener('resize', updateFlow);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', updateFlow);
+      window.removeEventListener('resize', updateFlow);
+    };
+  }, []);
+
   function submitBrief(event) {
     event.preventDefault();
     setFormError('');
