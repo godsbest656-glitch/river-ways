@@ -100,26 +100,38 @@ export default function App() {
             }}
           >
             <div className="river-field-backdrop" /><div className="river-field-grid" />
+            <div className="field-index" aria-hidden="true"><span>RW / FIELD STUDY 001</span><span>LIVE SYSTEM MAP <i /></span></div>
             <svg className="river-contours" viewBox="0 0 620 520" fill="none" aria-hidden="true">
               <defs>
-                <linearGradient id="current-line" x1="72" y1="60" x2="548" y2="468" gradientUnits="userSpaceOnUse"><stop stopColor="#E8B76D" stopOpacity=".08" /><stop offset=".48" stopColor="#D07A53" stopOpacity=".92" /><stop offset="1" stopColor="#E8B76D" stopOpacity=".18" /></linearGradient>
-                <radialGradient id="current-glow"><stop stopColor="#D07A53" stopOpacity=".22" /><stop offset="1" stopColor="#D07A53" stopOpacity="0" /></radialGradient>
+                <linearGradient id="current-line" x1="42" y1="52" x2="575" y2="462" gradientUnits="userSpaceOnUse"><stop stopColor="#E8B76D" stopOpacity=".12" /><stop offset=".52" stopColor="#D07A53" stopOpacity=".95" /><stop offset="1" stopColor="#E8B76D" stopOpacity=".35" /></linearGradient>
+                <linearGradient id="route-muted" x1="0" y1="0" x2="620" y2="520" gradientUnits="userSpaceOnUse"><stop stopColor="#F3EDE3" stopOpacity=".06" /><stop offset=".55" stopColor="#F3EDE3" stopOpacity=".34" /><stop offset="1" stopColor="#E8B76D" stopOpacity=".12" /></linearGradient>
+                <radialGradient id="current-glow"><stop stopColor="#D07A53" stopOpacity=".28" /><stop offset="1" stopColor="#D07A53" stopOpacity="0" /></radialGradient>
+                <pattern id="micro-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" stroke="#F3EDE3" strokeOpacity=".075" strokeWidth=".7"/></pattern>
               </defs>
-              <ellipse className="current-halo" cx="326" cy="260" rx="220" ry="185" fill="url(#current-glow)" />
-              <g className="contour-group contour-back" stroke="#E8CDB8" strokeOpacity=".25" strokeWidth="1">
-                <path d="M-40 92C92 15 151 135 255 103S414 10 660 74" /><path d="M-35 120C92 42 158 159 260 130S421 39 657 101" /><path d="M-35 150C91 73 165 187 266 159S428 67 657 130" /><path d="M-35 181C90 104 171 215 273 188S436 97 657 160" /><path d="M-40 212C87 136 178 245 279 218S444 127 660 190" />
+              <rect x="0" y="0" width="620" height="520" fill="url(#micro-grid)" opacity=".7"/>
+              <g className="field-frame" stroke="#F3EDE3" strokeOpacity=".28" strokeWidth="1"><path d="M42 42H78M42 42V78M578 42H542M578 42V78M42 478H78M42 478V442M578 478H542M578 478V442"/><path d="M310 42V66M298 54H322M310 454V478M298 466H322"/></g>
+              <ellipse className="current-halo" cx="316" cy="258" rx="220" ry="178" fill="url(#current-glow)"/>
+              <g className="contour-group contour-back" stroke="url(#route-muted)" strokeWidth="1">
+                <path d="M-20 90C76 34 129 78 176 139S248 206 314 255S424 321 474 272S558 174 648 204"/><path d="M-20 117C77 62 129 104 171 161S244 224 314 273S425 342 483 294S560 202 648 230"/><path d="M-20 145C76 90 126 131 166 185S240 245 314 292S427 362 492 316S562 230 648 257"/><path d="M-20 174C74 120 123 159 160 211S237 269 314 312S430 383 500 339S565 258 648 285"/><path d="M-20 202C73 150 120 187 154 236S234 291 314 333S432 404 508 362S568 286 648 312"/>
               </g>
-              <g className="contour-group contour-front" stroke="url(#current-line)" strokeWidth="1.5">
-                <path d="M-28 286C93 218 146 312 247 278S424 185 650 245" /><path d="M-30 316C91 249 151 340 251 309S430 216 650 276" /><path d="M-32 348C91 279 157 370 257 340S437 246 652 307" /><path d="M-34 379C89 310 163 401 263 371S444 277 654 338" /><path d="M-36 411C88 341 169 432 270 402S450 308 656 369" /><path d="M-38 443C86 372 175 464 276 433S457 339 658 401" />
+              <g className="field-routes" strokeWidth="1.25" strokeLinecap="round">
+                <path className="route route-one" d="M-18 352C71 350 117 304 170 274S247 224 313 258S430 347 491 387S571 421 646 402" stroke="url(#current-line)"/>
+                <path className="route route-two" d="M72 -18C96 77 154 117 196 168S255 227 313 258S392 283 436 237S506 133 562 112" stroke="#E8B76D" strokeOpacity=".76"/>
+                <path className="route route-three" d="M-18 456C76 432 132 393 187 346S256 286 313 258S406 208 454 161S529 81 646 67" stroke="#D07A53" strokeOpacity=".9"/>
+                <path className="route route-four" d="M120 538C160 444 201 365 245 315S291 272 313 258S347 237 376 190S416 104 455 -18" stroke="url(#route-muted)"/>
+                <path className="route route-five" d="M646 333C551 330 496 306 441 284S359 255 313 258S221 268 176 220S116 139 92 66" stroke="#E8B76D" strokeOpacity=".62"/>
+                <path className="route route-six" d="M-20 225C73 230 129 248 183 258S265 264 313 258S401 245 454 269S554 337 646 354" stroke="#F3EDE3" strokeOpacity=".45"/>
               </g>
-              <g className="current-nodes" fill="#D07A53"><circle cx="144" cy="173" r="3" /><circle cx="255" cy="130" r="2.5" /><circle cx="418" cy="224" r="3" /><circle cx="487" cy="351" r="2.5" /><circle cx="272" cy="402" r="3" /></g>
-              <path className="current-thread" d="M85 375C169 333 192 214 296 234S406 335 523 149" stroke="#D07A53" strokeWidth="1.4" strokeLinecap="round" strokeDasharray="3 8" />
+              <g className="field-geometry" stroke="#E8B76D" strokeOpacity=".72" strokeWidth="1"><path d="M313 230L341 258L313 286L285 258Z" fill="#20201D" fillOpacity=".8"/><path d="M313 242L329 258L313 274L297 258Z" fill="#D07A53" fillOpacity=".12"/><path d="M313 220V230M313 286V296M275 258H285M341 258H351"/><circle cx="313" cy="258" r="48" strokeDasharray="2 8" className="field-orbit"/><circle cx="313" cy="258" r="67" strokeOpacity=".28" strokeDasharray="1 9"/></g>
+              <g className="current-nodes" fill="#E8B76D"><circle cx="170" cy="274" r="3"/><circle cx="196" cy="168" r="3"/><circle cx="187" cy="346" r="2.5"/><circle cx="436" cy="237" r="3"/><circle cx="454" cy="161" r="2.5"/><circle cx="441" cy="284" r="2.5"/><circle cx="491" cy="387" r="3"/></g>
+              <g className="field-ticks" stroke="#F3EDE3" strokeOpacity=".38"><path d="M95 105V119M88 112H102M515 402V416M508 409H522M520 115V129M513 122H527M132 405V419M125 412H139"/></g>
+              <path className="current-thread" d="M72 456C145 416 191 316 257 276S362 262 425 194S500 112 562 112" stroke="#E8B76D" strokeWidth="1.7" strokeLinecap="round" strokeDasharray="2 9"/>
             </svg>
-            <div className="river-coordinate coordinate-one"><span>01</span> SIGNAL</div><div className="river-coordinate coordinate-two"><span>02</span> DIRECTION</div><div className="river-coordinate coordinate-three"><span>03</span> MOMENTUM</div>
-            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> THE SIGNAL</span><div className="signal-bars">{Array.from({ length: 12 }, (_, i) => <i key={i} />)}</div><div className="signal-footer"><span>Insight into action</span><span className="signal-status">01 / 03</span></div></div>
-            <div className="visual-core"><div className="core-ring"><Target size={37} strokeWidth={1.35} /></div><span>STRATEGY<br />IN MOTION</span></div>
-            <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={19} /></div><div><span className="mini-label">THE SYSTEM</span><strong>Connected momentum</strong><small>Discover → Connect → Grow</small></div></div>
-            <span className="visual-caption">FLOW / FORM / FORCE</span>
+            <div className="river-coordinate coordinate-one"><span>01</span> SIGNAL</div><div className="river-coordinate coordinate-two"><span>02</span> DECISION</div><div className="river-coordinate coordinate-three"><span>03</span> MOMENTUM</div>
+            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> SIGNAL DETECTED</span><div className="signal-bars">{Array.from({ length: 12 }, (_, i) => <i key={i} />)}</div><div className="signal-footer"><span>Noise → useful context</span><span className="signal-status">01 / 03</span></div></div>
+            <div className="visual-core"><span className="core-kicker">THE CONVERGENCE</span><div className="core-ring"><Target size={29} strokeWidth={1.25} /></div><span className="core-title">STRATEGY<br/>IN MOTION</span></div>
+            <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={18} /></div><div><span className="mini-label">SYSTEM OUTPUT</span><strong>Connected momentum</strong><small>Signal / Direction / Action</small></div></div>
+            <span className="visual-caption">A SYSTEM, NOT A CHANNEL</span>
           </div>
         </div>
         <div className="container hero-bottom"><span>BUILT AROUND YOUR BUSINESS GOALS</span><div className="hero-capabilities"><span><Check size={14} /> Strategy</span><span><Check size={14} /> Digital</span><span><Check size={14} /> Intelligence</span><span><Check size={14} /> Performance</span></div></div>
