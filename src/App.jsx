@@ -32,7 +32,6 @@ function Eyebrow({ children, light = false }) {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [activeStep, setActiveStep] = useState(0);
   const [form, setForm] = useState({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '' });
   const [formError, setFormError] = useState('');
@@ -81,13 +80,24 @@ export default function App() {
           <div className="hero-visual river-field"
             role="img"
             aria-label="Interactive flowing lines representing strategy, discovery and connected growth."
-            style={{ '--pointer-x': `${pointer.x}px`, '--pointer-y': `${pointer.y}px`, '--pointer-x-reverse': `${-pointer.x}px`, '--pointer-y-reverse': `${-pointer.y}px` }}
             onPointerMove={(event) => {
               if (event.pointerType === 'touch') return;
               const bounds = event.currentTarget.getBoundingClientRect();
-              setPointer({ x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 30, y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 24 });
+              const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 30;
+              const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 24;
+              const style = event.currentTarget.style;
+              style.setProperty('--pointer-x', `${x}px`);
+              style.setProperty('--pointer-y', `${y}px`);
+              style.setProperty('--pointer-x-reverse', `${-x}px`);
+              style.setProperty('--pointer-y-reverse', `${-y}px`);
             }}
-            onPointerLeave={() => setPointer({ x: 0, y: 0 })}
+            onPointerLeave={(event) => {
+              const style = event.currentTarget.style;
+              style.setProperty('--pointer-x', '0px');
+              style.setProperty('--pointer-y', '0px');
+              style.setProperty('--pointer-x-reverse', '0px');
+              style.setProperty('--pointer-y-reverse', '0px');
+            }}
           >
             <div className="river-field-backdrop" /><div className="river-field-grid" />
             <svg className="river-contours" viewBox="0 0 620 520" fill="none" aria-hidden="true">
