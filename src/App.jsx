@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowDownRight, ArrowRight, ArrowUpRight, AudioWaveform, BarChart3, Check, ChevronDown, Compass, Globe2, Menu, MessageCircle, MousePointer2, Search, ShieldCheck, Sparkles, Target, TrendingUp, X, Zap } from 'lucide-react';
 
 const services = [
@@ -32,11 +32,22 @@ function Eyebrow({ children, light = false }) {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [activeStep, setActiveStep] = useState(0);
   const [form, setForm] = useState({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '' });
   const [formError, setFormError] = useState('');
   const updateForm = (event) => setForm({ ...form, [event.target.name]: event.target.value });
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll('[data-reveal]');
+    if (!('IntersectionObserver' in window)) { elements.forEach((element) => element.classList.add('is-visible')); return undefined; }
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+    }), { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
 
   function submitBrief(event) {
     event.preventDefault();
@@ -67,17 +78,44 @@ export default function App() {
             <div className="hero-actions"><a className="button button-lime" href="#contact">Build your growth system <ArrowRight size={17} /></a><a className="text-link text-link-light" href="#approach">See how we work <ArrowDownRight size={17} /></a></div>
             <div className="hero-note"><span className="note-line" /> Strategy-led. Signal-informed. Outcome-focused.</div>
           </div>
-          <div className="hero-visual" aria-label="Abstract illustration of a connected demand system">
-            <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" /><div className="visual-glow" />
-            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> DEMAND SIGNALS</span><div className="signal-bars">{Array.from({length:12}, (_,i) => <i key={i} />)}</div><div className="signal-footer"><span>Intent captured</span><span className="signal-status">ACTIVE</span></div></div>
-            <div className="visual-core"><div className="core-ring"><Target size={37} strokeWidth={1.35} /></div><span>DEMAND<br />ENGINE</span></div>
-            <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={19} /></div><div><span className="mini-label">THE OUTCOME</span><strong>Connected growth</strong><small>Discover → Convert → Learn</small></div></div><span className="visual-caption">A system, not a silo.</span>
+          <div className="hero-visual river-field"
+            role="img"
+            aria-label="Interactive flowing lines representing strategy, discovery and connected growth."
+            style={{ '--pointer-x': `${pointer.x}px`, '--pointer-y': `${pointer.y}px`, '--pointer-x-reverse': `${-pointer.x}px`, '--pointer-y-reverse': `${-pointer.y}px` }}
+            onPointerMove={(event) => {
+              if (event.pointerType === 'touch') return;
+              const bounds = event.currentTarget.getBoundingClientRect();
+              setPointer({ x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 30, y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 24 });
+            }}
+            onPointerLeave={() => setPointer({ x: 0, y: 0 })}
+          >
+            <div className="river-field-backdrop" /><div className="river-field-grid" />
+            <svg className="river-contours" viewBox="0 0 620 520" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="current-line" x1="72" y1="60" x2="548" y2="468" gradientUnits="userSpaceOnUse"><stop stopColor="#E0F79A" stopOpacity=".08" /><stop offset=".48" stopColor="#D7FB69" stopOpacity=".92" /><stop offset="1" stopColor="#9EBE79" stopOpacity=".18" /></linearGradient>
+                <radialGradient id="current-glow"><stop stopColor="#D7FB69" stopOpacity=".22" /><stop offset="1" stopColor="#D7FB69" stopOpacity="0" /></radialGradient>
+              </defs>
+              <ellipse className="current-halo" cx="326" cy="260" rx="220" ry="185" fill="url(#current-glow)" />
+              <g className="contour-group contour-back" stroke="#C7DAB6" strokeOpacity=".25" strokeWidth="1">
+                <path d="M-40 92C92 15 151 135 255 103S414 10 660 74" /><path d="M-35 120C92 42 158 159 260 130S421 39 657 101" /><path d="M-35 150C91 73 165 187 266 159S428 67 657 130" /><path d="M-35 181C90 104 171 215 273 188S436 97 657 160" /><path d="M-40 212C87 136 178 245 279 218S444 127 660 190" />
+              </g>
+              <g className="contour-group contour-front" stroke="url(#current-line)" strokeWidth="1.5">
+                <path d="M-28 286C93 218 146 312 247 278S424 185 650 245" /><path d="M-30 316C91 249 151 340 251 309S430 216 650 276" /><path d="M-32 348C91 279 157 370 257 340S437 246 652 307" /><path d="M-34 379C89 310 163 401 263 371S444 277 654 338" /><path d="M-36 411C88 341 169 432 270 402S450 308 656 369" /><path d="M-38 443C86 372 175 464 276 433S457 339 658 401" />
+              </g>
+              <g className="current-nodes" fill="#D7FB69"><circle cx="144" cy="173" r="3" /><circle cx="255" cy="130" r="2.5" /><circle cx="418" cy="224" r="3" /><circle cx="487" cy="351" r="2.5" /><circle cx="272" cy="402" r="3" /></g>
+              <path className="current-thread" d="M85 375C169 333 192 214 296 234S406 335 523 149" stroke="#D7FB69" strokeWidth="1.4" strokeLinecap="round" strokeDasharray="3 8" />
+            </svg>
+            <div className="river-coordinate coordinate-one"><span>01</span> SIGNAL</div><div className="river-coordinate coordinate-two"><span>02</span> DIRECTION</div><div className="river-coordinate coordinate-three"><span>03</span> MOMENTUM</div>
+            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> THE SIGNAL</span><div className="signal-bars">{Array.from({ length: 12 }, (_, i) => <i key={i} />)}</div><div className="signal-footer"><span>Insight into action</span><span className="signal-status">01 / 03</span></div></div>
+            <div className="visual-core"><div className="core-ring"><Target size={37} strokeWidth={1.35} /></div><span>STRATEGY<br />IN MOTION</span></div>
+            <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={19} /></div><div><span className="mini-label">THE SYSTEM</span><strong>Connected momentum</strong><small>Discover → Connect → Grow</small></div></div>
+            <span className="visual-caption">FLOW / FORM / FORCE</span>
           </div>
         </div>
         <div className="container hero-bottom"><span>BUILT AROUND YOUR BUSINESS GOALS</span><div className="hero-capabilities"><span><Check size={14} /> Strategy</span><span><Check size={14} /> Digital</span><span><Check size={14} /> Intelligence</span><span><Check size={14} /> Performance</span></div></div>
       </section>
       <section className="ticker" aria-label="River Ways capabilities"><div className="ticker-track"><span>DEMAND STRATEGY</span><b>✳</b><span>SEARCH VISIBILITY</span><b>✳</b><span>CONVERSION DESIGN</span><b>✳</b><span>DEMAND INTELLIGENCE</span><b>✳</b><span>MEASURABLE GROWTH</span><b>✳</b><span>DEMAND STRATEGY</span><b>✳</b><span>SEARCH VISIBILITY</span><b>✳</b><span>CONVERSION DESIGN</span><b>✳</b><span>DEMAND INTELLIGENCE</span><b>✳</b></div></section>
-      <section className="section problem-section" id="approach"><div className="container split-layout">
+      <section className="section problem-section reveal-section" id="approach" data-reveal><div className="container split-layout">
         <div className="section-intro"><Eyebrow>The challenge</Eyebrow><h2>More marketing activity doesn’t always mean <em>more demand.</em></h2></div>
         <div className="problem-copy"><p className="large-copy">A campaign here. A website there. Content without a clear path to conversion. Reports full of numbers that don’t explain what to do next.</p><p>When every channel works in isolation, opportunity leaks between discovery and decision. River Ways helps bring the pieces together—so each move has a purpose and each result can inform the next.</p><a className="text-link" href="#services">Explore the system <ArrowRight size={16} /></a></div>
       </div><div className="container principle-grid">
@@ -85,11 +123,11 @@ export default function App() {
         <article className="principle-card"><span className="principle-num">02 / CONNECTION</span><Globe2 size={24} /><h3>Make every channel connect.</h3><p>Build a joined-up path from first signal to meaningful customer action.</p></article>
         <article className="principle-card"><span className="principle-num">03 / LEARNING</span><BarChart3 size={24} /><h3>Improve what matters.</h3><p>Measure outcomes, learn from the evidence and invest with more intent.</p></article>
       </div></section>
-      <section className="section services-section" id="services"><div className="container">
+      <section className="section services-section reveal-section" id="services" data-reveal><div className="container">
         <div className="section-heading-row"><div><Eyebrow>What we do</Eyebrow><h2>One growth system.<br /><em>Connected capabilities.</em></h2></div><p>Choose the capability you need now. We design the work to connect with the bigger picture.</p></div>
         <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><img className="service-card-image" src={service.image} alt={service.imageAlt} loading="lazy" decoding="async" /><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href="#contact" className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
       </div></section>
-      <section className="intelligence-section section-dark" id="intelligence"><div className="container intelligence-layout">
+      <section className="intelligence-section section-dark reveal-section" id="intelligence" data-reveal><div className="container intelligence-layout">
         <div className="intelligence-copy"><Eyebrow light>Demand Intelligence</Eyebrow><h2>Meet your market<br />at the <em>moment of intent.</em></h2><p>People leave clues when they’re comparing options, asking for recommendations or describing a problem your business solves. A thoughtful listening system helps you find those signals, understand context and respond usefully.</p>
           <div className="intelligence-points"><span><Check size={16} /> Global-ready source strategy</span><span><Check size={16} /> Context-aware qualification</span><span><Check size={16} /> Human-led follow-up</span></div><a className="button button-lime" href="#contact">Discuss a listening system <ArrowRight size={17} /></a><p className="small-disclaimer">Actual coverage depends on source access, platform policies, language and available integrations.</p>
         </div>
@@ -99,12 +137,12 @@ export default function App() {
           <div className="flow-rail">{steps.map((step,index) => <span key={step.label} className={index<=activeStep?'rail-node rail-active':'rail-node'} />)}</div><div className="panel-footer"><span>Signal → context → action</span><Zap size={15} /></div>
         </div>
       </div></section>
-      <section className="section method-section" id="about"><div className="container"><div className="method-heading"><Eyebrow>How we work</Eyebrow><h2>Less guesswork.<br /><em>More intentional growth.</em></h2><p>A practical loop built to help your business move from scattered activity to a system that gets smarter.</p></div>
+      <section className="section method-section reveal-section" id="about" data-reveal><div className="container"><div className="method-heading"><Eyebrow>How we work</Eyebrow><h2>Less guesswork.<br /><em>More intentional growth.</em></h2><p>A practical loop built to help your business move from scattered activity to a system that gets smarter.</p></div>
         <div className="method-steps"><article><span>01</span><div><h3>Diagnose</h3><p>Understand your market, offer, customer journey and current bottlenecks.</p></div><ArrowUpRight size={19} /></article><article><span>02</span><div><h3>Engineer</h3><p>Build a connected strategy across channels, content, conversion and measurement.</p></div><ArrowUpRight size={19} /></article><article><span>03</span><div><h3>Activate</h3><p>Launch focused initiatives with clear owners, useful signals and defined goals.</p></div><ArrowUpRight size={19} /></article><article><span>04</span><div><h3>Improve</h3><p>Review the evidence, remove friction and reinvest in what moves the objective.</p></div><ArrowUpRight size={19} /></article></div>
       </div></section>
-      <section className="belief-section"><div className="container belief-layout"><div className="belief-mark"><span className="brand-mark"><span /><span /><span /></span><span>R / PRINCIPLE</span></div><blockquote>“The goal isn’t to do more marketing. It’s to engineer a better path from <em>attention to action.</em>”</blockquote><p>River Ways — strategy and systems for purposeful growth.</p></div></section>
-      <section className="section faq-section"><div className="container faq-layout"><div><Eyebrow>Good questions</Eyebrow><h2>Before we<br /><em>get to work.</em></h2><p>Clear expectations make better partnerships.</p></div><div className="faq-list">{faqs.map((faq,index) => <details className="faq-item" key={faq.q} open={index===0}><summary>{faq.q}<ChevronDown size={18} /></summary><p>{faq.a}</p></details>)}</div></div></section>
-      <section className="contact-section section-dark" id="contact"><div className="container contact-layout">
+      <section className="belief-section reveal-section" data-reveal><div className="container belief-layout"><div className="belief-mark"><span className="brand-mark"><span /><span /><span /></span><span>R / PRINCIPLE</span></div><blockquote>“The goal isn’t to do more marketing. It’s to engineer a better path from <em>attention to action.</em>”</blockquote><p>River Ways — strategy and systems for purposeful growth.</p></div></section>
+      <section className="section faq-section reveal-section" data-reveal><div className="container faq-layout"><div><Eyebrow>Good questions</Eyebrow><h2>Before we<br /><em>get to work.</em></h2><p>Clear expectations make better partnerships.</p></div><div className="faq-list">{faqs.map((faq,index) => <details className="faq-item" key={faq.q} open={index===0}><summary>{faq.q}<ChevronDown size={18} /></summary><p>{faq.a}</p></details>)}</div></div></section>
+      <section className="contact-section section-dark reveal-section" id="contact" data-reveal><div className="container contact-layout">
         <div className="contact-copy"><Eyebrow light>Start a conversation</Eyebrow><h2>Let’s engineer<br />your next <em>move.</em></h2><p>Tell us what you’re working toward. We’ll use the context to start a more useful conversation about what needs to happen next.</p><div className="contact-promise"><span><Check size={16} /> No generic pitch deck</span><span><Check size={16} /> Start with your actual challenge</span><span><Check size={16} /> Clear next steps</span></div></div>
         <form className="contact-form" onSubmit={submitBrief} noValidate><div className="form-heading"><span>YOUR PROJECT BRIEF</span><span>01 / 01</span></div>
           <div className="form-row"><label>Your name<input name="name" autoComplete="name" value={form.name} onChange={updateForm} placeholder="Name" required /></label><label>Work email<input name="email" type="email" autoComplete="email" value={form.email} onChange={updateForm} placeholder="you@company.com" required /></label></div>
