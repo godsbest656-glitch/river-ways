@@ -33,6 +33,7 @@ function Eyebrow({ children, light = false }) {
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const [activeCurrent, setActiveCurrent] = useState(1);
   const [form, setForm] = useState({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '' });
   const [formError, setFormError] = useState('');
   const updateForm = (event) => setForm({ ...form, [event.target.name]: event.target.value });
@@ -77,49 +78,47 @@ export default function App() {
             <div className="hero-actions"><a className="button button-lime" href="#contact">Build your growth system <ArrowRight size={17} /></a><a className="text-link text-link-light" href="#approach">See how we work <ArrowDownRight size={17} /></a></div>
             <div className="hero-note"><span className="note-line" /> Strategy-led. Signal-informed. Outcome-focused.</div>
           </div>
-          <div className="hero-visual river-field"
-            role="img"
-            aria-label="Interactive flowing lines representing strategy, discovery and connected growth."
+          <div className="hero-visual river-card-current"
+            aria-label="Interactive River Ways current. Select a card to explore how signals become momentum."
             onPointerMove={(event) => {
-              if (event.pointerType === 'touch') return;
+              if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
               const bounds = event.currentTarget.getBoundingClientRect();
-              const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 30;
-              const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 24;
+              const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+              const y = (event.clientY - bounds.top) / bounds.height - 0.5;
               const style = event.currentTarget.style;
-              style.setProperty('--pointer-x', `${x}px`);
-              style.setProperty('--pointer-y', `${y}px`);
-              style.setProperty('--pointer-x-reverse', `${-x}px`);
-              style.setProperty('--pointer-y-reverse', `${-y}px`);
+              style.setProperty('--pointer-x', (x * 22).toFixed(2) + 'px');
+              style.setProperty('--pointer-y', (y * 18).toFixed(2) + 'px');
+              style.setProperty('--pointer-rotate', (x * 2.2).toFixed(2) + 'deg');
             }}
             onPointerLeave={(event) => {
               const style = event.currentTarget.style;
               style.setProperty('--pointer-x', '0px');
               style.setProperty('--pointer-y', '0px');
-              style.setProperty('--pointer-x-reverse', '0px');
-              style.setProperty('--pointer-y-reverse', '0px');
+              style.setProperty('--pointer-rotate', '0deg');
             }}
           >
-            <div className="river-field-backdrop" /><div className="river-field-grid" />
-            <svg className="river-contours" viewBox="0 0 620 520" fill="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="current-line" x1="72" y1="60" x2="548" y2="468" gradientUnits="userSpaceOnUse"><stop stopColor="#E8B76D" stopOpacity=".08" /><stop offset=".48" stopColor="#D07A53" stopOpacity=".92" /><stop offset="1" stopColor="#E8B76D" stopOpacity=".18" /></linearGradient>
-                <radialGradient id="current-glow"><stop stopColor="#D07A53" stopOpacity=".22" /><stop offset="1" stopColor="#D07A53" stopOpacity="0" /></radialGradient>
-              </defs>
-              <ellipse className="current-halo" cx="326" cy="260" rx="220" ry="185" fill="url(#current-glow)" />
-              <g className="contour-group contour-back" stroke="#E8CDB8" strokeOpacity=".25" strokeWidth="1">
-                <path d="M-40 92C92 15 151 135 255 103S414 10 660 74" /><path d="M-35 120C92 42 158 159 260 130S421 39 657 101" /><path d="M-35 150C91 73 165 187 266 159S428 67 657 130" /><path d="M-35 181C90 104 171 215 273 188S436 97 657 160" /><path d="M-40 212C87 136 178 245 279 218S444 127 660 190" />
-              </g>
-              <g className="contour-group contour-front" stroke="url(#current-line)" strokeWidth="1.5">
-                <path d="M-28 286C93 218 146 312 247 278S424 185 650 245" /><path d="M-30 316C91 249 151 340 251 309S430 216 650 276" /><path d="M-32 348C91 279 157 370 257 340S437 246 652 307" /><path d="M-34 379C89 310 163 401 263 371S444 277 654 338" /><path d="M-36 411C88 341 169 432 270 402S450 308 656 369" /><path d="M-38 443C86 372 175 464 276 433S457 339 658 401" />
-              </g>
-              <g className="current-nodes" fill="#D07A53"><circle cx="144" cy="173" r="3" /><circle cx="255" cy="130" r="2.5" /><circle cx="418" cy="224" r="3" /><circle cx="487" cy="351" r="2.5" /><circle cx="272" cy="402" r="3" /></g>
-              <path className="current-thread" d="M85 375C169 333 192 214 296 234S406 335 523 149" stroke="#D07A53" strokeWidth="1.4" strokeLinecap="round" strokeDasharray="3 8" />
-            </svg>
-            <div className="river-coordinate coordinate-one"><span>01</span> SIGNAL</div><div className="river-coordinate coordinate-two"><span>02</span> DIRECTION</div><div className="river-coordinate coordinate-three"><span>03</span> MOMENTUM</div>
-            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> THE SIGNAL</span><div className="signal-bars">{Array.from({ length: 12 }, (_, i) => <i key={i} />)}</div><div className="signal-footer"><span>Insight into action</span><span className="signal-status">01 / 03</span></div></div>
-            <div className="visual-core"><div className="core-ring"><Target size={37} strokeWidth={1.35} /></div><span>STRATEGY<br />IN MOTION</span></div>
-            <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={19} /></div><div><span className="mini-label">THE SYSTEM</span><strong>Connected momentum</strong><small>Discover → Connect → Grow</small></div></div>
-            <span className="visual-caption">FLOW / FORM / FORCE</span>
+            <div className="current-field-lines" aria-hidden="true">
+              <svg viewBox="0 0 620 500" preserveAspectRatio="none">
+                <defs><linearGradient id="rw-current-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#E8B76D" stopOpacity=".08"/><stop offset=".52" stopColor="#D07A53" stopOpacity=".9"/><stop offset="1" stopColor="#E8B76D" stopOpacity=".15"/></linearGradient></defs>
+                {Array.from({ length: 13 }, (_, i) => <path key={i} d={`M-35 ${42 + i * 31} C 75 ${-10 + i * 30}, 150 ${100 + i * 21}, 260 ${145 + i * 17} S 445 ${20 + i * 28}, 655 ${80 + i * 29}`} stroke={i > 4 && i < 9 ? 'url(#rw-current-gradient)' : '#F3EDE3'} strokeOpacity={i > 4 && i < 9 ? .85 : .18} strokeWidth={i > 4 && i < 9 ? 1.4 : .8} fill="none"/> )}
+              </svg>
+            </div>
+            <div className="current-field-meta"><span>RW / FIELD STUDY 001</span><span>MOVE THROUGH THE CURRENT <i /></span></div>
+            <div className="current-card-stream">
+              <button type="button" className={'current-card current-card-signal ' + (activeCurrent === 0 ? 'is-current' : '')} onPointerEnter={() => setActiveCurrent(0)} onFocus={() => setActiveCurrent(0)} onClick={() => setActiveCurrent(0)} aria-pressed={activeCurrent === 0}>
+                <span className="current-card-index">01 <span> / SIGNAL</span></span><span className="current-card-symbol signal-symbol" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/></span><span className="current-card-title">Find the signal.</span><span className="current-card-note">Notice what others miss.</span><span className="current-card-arrow"><ArrowUpRight size={15}/></span>
+              </button>
+              <button type="button" className={'current-card current-card-connect ' + (activeCurrent === 1 ? 'is-current' : '')} onPointerEnter={() => setActiveCurrent(1)} onFocus={() => setActiveCurrent(1)} onClick={() => setActiveCurrent(1)} aria-pressed={activeCurrent === 1}>
+                <span className="current-card-index">02 <span> / CONNECTION</span></span><span className="current-card-symbol connect-symbol" aria-hidden="true"><i/><i/><i/><i/><i/></span><span className="current-card-title">Connect the pieces.</span><span className="current-card-note">Make every move matter.</span><span className="current-card-arrow"><ArrowUpRight size={15}/></span>
+              </button>
+              <button type="button" className={'current-card current-card-direction ' + (activeCurrent === 2 ? 'is-current' : '')} onPointerEnter={() => setActiveCurrent(2)} onFocus={() => setActiveCurrent(2)} onClick={() => setActiveCurrent(2)} aria-pressed={activeCurrent === 2}>
+                <span className="current-card-index">03 <span> / DIRECTION</span></span><span className="current-card-symbol direction-symbol" aria-hidden="true"><i/><i/><i/></span><span className="current-card-title">Shape the route.</span><span className="current-card-note">Turn intent into action.</span><span className="current-card-arrow"><ArrowUpRight size={15}/></span>
+              </button>
+              <button type="button" className={'current-card current-card-momentum ' + (activeCurrent === 3 ? 'is-current' : '')} onPointerEnter={() => setActiveCurrent(3)} onFocus={() => setActiveCurrent(3)} onClick={() => setActiveCurrent(3)} aria-pressed={activeCurrent === 3}>
+                <span className="current-card-index">04 <span> / MOMENTUM</span></span><span className="current-card-symbol momentum-symbol" aria-hidden="true"><i/><i/><i/><i/></span><span className="current-card-title">Create momentum.</span><span className="current-card-note">Build a system that learns.</span><span className="current-card-arrow"><ArrowUpRight size={15}/></span>
+              </button>
+            </div>
+            <div className="current-field-footer"><span className="current-live-dot" /> <span>{['Read the environment','Connect the system','Choose a direction','Keep progress moving'][activeCurrent]}</span><span className="current-progress">{String(activeCurrent + 1).padStart(2, '0')} <i /> 04</span></div>
           </div>
         </div>
         <div className="container hero-bottom"><span>BUILT AROUND YOUR BUSINESS GOALS</span><div className="hero-capabilities"><span><Check size={14} /> Strategy</span><span><Check size={14} /> Digital</span><span><Check size={14} /> Intelligence</span><span><Check size={14} /> Performance</span></div></div>
