@@ -60,6 +60,8 @@ export default function App() {
         const viewport = window.innerHeight || 1;
         const progress = Math.max(-1, Math.min(1, (viewport * 0.72 - bounds.top) / (viewport + bounds.height)));
         field.style.setProperty('--scroll-flow', progress.toFixed(3));
+        field.style.setProperty('--scroll-y', (progress * 13).toFixed(2) + 'px');
+        field.style.setProperty('--scroll-y-reverse', (progress * -10).toFixed(2) + 'px');
       });
     };
     updateFlow();
