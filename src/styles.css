@@ -49,3 +49,45 @@ body,button,input,textarea,select{font-family:'Manrope',sans-serif}
 .service-card-image{filter:saturate(.65) sepia(.08)}.service-card:hover .service-card-image{filter:saturate(.88)}
 @media(max-width:760px){.main-nav{background:#F3EDE3;border-bottom-color:#d9cec0}.principle-grid{border:0;gap:10px}.principle-card{border:1px solid var(--line);background:#F7F2EA}.principle-card:last-child{border-right:1px solid var(--line)}.hero-visual{margin-inline:-5px}}
 @media(prefers-reduced-motion:reduce){.hero-copy,.hero-visual,.step-detail{animation:none!important}[data-reveal]{opacity:1!important;transform:none!important}}
+
+
+/* Hero field study — pathways converge into a legible growth system */
+.river-field{isolation:isolate;min-height:450px;overflow:hidden;border:1px solid rgba(243,237,227,.12);background:#252522!important}
+.river-field-backdrop{inset:0;background:radial-gradient(ellipse at 51% 49%,rgba(208,122,83,.2),transparent 37%),linear-gradient(145deg,rgba(243,237,227,.025),transparent 54%)!important}
+.river-field-grid{opacity:.08;background-size:24px 24px}
+.river-contours{inset:0;width:100%;height:100%;opacity:.98}
+.field-index{position:absolute;z-index:3;top:17px;left:18px;right:18px;display:flex;justify-content:space-between;gap:10px;font-size:7px;letter-spacing:1.45px;color:rgba(243,237,227,.62)}
+.field-index>span:last-child{display:flex;align-items:center;gap:7px}
+.field-index i{display:inline-block;width:5px;height:5px;border-radius:50%;background:#D07A53;box-shadow:0 0 0 3px rgba(208,122,83,.14)}
+.field-frame{opacity:.6}
+.field-routes .route{stroke-dasharray:4 8;animation:route-drift 24s linear infinite;filter:drop-shadow(0 0 2px rgba(208,122,83,.14))}
+.field-routes .route-two{animation-duration:30s;animation-direction:reverse}
+.field-routes .route-three{animation-duration:19s}
+.field-routes .route-four{animation-duration:27s;animation-direction:reverse}
+.field-routes .route-five{animation-duration:34s}
+.field-routes .route-six{animation-duration:22s}
+.field-orbit{animation:orbit-turn 34s linear infinite;transform-origin:313px 258px}
+.field-geometry{filter:drop-shadow(0 0 10px rgba(208,122,83,.12))}
+.field-ticks{opacity:.7}
+.current-nodes circle{filter:drop-shadow(0 0 5px rgba(232,183,109,.45))}
+.current-nodes circle:nth-child(odd){animation:node-pulse 3.6s ease-in-out infinite}
+.current-nodes circle:nth-child(even){animation:node-pulse 4.6s ease-in-out -1.5s infinite}
+.river-field .visual-core{width:126px;height:126px;border:0;background:transparent!important;box-shadow:none!important;gap:7px;transform:translate3d(var(--pointer-x),var(--pointer-y),0);transition:transform .22s ease}
+.core-kicker{font-size:7px;letter-spacing:1.25px;color:#E8B76D;white-space:nowrap}
+.river-field .core-ring{width:43px;height:43px;border:1px solid rgba(232,183,109,.7);border-radius:0;transform:rotate(45deg);color:#E8B76D;background:rgba(32,32,29,.9)}
+.river-field .core-ring svg{transform:rotate(-45deg)}
+.core-title{font-size:8px;line-height:1.5;letter-spacing:1.3px;color:#F3EDE3;text-align:center}
+.river-field .visual-card{box-shadow:0 12px 32px rgba(0,0,0,.18);border:1px solid rgba(32,32,29,.16)}
+.river-field .visual-card-top{top:56px;right:17px;width:190px;padding:12px 14px;transform:translate3d(var(--pointer-x-reverse),var(--pointer-y-reverse),0);transition:transform .3s ease}
+.river-field .visual-card-bottom{left:17px;bottom:35px;padding:12px 14px;transform:translate3d(var(--pointer-x),var(--pointer-y-reverse),0);transition:transform .3s ease}
+.river-field .signal-bars{height:32px;padding:4px 0}
+.river-field .visual-caption{right:17px;bottom:13px;font-size:7px;letter-spacing:1.5px;color:rgba(243,237,227,.72)}
+.river-field .river-coordinate{font-size:7px;letter-spacing:1.3px}
+.coordinate-one{left:8%;top:31%}.coordinate-two{right:7%;top:48%}.coordinate-three{left:15%;bottom:18%}
+@keyframes route-drift{to{stroke-dashoffset:-240}}
+@keyframes orbit-turn{to{transform:rotate(360deg)}}
+@media(max-width:1000px){.river-field .visual-card-top{right:10px}.river-field .visual-card-bottom{left:10px}.field-index{left:12px;right:12px;font-size:6px}}
+@media(max-width:760px){.river-field{min-height:390px}.river-field .visual-core{width:112px;height:112px}.river-field .visual-card-top{top:46px;right:8px;width:166px;padding:10px}.river-field .visual-card-bottom{left:8px;bottom:24px;padding:10px;max-width:205px}.field-index{top:12px;left:10px;right:10px;font-size:5.5px;letter-spacing:1px}.river-contours{inset:0;width:100%;height:100%}.coordinate-one{left:5%;top:34%}.coordinate-two{right:3%;top:50%}.coordinate-three{left:8%;bottom:14%}.river-field .visual-caption{right:9px;bottom:7px;font-size:6px}}
+@media(max-width:390px){.river-field .visual-card-top{width:152px}.river-field .visual-card-bottom{max-width:184px}.river-field .visual-card-bottom strong{font-size:10px}.river-field .visual-card-bottom small{font-size:8px}.river-field .visual-core{width:100px;height:100px}.core-kicker{font-size:6px}}
+@media(hover:none){.river-field .visual-core,.river-field .visual-card-top,.river-field .visual-card-bottom{transform:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){.field-routes .route,.field-orbit,.current-nodes circle{animation:none!important}.field-orbit{transform:none}.river-field .visual-core,.river-field .visual-card-top,.river-field .visual-card-bottom{transform:none!important;transition:none!important}}
