@@ -111,15 +111,24 @@ export default function App() {
               const x = (event.clientX - bounds.left) / bounds.width - 0.5;
               const y = (event.clientY - bounds.top) / bounds.height - 0.5;
               const style = event.currentTarget.style;
-              style.setProperty('--pointer-x', (x * 22).toFixed(2) + 'px');
-              style.setProperty('--pointer-y', (y * 18).toFixed(2) + 'px');
-              style.setProperty('--pointer-rotate', (x * 2.2).toFixed(2) + 'deg');
+              style.setProperty('--pointer-x', (x * 12).toFixed(2) + 'px');
+              style.setProperty('--pointer-y', (y * 10).toFixed(2) + 'px');
+              style.setProperty('--pointer-rotate', (x * 1.2).toFixed(2) + 'deg');
+              const waveFactors = [-0.65, 0.85, -0.9, 0.55];
+              event.currentTarget.querySelectorAll('.current-card').forEach((card, index) => {
+                card.style.setProperty('--card-pointer-x', (x * 18 * waveFactors[index]).toFixed(2) + 'px');
+                card.style.setProperty('--card-pointer-y', (y * 14 * waveFactors[index]).toFixed(2) + 'px');
+              });
             }}
             onPointerLeave={(event) => {
               const style = event.currentTarget.style;
               style.setProperty('--pointer-x', '0px');
               style.setProperty('--pointer-y', '0px');
               style.setProperty('--pointer-rotate', '0deg');
+              event.currentTarget.querySelectorAll('.current-card').forEach((card) => {
+                card.style.setProperty('--card-pointer-x', '0px');
+                card.style.setProperty('--card-pointer-y', '0px');
+              });
             }}
           >
             <div className="current-field-lines" aria-hidden="true">
