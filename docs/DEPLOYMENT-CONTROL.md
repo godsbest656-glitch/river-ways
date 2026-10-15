@@ -29,8 +29,9 @@ Do not treat a local branch, an old Worker deployment, or a preview URL as produ
 
 In repository Settings:
 
-- Create a GitHub Actions environment named `production`.
-- Add environment secrets `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. The token should be scoped to the correct account and Pages deployment permissions only. Never put credentials in source code, workflow logs, issues or chat.
+- Create GitHub Actions environments named `preview` and `production`.
+- Add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to both environments. The token should be scoped to the correct account and Pages deployment permissions only. Never put credentials in source code, workflow logs, issues or chat.
+- The `River Ways preview deployment` workflow deploys each same-repository PR to `https://pr-<number>.riverwayse-website.pages.dev/` and checks that its release marker matches the exact PR commit. A missing or invalid Cloudflare token must fail the preview gate.
 - Add a required reviewer to the `production` environment if approval gating is available for this repository plan.
 - Protect `main`: require pull requests and the `River Ways checks / build-and-api-tests` check; block direct pushes and force pushes where repository settings permit.
 - Confirm the Cloudflare Pages project is `riverwayse-website`, production branch is `main`, and the production domain is attached to this Pages project. Resolve any overlapping Worker route before declaring the custom domain live.
