@@ -85,6 +85,17 @@ jobs:
           echo "::error::Pages hostname did not serve the exact release SHA."
           exit 1
 
+      - name: Verify production domain serves this exact commit
+        run: |
+          set -euo pipefail
+          url="https://riverwayse.com/"
+          html="$(curl --fail --silent --show-error "$url")"
+          if ! printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"$GITHUB_SHA\""; then
+            echo "::error::riverwayse.com does not serve the deployed release SHA. Check domain attachment and overlapping Worker routes."
+            exit 1
+          fi
+          echo "Production domain serves release $GITHUB_SHA"
+
       - name: Verify production enquiry route and minimum configuration
         run: |
           set -euo pipefail
@@ -96,13 +107,3 @@ jobs:
             exit 1
           fi
           echo "Production enquiry route is deployed and its minimum configuration checks passed."
-      - name: Verify production domain serves this exact commit
-        run: |
-          set -euo pipefail
-          url="https://riverwayse.com/"
-          html="$(curl --fail --silent --show-error "$url")"
-          if ! printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"$GITHUB_SHA\""; then
-            echo "::error::riverwayse.com does not serve the deployed release SHA. Check domain attachment and overlapping Worker routes."
-            exit 1
-          fi
-          echo "Production domain serves release $GITHUB_SHA"
