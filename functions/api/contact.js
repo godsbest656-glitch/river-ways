@@ -84,6 +84,10 @@ export async function onRequestPost({ request, env }) {
     return json(400, { ok: false, message: "We couldn't read that submission. Please review the form and try again." });
   }
 
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return json(400, { ok: false, message: "We couldn't read that submission. Please review the form and try again." });
+  }
+
   // Quietly discard automated submissions caught by the honeypot.
   if (clean(payload.website, 200)) return json(202, { ok: true, message: "Thank you. Your enquiry has been received." });
 
