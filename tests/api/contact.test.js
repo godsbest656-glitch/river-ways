@@ -91,6 +91,22 @@ test("a changed brief creates a distinct lead", async () => {
   assert.equal(db.leads.length, 2);
 });
 
+test("quietly discards honeypot submissions without storing them", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({ request: request({ name: "Bot", email: "bot@example.com", goal: "Growth", website: "https://spam.example" }), env: envFor(db) });
+  assert.equal(response.status, 202);
+  assert.equal(db.leads.length, 0);
+});
+
+test("rejects JSON values that are not form objects", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: "null" }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 400);
+});
+
 test("returns a safe service error when required configuration is missing", async () => {
   const response = await onRequestPost({ request: request({ name: "Ada Example", email: "ada@example.com", goal: "Growth" }), env: {} });
   assert.equal(response.status, 503);
