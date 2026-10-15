@@ -140,3 +140,43 @@ test("returns a safe service error when required configuration is missing", asyn
   assert.equal(response.status, 503);
   assert.equal((await response.json()).ok, false);
 });
+
+test("rejects an oversized request body before parsing", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json", "CF-Connecting-IP": "192.0.2.11" },
+      body: JSON.stringify({ name: "Ada Example", email: "ada@example.com", goal: "Growth", details: "x".repeat(13000) })
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 413);
+  assert.equal(db.leads.length, 0);
+});
+
+test("rejects control characters in contact fields", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: request({ name: "Ada\\nExample", email: "ada@example.com", goal: "Growth" }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 422);
+  assert.equal(db.leads.length, 0);
+});
+
+test("does not claim notification success when the email provider fails", async () => {
+  const db = makeDb();
+  globalThis.fetch = async () => new Response(JSON.stringify({ message: "provider unavailable" }), { status: 503 });
+  const response = await onRequestPost({
+    request: request({ name: "Ada Example", email: "ada@example.com", goal: "Growth", details: "Email failure test" }),
+    env: envFor(db)
+  });
+  const body = await response.json();
+  assert.equal(response.status, 503);
+  assert.equal(body.ok, false);
+  assert.equal(body.saved, true);
+  assert.equal(db.leads.length, 1);
+  assert.equal(db.leads[0].notification_status, "failed");
+});
+
