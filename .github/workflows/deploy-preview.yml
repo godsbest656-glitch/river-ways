@@ -1,0 +1,101 @@
+name: River Ways preview deployment
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: river-ways-preview-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: preview
+    steps:
+      - name: Check out the exact pull request commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build website
+        run: npm run build
+
+      - name: Test enquiry API
+        run: npm run test:api
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Stamp preview with exact source commit
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const path = 'dist/index.html';
+          const html = readFileSync(path, 'utf8');
+          if (!html.includes('name="river-ways-release"')) {
+            throw new Error('Release marker missing from dist/index.html; refusing preview deployment.');
+          }
+          writeFileSync(path, html.replace(/(<meta name="river-ways-release" content=")[^"]*(")/, `$1${process.env.RELEASE_SHA}$2`));
+          NODE
+        env:
+          RELEASE_SHA: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify preview credentials are present
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "::error::Missing preview environment secret CLOUDFLARE_ACCOUNT_ID" && exit 1)
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "::error::Missing preview environment secret CLOUDFLARE_API_TOKEN" && exit 1)
+
+      - name: Deploy preview to Cloudflare Pages
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name=riverwayse-website --branch="pr-${{ github.event.pull_request.number }}" --commit-hash="${{ github.event.pull_request.head.sha }}" --commit-message="Preview-PR-${{ github.event.pull_request.number }}"
+
+      - name: Verify preview serves this exact commit
+        env:
+          RELEASE_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          url="https://pr-${PR_NUMBER}.riverwayse-website.pages.dev/"
+          for attempt in $(seq 1 12); do
+            html="$(curl --fail --silent "$url" || true)"
+            if printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"${RELEASE_SHA}\""; then
+              echo "Preview serves release ${RELEASE_SHA}: $url"
+              exit 0
+            fi
+            echo "Waiting for preview to serve ${RELEASE_SHA} (attempt $attempt/12)"
+            sleep 5
+          done
+          echo "::error::Preview did not serve the exact PR commit. Check Pages project settings and routing."
+          exit 1
+
+      - name: Verify preview enquiry route and minimum configuration
+        run: |
+          set -euo pipefail
+          url="https://pr-${{ github.event.pull_request.number }}.riverwayse-website.pages.dev/api/contact"
+          status="$(curl --silent --show-error -o /tmp/contact-probe.txt -w '%{http_code}' -X POST -H 'content-type: text/plain' --data 'deployment-probe-no-lead-data' "$url")"
+          if [ "$status" != "415" ]; then
+            echo "::error::Expected /api/contact to reject the probe with 415 after configuration checks; got HTTP $status. HTTP 503 usually means the preview LEADS_DB binding or RATE_LIMIT_SALT is missing."
+            cat /tmp/contact-probe.txt
+            exit 1
+          fi
+          echo "Preview enquiry route is deployed and its minimum configuration checks passed."

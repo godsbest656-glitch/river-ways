@@ -21,19 +21,24 @@ npm run preview
 - `src/App.jsx` — page sections and interactive components.
 - `src/styles.css` — responsive design system, animation and reduced-motion handling.
 - `index.html` — metadata, social sharing tags and Organization JSON-LD.
-- `public/robots.txt` and `public/sitemap.xml` — initial crawler files.
+- `public/robots.txt` and `public/sitemap.xml` — crawler files.
+- `functions/api/contact.js` — validated enquiry endpoint for Cloudflare Pages.
+- `migrations/0001_leads.sql` — lead storage and rate-limit tables.
+- `migrations/0002_lead_pipeline_attribution.sql` — pipeline stage and source attribution fields.
+- `tests/api/contact.test.js` — API validation, duplicate-submission, rate-limit and attribution tests.
+- `docs/ENQUIRY-OPERATIONS.md` — D1, Resend and controlled-verification runbook.
 - `netlify.toml` — SPA fallback and baseline response security headers.
 - `docs/ARCHITECTURE.md` — architecture and future integration plan.
 
 ## Before production launch
 
 1. Confirm the canonical production domain and update metadata, sitemap and robots directives if needed.
-2. Confirm the public contact email. The current enquiry form uses a `mailto:` draft as a no-backend fallback; it does not transmit data directly.
-3. Add a privacy notice and consent-aware analytics only after selecting relevant providers.
-4. Replace the mailto flow with a secured server-side form endpoint if direct submission, spam protection, storage or CRM integration is required.
+2. Confirm the public contact email. The enquiry form posts to a Cloudflare Pages Function at `/api/contact`. Before production use, configure the D1 binding and Resend variables documented in `docs/ENQUIRY-OPERATIONS.md` and verify a controlled submission.
+3. Review the privacy notice against actual data handling and applicable privacy obligations. No analytics or ad pixels are included in this implementation slice.
+4. Configure the server-side enquiry endpoint, D1 migration and Resend notification; follow `docs/ENQUIRY-OPERATIONS.md`.
 5. Test CSP and security headers on the actual hosting provider.
-6. Review all claims, service descriptions, imagery and brand details with Riverwayse.
-7. Run CI and accessibility/performance checks on the deployment preview.
+6. Review all claims, service descriptions, imagery and brand details with River Ways.
+7. Run `npm run build` and `npm run test:api`, then run browser accessibility/performance checks on the deployment preview.
 
 ## Current scope
 
