@@ -97,3 +97,120 @@ body,button,input,textarea,select{font-family:'Manrope',sans-serif}
 .form-success{margin:0;padding:12px 14px;border-left:3px solid #8bb34b;background:#edf4df;color:#25351d;font-size:13px;line-height:1.6}
 .form-submit:disabled{cursor:wait;opacity:.72;transform:none}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
+
+
+/* Editorial art direction inspired by curated high-craft web work.
+   Keep River Ways' own Shaped Current language; avoid generic neon-growth styling. */
+:root{
+  --ink:#25231f;
+  --forest:#20201d;
+  --lime:#D07A53;
+  --muted:#6f6a63;
+  --paper:#f3ede3;
+  --line:#ded3c5;
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+}
+body{background:var(--paper);color:var(--ink)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{
+  outline-color:#9f5728;
+}
+.site-header{background:rgba(243,237,227,.94);border-bottom-color:rgba(37,35,31,.12)}
+.brand{color:var(--ink);letter-spacing:-1.25px}
+.brand-mark{width:30px;height:30px;transform:none;color:#9f5728;flex-shrink:0}
+.brand-mark path{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.main-nav{color:#6f6a63}
+.main-nav>a:not(.nav-cta):hover{color:#9f5728}
+.nav-cta{background:#25231f;color:#f3ede3;border-radius:0}
+.nav-cta:hover{background:#9f5728}
+.hero{background:#20201d}
+.hero-atmosphere{
+  background:
+    radial-gradient(ellipse at 78% 42%,rgba(208,122,83,.18),transparent 42%),
+    linear-gradient(110deg,rgba(32,32,29,.99) 0%,rgba(32,32,29,.92) 49%,rgba(32,32,29,.58) 100%);
+}
+h1{letter-spacing:-3.4px}
+h1 span{font-family:'Newsreader',Georgia,serif;font-style:italic;font-weight:400;color:#E8B76D}
+h2{letter-spacing:-2.4px}
+h2 em,blockquote em{font-family:'Newsreader',Georgia,serif;font-weight:400;font-style:italic}
+.eyebrow-dot{background:#D07A53;box-shadow:0 0 0 4px rgba(208,122,83,.15)}
+.eyebrow-light{color:#c9b9a8}
+.button-lime{background:#D07A53;color:#20201d;border-radius:0}
+.button-lime:hover{background:#E8B76D}
+.text-link{border-color:#b6a89a}
+.text-link-light{color:#f3ede3;border-color:#766a5d}
+.hero-note{color:#c0b4a6}
+.note-line{background:#D07A53}
+.hero-bottom{border-top-color:rgba(243,237,227,.17);color:#b5a99b}
+.hero-capabilities svg{color:#E8B76D}
+.river-field{
+  border:1px solid rgba(232,183,109,.28);
+  border-radius:0!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.24);
+}
+.river-field-backdrop{
+  background:
+    radial-gradient(ellipse at 48% 47%,rgba(208,122,83,.19),transparent 48%),
+    linear-gradient(145deg,#292622 0%,#20201d 58%,#302923 100%);
+}
+.river-field-grid{
+  background-image:linear-gradient(rgba(243,237,227,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(243,237,227,.09) 1px,transparent 1px);
+}
+.river-field .visual-core{
+  border-color:rgba(232,183,109,.55);
+  background:radial-gradient(circle at 50% 35%,rgba(75,56,43,.96),rgba(32,32,29,.95) 73%);
+  box-shadow:0 0 0 12px rgba(232,183,109,.025),0 0 65px rgba(208,122,83,.12);
+}
+.river-field .core-ring{color:#E8B76D;border-color:#D07A53}
+.river-field .visual-card{background:rgba(39,36,31,.94);border-color:rgba(243,237,227,.2);border-radius:0}
+.river-field .live-dot{background:#E8B76D;box-shadow:0 0 9px rgba(232,183,109,.5)}
+.river-field .signal-bars i{background:linear-gradient(to top,#9f5728,#E8B76D)}
+.river-field .signal-status,.river-field .conversion-icon{color:#E8B76D}
+.river-field .conversion-icon{background:rgba(208,122,83,.14);border-radius:0}
+.river-coordinate span{color:#E8B76D}
+.ticker{background:#D07A53;color:#20201d}
+.problem-section,.faq-section{background:#f3ede3}
+.section-intro h2 em,.section-heading-row h2 em,.method-heading h2 em,.faq-layout h2 em{color:#9f5728}
+.principle-card{background:#f8f3eb;border-color:#ded3c5}
+.principle-card:hover{border-color:#b77a59}
+.principle-card>svg,.service-link svg{color:#9f5728}
+.principle-num{color:#8a6956}
+.services-section{background:#e9e0d4}
+.service-card{background:#f8f3eb;border-color:#ded3c5}
+.service-card:hover{border-color:#b77a59;box-shadow:0 22px 45px rgba(52,38,27,.09)}
+.service-icon{border-color:#dfcfc0;color:#9f5728;border-radius:0}
+.service-tags span{color:#704b36;border-color:#e0cdbd;border-radius:0}
+.service-link{border-top-color:#e6d9cc}
+.intelligence-section{background:radial-gradient(ellipse at 78% 45%,rgba(208,122,83,.15),transparent 45%),#20201d}
+.step-tab.active{border-color:#E8B76D}
+.step-tab.active span,.step-detail .mini-label,.step-symbol,.panel-footer svg{color:#E8B76D}
+.step-symbol{background:rgba(208,122,83,.14);border-radius:0}
+.rail-active{background:#D07A53}
+.method-steps article>span{color:#9f5728}
+.belief-section{background:#292622}
+.belief-section:after{background:linear-gradient(90deg,rgba(32,32,29,.97),rgba(32,32,29,.76))}
+.belief-layout blockquote em{color:#E8B76D}
+.contact-section{background:radial-gradient(ellipse at 5% 90%,rgba(208,122,83,.13),transparent 42%),#20201d}
+.contact-copy h2 em{color:#E8B76D}
+.contact-promise svg{color:#E8B76D}
+.contact-form{border-radius:0;background:#f8f3eb}
+.contact-form input,.contact-form select,.contact-form textarea{border-radius:0;border-color:#ded3c5}
+.form-submit{background:#D07A53}
+.site-footer{background:#171715}
+.back-top:hover,.footer-bottom a:hover{color:#E8B76D}
+/* Give service imagery an editorial crop and make the card feel tactile, not templated. */
+.service-card{position:relative}
+.service-card-image{height:184px;filter:saturate(.82) contrast(1.02);transform:scale(1.001)}
+.service-card:hover .service-card-image{transform:scale(1.045);filter:saturate(1) contrast(1.02)}
+.service-card-top{margin-top:22px}
+.service-card h3{font-size:clamp(18px,1.5vw,21px);line-height:1.2}
+.service-card>p{font-size:13px;line-height:1.75}
+.service-link{padding-top:17px}
+@media(max-width:760px){
+  h1{letter-spacing:-2.4px}
+  .service-card-image{height:205px}
+  .river-field{border-radius:0!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .service-card:hover .service-card-image{transform:none}
+  .ticker-track{animation:none}
+}
