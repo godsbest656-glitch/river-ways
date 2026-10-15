@@ -48,6 +48,14 @@ function request(body) {
   });
 }
 
+const originalFetch = globalThis.fetch;
+test.beforeEach(() => {
+  globalThis.fetch = async () => new Response(JSON.stringify({ id: "email_test" }), { status: 200 });
+});
+test.afterEach(() => {
+  globalThis.fetch = originalFetch;
+});
+
 const envFor = (db) => ({
   LEADS_DB: db,
   RATE_LIMIT_SALT: "a".repeat(40),
