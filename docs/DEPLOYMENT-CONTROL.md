@@ -23,7 +23,8 @@ Do not treat a local branch, an old Worker deployment, or a preview URL as produ
 5. Confirm the change is ready, then merge the PR into `main`. Do not merge around failed checks.
 6. The production workflow runs against the merged `main` commit, repeats build/tests/audit, deploys to Cloudflare Pages, and checks the deployment.
 7. Verify the stable Pages hostname and the custom domain both serve the exact release SHA. If the Pages hostname is current but the custom domain is stale, mark the release **deployment incomplete** and fix routing; do not call it launched.
-8. For changes to the enquiry system, complete the controlled end-to-end test in `docs/ENQUIRY-OPERATIONS.md`: D1 row, deduplication, notification delivery to the accessible inbox, and failure handling. Never use a real prospect's data as a test.
+8. Deployment workflows send a non-persisting invalid-content-type probe to `/api/contact`. It must return HTTP 415, proving the Pages Function is routed and the D1 binding plus `RATE_LIMIT_SALT` checks pass; a 503 blocks release completion.
+9. For changes to the enquiry system, complete the controlled end-to-end test in `docs/ENQUIRY-OPERATIONS.md`: D1 row, deduplication, notification delivery to the accessible inbox, and failure handling. Never use a real prospect's data as a test.
 
 ## GitHub configuration required once
 
