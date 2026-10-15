@@ -24,7 +24,9 @@ npm run preview
 - `public/robots.txt` and `public/sitemap.xml` — crawler files.
 - `functions/api/contact.js` — validated enquiry endpoint for Cloudflare Pages.
 - `migrations/0001_leads.sql` — lead storage and rate-limit tables.
-- `tests/api/contact.test.js` — API validation and duplicate-submission tests.
+- `migrations/0002_lead_pipeline_attribution.sql` — pipeline stage and source attribution fields.
+- `tests/api/contact.test.js` — API validation, duplicate-submission, rate-limit and attribution tests.
+- `docs/ENQUIRY-OPERATIONS.md` — D1, Resend and controlled-verification runbook.
 - `netlify.toml` — SPA fallback and baseline response security headers.
 - `docs/ARCHITECTURE.md` — architecture and future integration plan.
 
@@ -32,10 +34,10 @@ npm run preview
 
 1. Confirm the canonical production domain and update metadata, sitemap and robots directives if needed.
 2. Confirm the public contact email. The enquiry form posts to a Cloudflare Pages Function at `/api/contact`. Before production use, configure the D1 binding and Resend variables documented in `docs/ENQUIRY-OPERATIONS.md` and verify a controlled submission.
-3. Add a privacy notice and consent-aware analytics only after selecting relevant providers.
+3. Review the privacy notice against actual data handling and applicable privacy obligations. No analytics or ad pixels are included in this implementation slice.
 4. Configure the server-side enquiry endpoint, D1 migration and Resend notification; follow `docs/ENQUIRY-OPERATIONS.md`.
 5. Test CSP and security headers on the actual hosting provider.
-6. Review all claims, service descriptions, imagery and brand details with Riverwayse.
+6. Review all claims, service descriptions, imagery and brand details with River Ways.
 7. Run `npm run build` and `npm run test:api`, then run browser accessibility/performance checks on the deployment preview.
 
 ## Current scope
