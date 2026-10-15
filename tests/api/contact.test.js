@@ -25,8 +25,8 @@ function makeDb() {
         },
         async run() {
           if (sql.startsWith("INSERT INTO leads")) {
-            const [id, name, email, company, goal, details, brief_hash, , ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term] = values;
-            leads.push({ id, name, email, company, goal, details, brief_hash, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term, notification_status: "pending" });
+            const [id, name, email, company, goal, details, brief_hash, , ip_hash, created_at, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term] = values;
+            leads.push({ id, name, email, company, goal, details, brief_hash, ip_hash, created_at, stage: "new", source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term, notification_status: "pending" });
           }
           if (sql.startsWith("UPDATE leads")) {
             const [status, attemptedAt, id] = values;
