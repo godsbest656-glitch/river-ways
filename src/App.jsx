@@ -167,7 +167,8 @@ export default function App() {
           <div className="hero-copy"><Eyebrow light>Growth is engineered, not guessed</Eyebrow><h1>Find the current.<br /><span>Shape what follows.</span></h1>
             <p className="hero-lede">River Ways is a strategy-led creative and digital growth studio. We connect content, campaigns and customer journeys so your marketing has a clearer path from attention to action.</p>
             <div className="hero-actions"><a className="button button-lime" href="#contact">Start a project <ArrowRight size={17} /></a><a className="text-link text-link-light" href="#approach">See how we work <ArrowDownRight size={17} /></a></div>
-            <div className="hero-note"><span className="note-line" /> Creative with intent. <div className="hero-visual river-card-current"
+            <div className="hero-note"><span className="note-line" /> Creative with intent.</div>
+          <div className="hero-visual river-card-current"
             aria-label="Interactive River Ways current. Select a card to explore how signals become momentum."
             onPointerMove={(event) => {
               if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
