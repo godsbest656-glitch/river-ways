@@ -91,6 +91,17 @@ test("a changed brief creates a distinct lead", async () => {
   assert.equal(db.leads.length, 2);
 });
 
+test("rate limits repeated attempts from the same client window", async () => {
+  const db = makeDb();
+  const payload = { name: "Ada Example", email: "ada@example.com", company: "Example Co", goal: "Generate demand", details: "Rate-limit test." };
+  const statuses = [];
+  for (let index = 0; index < 6; index += 1) {
+    const response = await onRequestPost({ request: request({ ...payload, details: payload.details + " " + index }), env: envFor(db) });
+    statuses.push(response.status);
+  }
+  assert.deepEqual(statuses, [200, 200, 200, 200, 200, 429]);
+});
+
 test("quietly discards honeypot submissions without storing them", async () => {
   const db = makeDb();
   const response = await onRequestPost({ request: request({ name: "Bot", email: "bot@example.com", goal: "Growth", website: "https://spam.example" }), env: envFor(db) });
