@@ -42,7 +42,16 @@ export default function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('diagnostic') !== '1') return;
+    const serviceGoalMap = {
+      'Content & Social Systems': 'Social media and content',
+      'Email & Customer Journeys': 'Email marketing and customer journeys',
+      'Campaigns, Leads & Conversion': 'Campaigns and lead generation',
+      'Websites & Landing Pages': 'Website or landing page conversion',
+      'Search & AI Discovery': 'SEO and AI-search readiness',
+      'Automation & Marketing Operations': 'Marketing automation and integrations'
+    };
+    const serviceGoal = serviceGoalMap[params.get('service')];
+    if (params.get('diagnostic') !== '1' && !serviceGoal) return;
     const focus = params.get('diagnostic_focus') || '';
     const goalByFocus = {
       Discovery: 'SEO and AI-search readiness',
@@ -50,19 +59,18 @@ export default function App() {
       Measurement: 'Marketing automation and integrations',
       Alignment: 'Email marketing and customer journeys'
     };
-    const goal = goalByFocus[focus] || 'Generate more qualified demand';
+    const goal = params.get('diagnostic') === '1'
+      ? (goalByFocus[focus] || 'Generate more qualified demand')
+      : serviceGoal;
     const score = params.get('diagnostic_score') || '';
     const title = params.get('diagnostic_title') || 'Growth Diagnostic';
     const summary = params.get('diagnostic_summary') || '';
     setForm((current) => ({
       ...current,
       goal,
-      details: [
-        current.details,
-        'Growth Diagnostic self-assessment: ' + score + '/100 — ' + title + '.',
-        'Priority area: ' + focus + '.',
-        summary
-      ].filter(Boolean).join(' ')
+      details: params.get('diagnostic') === '1'
+        ? [current.details, 'Growth Diagnostic self-assessment: ' + score + '/100 — ' + title + '.', 'Priority area: ' + focus + '.', summary].filter(Boolean).join(' ')
+        : current.details
     }));
   }, []);
 
@@ -205,7 +213,7 @@ export default function App() {
       </div></section>
       <section className="section services-section reveal-section" id="services" data-reveal><div className="container">
         <div className="section-heading-row"><div><Eyebrow>What we do</Eyebrow><h2>One growth system.<br /><em>Connected capabilities.</em></h2></div><p>From consistent content to customer journeys, campaigns and conversion, we shape the right combination around your actual business challenge.</p></div>
-        <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><img className="service-card-image" src={service.image} alt={service.imageAlt} loading="lazy" decoding="async" /><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href="#contact" className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
+        <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><img className="service-card-image" src={service.image} alt={service.imageAlt} loading="lazy" decoding="async" /><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href={'/?service=' + encodeURIComponent(service.title) + '#contact'} className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
       </div></section>
       <section className="intelligence-section section-dark reveal-section" id="intelligence" data-reveal><div className="container intelligence-layout">
         <div className="intelligence-copy"><Eyebrow light>Demand Intelligence</Eyebrow><h2>Meet your market<br />at the <em>moment of intent.</em></h2><p>People leave clues when they’re comparing options, asking for recommendations or describing a problem your business solves. A thoughtful listening system helps you find those signals, understand context and respond usefully.</p>
