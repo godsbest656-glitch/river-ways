@@ -1,7 +1,7 @@
-# Riverwayse Website — Architecture
+# River Ways Website — Architecture
 
 ## Product objective
-Build a conversion-focused, accessible, responsive marketing website that positions Riverwayse around demand generation and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
+Build an accessible, responsive marketing website for River Ways, a strategy-led creative and digital growth studio. The site should help qualified prospects understand the offer, explore service families, and start a conversation.
 
 ## Initial stack
 - React + Vite for a lightweight component-based frontend.
@@ -11,9 +11,9 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - Free-to-use Unsplash image URLs for editorial/hero photography; replace with locally optimized assets or approved image CDN during production hardening.
 
 ## Information architecture
-1. Home / hero: Demand Engineering positioning and primary consultation CTA.
+1. Home / hero: “Find the current. Shape what follows.” and a direct project enquiry CTA.
 2. Problem framing: connect disconnected marketing activity to measurable demand.
-3. Services: Demand Engineering, performance marketing, SEO/GEO/AIO, website conversion, content and creative, and Demand Intelligence/social listening.
+3. Services: Content & Social Systems; Email & Customer Journeys; Campaigns, Leads & Conversion; Websites & Landing Pages; Search & AI Discovery; Automation & Marketing Operations.
 4. Demand Intelligence workflow: signals → qualification → alert → human follow-up → learning loop.
 5. Operating approach: diagnose, engineer, activate, measure, improve.
 6. FAQ: clarify fit, measurement, global scope, and implementation expectations.
@@ -23,18 +23,18 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 - One primary action repeated consistently.
 - Secondary action for exploring services.
 - Clear service descriptions and outcomes without fabricated testimonials, clients, performance figures, or guarantees.
-- Contact form validates inputs and opens a prefilled email draft as a no-backend fallback. Replace with a secured server-side form endpoint before production lead capture.
+- The project brief posts to the Cloudflare Pages Function at `/api/contact`. The function validates and rate-limits submissions, stores leads in D1, deduplicates identical briefs for two minutes, and attempts a Resend notification. Configure and verify the external services before claiming production readiness.
 
 ## Search and discovery
-- Descriptive title and meta description, canonical placeholder to be replaced with the verified production URL, Open Graph metadata, robots.txt, sitemap, and Organization/ProfessionalService JSON-LD with only verified details.
+- Descriptive title and meta description, canonical URL uses the current production domain, Open Graph metadata, robots.txt, sitemap, and Organization/ProfessionalService JSON-LD with only verified details.
 - Semantic headings, descriptive links, useful service copy, crawlable internal anchors, and performance-conscious media.
 - GEO/AIO/answer-engine optimization is treated as content clarity and entity consistency, not a guarantee of inclusion in AI answers.
 
 ## Security and quality
-- Add production hosting security headers through the deployment configuration.
+- Baseline static response headers are defined in `public/_headers`; verify actual deployed headers and add a carefully tested CSP before production hardening.
 - Never place API keys, provider tokens, analytics secrets, or customer data in the frontend or repository.
 - Use dependency lockfiles and CI build checks once dependencies are installed.
-- Validate form input client-side for usability; validate and rate-limit again on the server when a real endpoint is connected.
+- Client-side checks support usability; the server validates, bounds and rate-limits every submission.
 - Add consent-aware analytics only after selecting a provider and defining the privacy notice.
 
 ## Future integrations
@@ -45,5 +45,5 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 
 ## Deployment notes
 - Vite build output is `dist/`.
-- Netlify configuration provides SPA fallback and security headers; review CSP and hosting-specific behavior before launch.
+- The current deployment target is Cloudflare Pages. Pages Functions, D1 binding, redirects, 404 behavior and headers must be verified on a deployed preview; do not assume Netlify settings apply.
 - Verify the final domain, contact destination, privacy policy, service claims, image choices, and form endpoint before production.
