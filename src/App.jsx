@@ -61,10 +61,22 @@ export default function App() {
     }
     setIsSubmitting(true);
     try {
+      const params = new URLSearchParams(window.location.search);
+      const hasCampaignTags = ['utm_source', 'utm_medium', 'utm_campaign'].some((key) => params.has(key));
+      const attribution = {
+        source: hasCampaignTags ? 'campaign' : (document.referrer ? 'referral' : 'website'),
+        landingPage: window.location.pathname,
+        referrer: document.referrer || '',
+        utmSource: params.get('utm_source') || '',
+        utmMedium: params.get('utm_medium') || '',
+        utmCampaign: params.get('utm_campaign') || '',
+        utmContent: params.get('utm_content') || '',
+        utmTerm: params.get('utm_term') || ''
+      };
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify({ ...form, ...attribution })
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) {
