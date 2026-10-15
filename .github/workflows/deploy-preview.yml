@@ -66,7 +66,7 @@ jobs:
       - name: Deploy preview to Cloudflare Pages
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx --yes wrangler@4 pages deploy dist --project-name=riverwayse-website --branch="pr-${{ github.event.pull_request.number }}" --commit-hash="${{ github.event.pull_request.head.sha }}" --commit-message="Preview PR #${{ github.event.pull_request.number }}"
+        run: npx --yes wrangler@4 pages deploy dist --project-name=riverwayse-website --branch="pr-${{ github.event.pull_request.number }}" --commit-hash="${{ github.event.pull_request.head.sha }}" --commit-message="Preview-PR-${{ github.event.pull_request.number }}"
 
       - name: Verify preview serves this exact commit
         env:
