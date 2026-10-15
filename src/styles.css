@@ -91,3 +91,9 @@ body,button,input,textarea,select{font-family:'Manrope',sans-serif}
 @media(max-width:390px){.river-field .visual-card-top{width:152px}.river-field .visual-card-bottom{max-width:184px}.river-field .visual-card-bottom strong{font-size:10px}.river-field .visual-card-bottom small{font-size:8px}.river-field .visual-core{width:100px;height:100px}.core-kicker{font-size:6px}}
 @media(hover:none){.river-field .visual-core,.river-field .visual-card-top,.river-field .visual-card-bottom{transform:none!important;transition:none!important}}
 @media(prefers-reduced-motion:reduce){.field-routes .route,.field-orbit,.current-nodes circle{animation:none!important}.field-orbit{transform:none}.river-field .visual-core,.river-field .visual-card-top,.river-field .visual-card-bottom{transform:none!important;transition:none!important}}
+
+/* Enquiry submission states */
+.honeypot-field{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.form-success{margin:0;padding:12px 14px;border-left:3px solid #8bb34b;background:#edf4df;color:#25351d;font-size:13px;line-height:1.6}
+.form-submit:disabled{cursor:wait;opacity:.72;transform:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
