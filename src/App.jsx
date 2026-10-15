@@ -217,7 +217,6 @@ export default function App() {
               </button>
             </div>
             <div className="current-field-footer"><span className="current-live-dot" /> <span>{['Read the environment','Connect the system','Choose a direction','Keep progress moving'][activeCurrent]}</span><span className="current-progress">{String(activeCurrent + 1).padStart(2, '0')} <i /> 04</span></div>
-          </div>-caption">A SYSTEM, NOT A CHANNEL</span>
           </div>
         </div>
         <div className="container hero-bottom"><span>BUILT AROUND YOUR BUSINESS GOALS</span><div className="hero-capabilities"><span><Check size={14} /> Strategy</span><span><Check size={14} /> Digital</span><span><Check size={14} /> Intelligence</span><span><Check size={14} /> Performance</span></div></div>
