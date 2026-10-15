@@ -69,6 +69,17 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx --yes wrangler@4 pages deploy dist --project-name=riverwayse-website --branch="pr-${{ github.event.pull_request.number }}" --commit-hash="${{ github.event.pull_request.head.sha }}" --commit-message="Preview-PR-${{ github.event.pull_request.number }}"
 
+      - name: Verify preview enquiry route and minimum configuration
+        run: |
+          set -euo pipefail
+          url="https://pr-${{ github.event.pull_request.number }}.riverwayse-website.pages.dev/api/contact"
+          status="$(curl --silent --show-error -o /tmp/contact-probe.txt -w '%{http_code}' -X POST -H 'content-type: text/plain' --data 'deployment-probe-no-lead-data' "$url")"
+          if [ "$status" != "415" ]; then
+            echo "::error::Expected /api/contact to reject the probe with 415 after configuration checks; got HTTP $status. HTTP 503 usually means the preview LEADS_DB binding or RATE_LIMIT_SALT is missing."
+            cat /tmp/contact-probe.txt
+            exit 1
+          fi
+          echo "Preview enquiry route is deployed and its minimum configuration checks passed."
       - name: Verify preview serves this exact commit
         env:
           RELEASE_SHA: ${{ github.event.pull_request.head.sha }}
