@@ -4,7 +4,7 @@ const JSON_HEADERS = {
   "x-content-type-options": "nosniff"
 };
 
-const MAX_LENGTHS = { name: 120, email: 254, company: 160, goal: 180, details: 4000 };
+const MAX_LENGTHS = { name: 120, email: 254, company: 160, goal: 180, details: 4000, source: 120, landingPage: 240, referrer: 500, utm: 160 };
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT = 5;
 const DUPLICATE_WINDOW_MS = 2 * 60 * 1000;
@@ -49,6 +49,9 @@ async function sendNotification(env, lead) {
           "Email: " + lead.email,
           "Company: " + (lead.company || "Not provided"),
           "Goal: " + lead.goal,
+          "Source: " + (lead.utmSource || lead.source || "Direct / unknown"),
+          "Campaign: " + (lead.utmCampaign || "Not tagged"),
+          "Landing page: " + (lead.landingPage || "/"),
           "",
           "Context:",
           lead.details || "Not provided",
@@ -96,7 +99,15 @@ export async function onRequestPost({ request, env }) {
     email: clean(payload.email, MAX_LENGTHS.email).toLowerCase(),
     company: clean(payload.company, MAX_LENGTHS.company),
     goal: clean(payload.goal, MAX_LENGTHS.goal),
-    details: clean(payload.details, MAX_LENGTHS.details)
+    details: clean(payload.details, MAX_LENGTHS.details),
+    source: clean(payload.source, MAX_LENGTHS.source) || "website",
+    landingPage: clean(payload.landingPage, MAX_LENGTHS.landingPage) || "/",
+    referrer: clean(payload.referrer, MAX_LENGTHS.referrer),
+    utmSource: clean(payload.utmSource, MAX_LENGTHS.utm),
+    utmMedium: clean(payload.utmMedium, MAX_LENGTHS.utm),
+    utmCampaign: clean(payload.utmCampaign, MAX_LENGTHS.utm),
+    utmContent: clean(payload.utmContent, MAX_LENGTHS.utm),
+    utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm)
   };
 
   if (!lead.name || !validEmail(lead.email) || !lead.goal) {
@@ -133,8 +144,8 @@ export async function onRequestPost({ request, env }) {
       const id = crypto.randomUUID();
       const createdAt = new Date(now).toISOString();
       await env.LEADS_DB.prepare(
-        "INSERT INTO leads (id, name, email, company, goal, details, brief_hash, notification_status, ip_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)"
-      ).bind(id, lead.name, lead.email, lead.company, lead.goal, lead.details, briefHash, ipHash, createdAt).run();
+        "INSERT INTO leads (id, name, email, company, goal, details, brief_hash, notification_status, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(id, lead.name, lead.email, lead.company, lead.goal, lead.details, briefHash, ipHash, createdAt, lead.source, lead.landingPage, lead.referrer, lead.utmSource, lead.utmMedium, lead.utmCampaign, lead.utmContent, lead.utmTerm).run();
       record = { id, notification_status: "pending" };
     }
   } catch {
