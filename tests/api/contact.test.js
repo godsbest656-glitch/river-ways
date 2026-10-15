@@ -158,7 +158,7 @@ test("rejects an oversized request body before parsing", async () => {
 test("rejects control characters in contact fields", async () => {
   const db = makeDb();
   const response = await onRequestPost({
-    request: request({ name: "Ada\\nExample", email: "ada@example.com", goal: "Growth" }),
+    request: request({ name: "Ada\nExample", email: "ada@example.com", goal: "Growth" }),
     env: envFor(db)
   });
   assert.equal(response.status, 422);
