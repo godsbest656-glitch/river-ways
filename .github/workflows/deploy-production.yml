@@ -1,0 +1,98 @@
+name: River Ways production deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: river-ways-production
+  cancel-in-progress: false
+
+jobs:
+  build-test-deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - name: Check out the exact release commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build release
+        run: npm run build
+
+      - name: Test enquiry API
+        run: npm run test:api
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Stamp build with the source commit
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const path = 'dist/index.html';
+          const html = readFileSync(path, 'utf8');
+          if (!html.includes('name="river-ways-release"')) {
+            throw new Error('Release marker missing from dist/index.html; refusing deployment.');
+          }
+          writeFileSync(path, html.replace(/(<meta name="river-ways-release" content=")[^"]*(")/, `$1${process.env.GITHUB_SHA}$2`));
+          NODE
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+
+      - name: Verify deployment credentials are present
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "::error::Missing production environment secret CLOUDFLARE_ACCOUNT_ID" && exit 1)
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "::error::Missing production environment secret CLOUDFLARE_API_TOKEN" && exit 1)
+
+      - name: Deploy this commit to Cloudflare Pages
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name=riverwayse-website --branch=main --commit-hash="$GITHUB_SHA" --commit-message="GitHub Actions release $GITHUB_SHA"
+
+      - name: Verify Pages hostname serves this exact commit
+        run: |
+          set -euo pipefail
+          url="https://riverwayse-website.pages.dev/"
+          for attempt in $(seq 1 12); do
+            html="$(curl --fail --silent --show-error "$url" || true)"
+            if printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"$GITHUB_SHA\""; then
+              echo "Pages hostname serves release $GITHUB_SHA"
+              exit 0
+            fi
+            echo "Waiting for Pages hostname to serve $GITHUB_SHA (attempt $attempt/12)"
+            sleep 5
+          done
+          echo "::error::Pages hostname did not serve the exact release SHA."
+          exit 1
+
+      - name: Verify production domain serves this exact commit
+        run: |
+          set -euo pipefail
+          url="https://riverwayse.com/"
+          html="$(curl --fail --silent --show-error "$url")"
+          if ! printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"$GITHUB_SHA\""; then
+            echo "::error::riverwayse.com does not serve the deployed release SHA. Check domain attachment and overlapping Worker routes."
+            exit 1
+          fi
+          echo "Production domain serves release $GITHUB_SHA"
