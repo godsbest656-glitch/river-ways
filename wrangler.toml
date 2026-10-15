@@ -1,6 +1,6 @@
 # Cloudflare Pages configuration for River Ways.
 # D1 and secrets are intentionally configured per-environment in the Cloudflare
 # dashboard until the production database ID and binding have been verified.
-name = "river-ways"
+name = "riverwayse-website"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-10-06"
