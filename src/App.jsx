@@ -41,6 +41,32 @@ export default function App() {
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('diagnostic') !== '1') return;
+    const focus = params.get('diagnostic_focus') || '';
+    const goalByFocus = {
+      Discovery: 'SEO and AI-search readiness',
+      Conversion: 'Website or landing page conversion',
+      Measurement: 'Marketing automation and integrations',
+      Alignment: 'Email marketing and customer journeys'
+    };
+    const goal = goalByFocus[focus] || 'Generate more qualified demand';
+    const score = params.get('diagnostic_score') || '';
+    const title = params.get('diagnostic_title') || 'Growth Diagnostic';
+    const summary = params.get('diagnostic_summary') || '';
+    setForm((current) => ({
+      ...current,
+      goal,
+      details: [
+        current.details,
+        'Growth Diagnostic self-assessment: ' + score + '/100 — ' + title + '.',
+        'Priority area: ' + focus + '.',
+        summary
+      ].filter(Boolean).join(' ')
+    }));
+  }, []);
+
+  useEffect(() => {
     const elements = document.querySelectorAll('[data-reveal]');
     if (!('IntersectionObserver' in window)) { elements.forEach((element) => element.classList.add('is-visible')); return undefined; }
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
