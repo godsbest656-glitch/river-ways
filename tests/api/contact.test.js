@@ -25,8 +25,8 @@ function makeDb() {
         },
         async run() {
           if (sql.startsWith("INSERT INTO leads")) {
-            const [id, name, email, company, goal, details, brief_hash, , created_at] = values;
-            leads.push({ id, name, email, company, goal, details, brief_hash, notification_status: "pending", created_at });
+            const [id, name, email, company, goal, details, brief_hash, , ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term] = values;
+            leads.push({ id, name, email, company, goal, details, brief_hash, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term, notification_status: "pending" });
           }
           if (sql.startsWith("UPDATE leads")) {
             const [status, attemptedAt, id] = values;
@@ -81,6 +81,23 @@ test("stores a valid lead once and reuses an identical brief within two minutes"
   assert.equal(second.status, 200);
   assert.equal(db.leads.length, 1);
   assert.equal(db.leads[0].email, "ada@example.com");
+});
+
+test("stores the lead stage and campaign attribution fields", async () => {
+  const db = makeDb();
+  const payload = {
+    name: "Ada Example", email: "ada@example.com", company: "Example Co",
+    goal: "Email marketing", details: "Lifecycle journey",
+    source: "campaign", landingPage: "/services/email", referrer: "https://example.org/",
+    utmSource: "newsletter", utmMedium: "email", utmCampaign: "october_launch",
+    utmContent: "case_study_link", utmTerm: "retention"
+  };
+  const response = await onRequestPost({ request: request(payload), env: envFor(db) });
+  assert.equal(response.status, 200);
+  assert.equal(db.leads[0].stage, "new");
+  assert.equal(db.leads[0].source, "campaign");
+  assert.equal(db.leads[0].landing_page, "/services/email");
+  assert.equal(db.leads[0].utm_campaign, "october_launch");
 });
 
 test("a changed brief creates a distinct lead", async () => {
