@@ -168,6 +168,7 @@ export default function App() {
             <p className="hero-lede">River Ways is a strategy-led creative and digital growth studio. We connect content, campaigns and customer journeys so your marketing has a clearer path from attention to action.</p>
             <div className="hero-actions"><a className="button button-lime" href="#contact">Start a project <ArrowRight size={17} /></a><a className="text-link text-link-light" href="#approach">See how we work <ArrowDownRight size={17} /></a></div>
             <div className="hero-note"><span className="note-line" /> Creative with intent.</div>
+          </div>
           <div className="hero-visual river-card-current"
             aria-label="Interactive River Ways current. Select a card to explore how signals become momentum."
             onPointerMove={(event) => {
