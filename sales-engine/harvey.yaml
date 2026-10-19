@@ -73,5 +73,5 @@ usage:
 compliance:
   precleared:
     enabled: false
-    sender_country: "NG"
-    address_source: "published"
+    sender_country: ""
+    address_source: "unknown"
