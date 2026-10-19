@@ -184,6 +184,8 @@ export default function App() {
               event.currentTarget.querySelectorAll('.current-card').forEach((card, index) => {
                 card.style.setProperty('--card-pointer-x', (x * 18 * waveFactors[index]).toFixed(2) + 'px');
                 card.style.setProperty('--card-pointer-y', (y * 14 * waveFactors[index]).toFixed(2) + 'px');
+                card.style.setProperty('--card-tilt-x', (x * 4 * waveFactors[index]).toFixed(2) + 'deg');
+                card.style.setProperty('--card-tilt-y', (y * -4 * waveFactors[index]).toFixed(2) + 'deg');
               });
             }}
             onPointerLeave={(event) => {
@@ -194,6 +196,8 @@ export default function App() {
               event.currentTarget.querySelectorAll('.current-card').forEach((card) => {
                 card.style.setProperty('--card-pointer-x', '0px');
                 card.style.setProperty('--card-pointer-y', '0px');
+                card.style.setProperty('--card-tilt-x', '0deg');
+                card.style.setProperty('--card-tilt-y', '0deg');
               });
             }}
           >
