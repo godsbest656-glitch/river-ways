@@ -382,8 +382,8 @@ h2 em,blockquote em{font-family:'Newsreader',Georgia,serif;font-weight:400;font-
 
 /* Real editorial imagery gives each current card a distinct material and context. */
 .current-card > .current-card-image{
-  position:absolute;
-  inset:0;
+  position:absolute!important;
+  inset:0!important;
   z-index:0!important;
   overflow:hidden;
   pointer-events:none;
