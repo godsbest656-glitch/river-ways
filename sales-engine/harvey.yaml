@@ -1,0 +1,78 @@
+# River Ways pilot configuration for ethanplusai/harvey.
+# Copy this file to the root of a separate Harvey checkout after reviewing it
+# against the exact upstream version installed. Email and LinkedIn are disabled
+# until mailbox, legal, domain, and human-review gates are completed.
+
+persona:
+  name: "River Ways"
+  company: "River Ways"
+  role: "Demand Engineering and Growth Consultancy"
+  email: "akinsify0511@gmail.com"
+  linkedin: ""
+  tone: "specific, thoughtful, concise, consultative; never hype-driven"
+
+product:
+  name: "Demand and Conversion Improvement"
+  description: "River Ways helps businesses connect positioning, website journeys, search visibility and follow-up into a clearer system for generating and converting qualified demand."
+  pricing: "Scoped after discovery; do not invent or quote a price."
+  key_benefits:
+    - "Identify friction between discovery and enquiry using observable public evidence."
+    - "Prioritize practical improvements to positioning, website conversion and search visibility."
+    - "Connect marketing activity to a clearer enquiry and follow-up process."
+  objection_responses:
+    "too expensive": "Acknowledge the budget constraint and ask whether a smaller, clearly scoped diagnostic would be more appropriate. Do not pressure the prospect."
+    "already have a solution": "Acknowledge their current approach and ask whether there is a specific gap they would like to improve. Accept that their current solution may be sufficient."
+    "not interested": "Thank them, end the conversation, and mark the contact do-not-contact. Do not argue or continue the sequence."
+  offer:
+    primary: "A scoped website conversion, search visibility, or demand-system improvement project matched to a verified business need."
+    entry: "Demand & Conversion Audit: review positioning, discovery, website journey, calls to action and follow-up; deliver a prioritized action plan."
+    goal: "book_call"
+    booking_method: "suggest_times"
+    booking_url: ""
+    meeting_duration: "15 minutes"
+    meeting_owner: "River Ways"
+
+icp:
+  industries:
+    - "Professional Services"
+    - "Business Consulting"
+    - "Accounting and Advisory"
+    - "Real Estate"
+    - "B2B Services"
+  company_size: "Established small and medium-sized businesses; qualify by evidence, not assumed headcount"
+  titles:
+    - "Founder"
+    - "Owner"
+    - "Managing Director"
+    - "Marketing Lead"
+    - "Head of Growth"
+  geography:
+    - "Nigeria"
+  hiring_signals: []
+
+channels:
+  email:
+    enabled: false
+    provider: "gmail"
+    max_daily_sends: 5
+    require_approval: true
+    send_to_risky: false
+    max_bounce_rate: 0.02
+  linkedin:
+    enabled: false
+    max_daily_connections: 0
+    max_daily_messages: 0
+
+usage:
+  max_daily_claude_percent: 50
+  heartbeat_interval_minutes: 60
+  quiet_hours:
+    start: "18:00"
+    end: "08:00"
+    timezone: "Africa/Lagos"
+
+compliance:
+  precleared:
+    enabled: false
+    sender_country: ""
+    address_source: "unknown"
