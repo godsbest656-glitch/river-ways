@@ -80,19 +80,19 @@ def add(args: argparse.Namespace) -> None:
     conn = connect()
     existing = conn.execute(
         "SELECT id FROM leads WHERE company=? AND website=?",
-        (args.company.strip(), args.website.strip()),
+        (args.company.strip(), (args.website or "").strip()),
     ).fetchone()
     if existing:
         raise SystemExit(f"Likely duplicate: lead id {existing['id']}. Update it instead.")
     stamp = now()
     values = {
-        "company": args.company.strip(), "website": args.website.strip(),
-        "segment": args.segment.strip(), "source_url": args.source_url.strip(),
-        "observation": args.observation.strip(), "checked_at": args.checked_at.strip() or stamp[:10],
-        "fit_score": args.fit_score, "score_reason": args.score_reason.strip(),
-        "public_contact": args.public_contact.strip(), "stage": "research",
-        "next_action": args.next_action.strip(), "next_action_date": "",
-        "do_not_contact": 0, "notes": args.notes.strip(),
+        "company": args.company.strip(), "website": (args.website or "").strip(),
+        "segment": (args.segment or "").strip(), "source_url": (args.source_url or "").strip(),
+        "observation": (args.observation or "").strip(), "checked_at": (args.checked_at or "").strip() or stamp[:10],
+        "fit_score": args.fit_score, "score_reason": (args.score_reason or "").strip(),
+        "public_contact": (args.public_contact or "").strip(), "stage": "research",
+        "next_action": (args.next_action or "").strip(), "next_action_date": "",
+        "do_not_contact": 0, "notes": (args.notes or "").strip(),
     }
     if values["fit_score"] is not None and not 0 <= values["fit_score"] <= 10:
         raise SystemExit("fit-score must be between 0 and 10.")
