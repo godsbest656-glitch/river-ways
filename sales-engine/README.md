@@ -7,9 +7,10 @@ This directory contains the first, deliberately conservative configuration for e
 - [x] Reviewed Harvey's public repository, README, MIT licence and current `harvey.yaml` shape.
 - [x] Added a River Ways-specific configuration starting point.
 - [x] Email and LinkedIn sending are disabled by default.
-- [ ] Install and run Harvey locally in a separate checkout.
-- [ ] Validate this configuration against the exact Harvey version installed.
-- [ ] Run a research-only pilot on the existing, manually curated prospect list.
+- [x] Added a zero-dependency local prospect tracker in `free-pilot/` (Python standard library + SQLite).
+- [x] Documented the zero-budget stack and cost guardrails in `FREE-STACK.md`.
+- [ ] Run the local tracker and create a research-only pilot using manually verified prospects.
+- [ ] Treat Harvey as an architecture reference only unless its required model runtime is already included in a subscription we already have and we explicitly approve using it.
 - [ ] Review evidence, scores, drafts, duplicates and opt-out handling.
 - [ ] Configure a suitable sending mailbox/domain and compliance review before enabling any sending.
 - [ ] Connect outcomes to a durable pipeline only after the local pilot is reliable.
@@ -22,13 +23,12 @@ The upstream project currently describes a local agent that can discover and pro
 
 ## First pilot: research-only
 
-1. Install Python 3.11+ and the required model CLI/runtime documented by the installed Harvey version. Use only an account and subscription you are authorised to use.
-2. Clone Harvey into a separate local directory; inspect its current README, `CLAUDE.md`, `harvey.yaml`, dependency lockfiles and tests before running it.
-3. Copy `sales-engine/harvey.yaml` to the Harvey checkout's root as `harvey.yaml`. Check every field against the installed version's schema before starting. Do not commit credentials or local `.env` files.
-4. Keep both channels disabled. Run only the discovery/profile/qualification steps and manually review each result.
-5. Start with the existing `docs/INITIAL-PROSPECT-RESEARCH.md`; verify each live site and record a concrete, current observation before drafting anything.
-6. Evaluate 20 prospects maximum across no more than two segments. Record evidence quality, fit score, useful insight, duplicate rate and whether the proposed service is genuinely deliverable.
-7. Only after review, test draft generation with sending still disabled. Every factual claim must trace to a public source and every draft must have a human reviewer.
+1. Start with `free-pilot/README.md`; it requires Python only and makes no network calls.
+2. Create the local SQLite database and manually add prospects whose public company information you have verified.
+3. Start with the existing `docs/INITIAL-PROSPECT-RESEARCH.md`; verify each live site and record a concrete, current observation.
+4. Evaluate 10–20 prospects maximum in one segment first. Record evidence quality, fit score, useful insight, duplicate rate and whether the proposed service is genuinely deliverable.
+5. Use templates and manual review for any outreach draft; do not send messages from this pilot.
+6. Harvey may be tested separately only if its model runtime is already available without incremental cost. Its current README requires an existing Claude Pro/Max or ChatGPT plan with Codex access; do not purchase or upgrade a plan for this project.
 
 ## Hard safety gates
 
