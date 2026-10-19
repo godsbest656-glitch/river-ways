@@ -378,3 +378,42 @@ h2 em,blockquote em{font-family:'Newsreader',Georgia,serif;font-weight:400;font-
   .current-card,.current-card:hover,.current-card:focus-visible,.current-card.is-current{transform:none!important;transition:none!important;box-shadow:none}
   .current-card::after{display:none}
 }
+
+
+/* Real editorial imagery gives each current card a distinct material and context. */
+.current-card > .current-card-image{
+  position:absolute;
+  inset:0;
+  z-index:0!important;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:.32;
+  background:linear-gradient(135deg,rgba(20,25,22,.12),rgba(20,25,22,.82));
+  transition:opacity .4s ease,transform .65s cubic-bezier(.2,.7,.2,1);
+}
+.current-card-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:saturate(.7) contrast(1.06);
+  mix-blend-mode:screen;
+  opacity:.58;
+  transform:scale(1.04);
+  transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .4s ease,opacity .4s ease;
+}
+.current-card:hover > .current-card-image,
+.current-card:focus-visible > .current-card-image,
+.current-card.is-current > .current-card-image{opacity:.62}
+.current-card:hover .current-card-image img,
+.current-card:focus-visible .current-card-image img,
+.current-card.is-current .current-card-image img{transform:scale(1.12);filter:saturate(.9) contrast(1.08);opacity:.76}
+.current-card > .current-card-image::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(27,28,25,.12) 0%,rgba(27,28,25,.25) 34%,rgba(27,28,25,.92) 100%);
+}
+@media(prefers-reduced-motion:reduce){
+  .current-card-image,.current-card-image img{transition:none!important;transform:none!important}
+}
