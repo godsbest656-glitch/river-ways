@@ -43,7 +43,7 @@ export async function onRequestPost({ request, env }) {
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) return json({ error: "Expected JSON request." }, 415);
   const declaredLength = Number(request.headers.get("content-length") || 0);
   if (declaredLength > MAX_BODY_BYTES) return json({ error: "Request is too large." }, 413);
-  if (!env.LEADS_DB) return json({ error: "Enquiry service is not configured yet. Please email oluwafemi@riverwayse.com instead." }, 503);
+  if (!env.LEADS_DB) return json({ error: "Enquiry service is not configured yet. Please email akinsify0511@gmail.com instead." }, 503);
 
   let raw;
   try {
@@ -71,7 +71,7 @@ export async function onRequestPost({ request, env }) {
   if (!name || !EMAIL_RE.test(email) || !ALLOWED_GOALS.has(goal)) return json({ error: "Please provide your name, a valid email, and select a listed goal." }, 400);
   if (details.length > 3000) return json({ error: "Please shorten your project context." }, 400);
   if (!env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
-    return json({ error: "Enquiry service is not fully configured yet. Please email oluwafemi@riverwayse.com instead." }, 503);
+    return json({ error: "Enquiry service is not fully configured yet. Please email akinsify0511@gmail.com instead." }, 503);
   }
 
   // Hash the platform-provided client IP before using it for short-window rate limiting.
@@ -135,7 +135,7 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: true, notification: notificationStatus });
   } catch (error) {
     console.error("Contact submission failed", error instanceof Error ? error.message : "unknown error");
-    return json({ error: "We couldn't save your enquiry right now. Please try again or email oluwafemi@riverwayse.com." }, 503);
+    return json({ error: "We couldn't save your enquiry right now. Please try again or email akinsify0511@gmail.com." }, 503);
   }
 }
 
