@@ -25,7 +25,7 @@ Add these as **server-side environment variables/secrets** in Cloudflare Pages f
 
 - Secret `RESEND_API_KEY`: a restricted API key with permission to send email.
 - Variable `RESEND_FROM_EMAIL`: a sender address on a domain verified in Resend.
-- Variable `LEAD_NOTIFICATION_EMAIL`: the inbox that should receive enquiry notifications (currently intended: `oluwafemi@riverwayse.com`).
+- Variable `LEAD_NOTIFICATION_EMAIL`: the inbox that should receive enquiry notifications (currently intended: `akinsify0511@gmail.com`).
 
 Never prefix these values with `VITE_`; Vite-prefixed variables can be exposed in browser bundles. Redeploy after changing Pages bindings or variables.
 
