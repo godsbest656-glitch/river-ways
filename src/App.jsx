@@ -70,13 +70,13 @@ export default function App() {
       if (result.notification === 'sent') {
         setFormSuccess('Your enquiry has been received and the River Ways team has been notified. We will follow up using the email address you provided.');
       } else if (result.notification === 'failed') {
-        setFormSuccess('Your enquiry has been saved, but we could not confirm the email notification to our team. For a prompt response, email oluwafemi@riverwayse.com and mention that you submitted the website form.');
+        setFormSuccess('Your enquiry has been saved, but we could not confirm the email notification to our team. For a prompt response, email akinsify0511@gmail.com and mention that you submitted the website form.');
       } else {
-        setFormSuccess('Your enquiry has been saved, but email notifications are not fully configured yet. For a prompt response, email oluwafemi@riverwayse.com and mention that you submitted the website form.');
+        setFormSuccess('Your enquiry has been saved, but email notifications are not fully configured yet. For a prompt response, email akinsify0511@gmail.com and mention that you submitted the website form.');
       }
       setForm({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '', website: '' });
     } catch (error) {
-      setFormError((error instanceof Error ? error.message : 'Something went wrong.') + ' Email oluwafemi@riverwayse.com if you need another way to reach us.');
+      setFormError((error instanceof Error ? error.message : 'Something went wrong.') + ' Email akinsify0511@gmail.com if you need another way to reach us.');
     } finally {
       setIsSubmitting(false);
     }
@@ -178,6 +178,6 @@ export default function App() {
         </form>
       </div></section>
     </main>
-    <footer className="site-footer"><div className="container footer-top"><Brand /><p>Find the current. Shape what follows.</p><a href="#home" className="back-top">Back to top <ArrowUpRight size={15} /></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} River Ways. All rights reserved.</span><span>Built around purposeful growth.</span><a href="mailto:oluwafemi@riverwayse.com">Contact River Ways</a></div></footer>
+    <footer className="site-footer"><div className="container footer-top"><Brand /><p>Find the current. Shape what follows.</p><a href="#home" className="back-top">Back to top <ArrowUpRight size={15} /></a></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} River Ways. All rights reserved.</span><span>Built around purposeful growth.</span><a href="mailto:akinsify0511@gmail.com">Contact River Ways</a></div></footer>
   </>;
 }
