@@ -58,7 +58,7 @@ test('enquiry confirmation is honest when email notification is not configured',
   await page.getByLabel('Work email').fill('preview@example.com');
   await page.getByRole('button', { name: /Send my enquiry/i }).click();
   await expect(page.getByRole('status')).toContainText('email notifications are not fully configured');
-  await expect(page.getByRole('status')).toContainText('oluwafemi@riverwayse.com');
+  await expect(page.getByRole('status')).toContainText('akinsify0511@gmail.com');
 });
 
 test('enquiry confirmation reports team notification only when it was sent', async ({ page }) => {
