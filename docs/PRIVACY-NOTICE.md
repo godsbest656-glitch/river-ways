@@ -10,7 +10,7 @@ If configured, enquiry notifications are sent through Resend to River Ways' desi
 
 ## Retention and requests
 
-The site operator must configure and periodically review retention, deletion, access controls, and backup policies for the D1 database and notification provider. Contact oluwafemi@riverwayse.com to request access, correction, or deletion of enquiry information, subject to applicable law.
+The site operator must configure and periodically review retention, deletion, access controls, and backup policies for the D1 database and notification provider. Contact akinsify0511@gmail.com to request access, correction, or deletion of enquiry information, subject to applicable law.
 
 ## Analytics and third parties
 
