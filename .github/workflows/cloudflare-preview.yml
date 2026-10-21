@@ -85,7 +85,14 @@ jobs:
           set -euo pipefail
           project_name="riverwayse-website"
           database_name="river-ways-leads-preview"
-          d1_list="$(npx --yes wrangler@3.90.0 d1 list --json)"
+          if ! d1_list="$(npx --yes wrangler@3.90.0 d1 list --json 2>/tmp/river-ways-d1-list.log)"; then
+            echo "::error::Could not list Cloudflare D1 databases. The API token may lack D1 read/edit access, or the D1 list command failed."
+            if [ -s /tmp/river-ways-d1-list.log ]; then
+              sed -E 's/[A-Za-z0-9_-]{32,}/[identifier-redacted]/g' /tmp/river-ways-d1-list.log | tail -12
+            fi
+            echo "Required for automated Preview provisioning: an account-scoped Cloudflare API token with D1:Edit in addition to Pages deployment permissions."
+            exit 1
+          fi
           find_database_id() {
             D1_LIST_JSON="$1" D1_NAME="$2" node --input-type=module -e '
               const parsed = JSON.parse(process.env.D1_LIST_JSON);
