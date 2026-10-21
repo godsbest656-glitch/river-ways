@@ -74,25 +74,22 @@ jobs:
             npx --yes wrangler@3.90.0 pages project create riverwayse-website --production-branch main
           fi
 
-      - name: Configure isolated Preview database and notification prerequisites
+      - name: Configure isolated Preview D1 database and migrations
+        continue-on-error: true
         shell: bash
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
         run: |
           set -euo pipefail
-          project_name="riverwayse-website"
           database_name="river-ways-leads-preview"
           set +e
           npx --yes wrangler@3.90.0 d1 list --json >/tmp/river-ways-d1-list.stdout 2>/tmp/river-ways-d1-list.stderr
           d1_list_status="$?"
           set -e
           if [ "$d1_list_status" -ne 0 ]; then
-            echo "::error::Could not list Cloudflare D1 databases. Check the Wrangler output below for the exact safe diagnostic."
+            echo "::error::Preview D1 setup is blocked. Add D1:Edit to the account-scoped Cloudflare API token used by GitHub Actions."
             { cat /tmp/river-ways-d1-list.stdout /tmp/river-ways-d1-list.stderr 2>/dev/null || true; } | sed -E 's/[A-Za-z0-9_-]{32,}/[identifier-redacted]/g' | tail -12
-            echo "Automated Preview provisioning requires Cloudflare D1 read/edit permission in addition to Pages deployment permissions."
             exit 1
           fi
           d1_list="$(cat /tmp/river-ways-d1-list.stdout)"
@@ -112,12 +109,12 @@ jobs:
           ')"
           if [ -z "$database_id" ]; then
             if [ "$database_count" -ge 10 ]; then
-              echo "::error::Cannot create the isolated Preview database: 10 or more D1 databases already exist. No database was created. Reuse a dedicated Preview database or review the Cloudflare account limit."
+              echo "::error::Cannot create the isolated Preview database: 10 or more D1 databases already exist. No database was created."
               exit 1
             fi
             echo "Creating the isolated Preview database."
             if ! npx --yes wrangler@3.90.0 d1 create "$database_name" >/tmp/river-ways-d1-create.log 2>&1; then
-              echo "::error::Could not create the isolated Preview database. The log was withheld to avoid printing infrastructure identifiers."
+              echo "::error::Could not create the isolated Preview database. Check D1:Edit permissions and account limits."
               exit 1
             fi
             d1_list="$(npx --yes wrangler@3.90.0 d1 list --json)"
@@ -127,45 +124,73 @@ jobs:
             echo "::error::Cloudflare did not return the isolated Preview database ID after provisioning."
             exit 1
           fi
-
-          # Add a preview-only binding to the temporary config used by this deployment.
-          # The production environment remains unbound and is not changed by this branch.
+          # This binding exists only in the temporary build config for this preview deployment.
           cat >> wrangler.toml <<EOF
           [[env.preview.d1_databases]]
           binding = "LEADS_DB"
           database_name = "$database_name"
           database_id = "$database_id"
           EOF
-
           npx --yes wrangler@3.90.0 d1 migrations apply "$database_name" --remote --env preview --config wrangler.toml
+          echo "Preview D1 database exists and migrations have been applied."
 
+      - name: Configure Preview rate-limit and notification secrets
+        continue-on-error: true
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+        run: |
+          set -euo pipefail
+          project_name="riverwayse-website"
           secret_list="$(npx --yes wrangler@3.90.0 pages secret list --project-name="$project_name" --env preview 2>&1 || true)"
           if ! printf '%s' "$secret_list" | grep -Fq "RATE_LIMIT_SALT"; then
             generated_salt="$(openssl rand -hex 32)"
             printf '%s' "$generated_salt" | npx --yes wrangler@3.90.0 pages secret put RATE_LIMIT_SALT --project-name="$project_name" --env preview
             unset generated_salt
             echo "Created the missing Preview rate-limit secret."
-          else
-            echo "The Preview rate-limit secret is already present."
           fi
 
-          # This inbox is the approved accessible notification destination for River Ways.
+          # This is the approved River Ways notification destination.
           printf '%s' "akinsify0511@gmail.com" | npx --yes wrangler@3.90.0 pages secret put LEAD_NOTIFICATION_EMAIL --project-name="$project_name" --env preview
 
           if [ -n "${RESEND_API_KEY:-}" ]; then
             printf '%s' "$RESEND_API_KEY" | npx --yes wrangler@3.90.0 pages secret put RESEND_API_KEY --project-name="$project_name" --env preview
-          fi
-          if [ -n "${RESEND_FROM_EMAIL:-}" ]; then
-            printf '%s' "$RESEND_FROM_EMAIL" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
+          else
+            echo "::warning::RESEND_API_KEY is not configured; email delivery cannot pass the ads gate."
           fi
 
-          secret_list="$(npx --yes wrangler@3.90.0 pages secret list --project-name="$project_name" --env preview 2>&1 || true)"
-          for key in RESEND_API_KEY RESEND_FROM_EMAIL; do
-            if ! printf '%s' "$secret_list" | grep -Fq "$key"; then
-              echo "::warning::Preview is missing $key. Add the value as a GitHub Actions secret or a Cloudflare Pages Preview secret before ads readiness can pass."
+          sender="${RESEND_FROM_EMAIL:-}"
+          if [ -n "$sender" ]; then
+            printf '%s' "$sender" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
+          elif [ -n "${RESEND_API_KEY:-}" ]; then
+            if domains_json="$(curl --fail --silent --show-error --get 'https://api.resend.com/domains' --header "Authorization: Bearer $RESEND_API_KEY" 2>/dev/null)"; then
+              verified="$(
+                RESEND_DOMAINS_JSON="$domains_json" node --input-type=module -e '
+                  try {
+                    const parsed = JSON.parse(process.env.RESEND_DOMAINS_JSON);
+                    const domains = Array.isArray(parsed) ? parsed : (parsed.data ?? parsed.result ?? []);
+                    const domain = domains.find((item) => item.name === "riverwayse.com" && item.status === "verified");
+                    process.stdout.write(domain ? "yes" : "no");
+                  } catch { process.stdout.write("no"); }
+                '
+              )"
+              unset domains_json
+              if [ "$verified" = "yes" ]; then
+                printf '%s' "leads@riverwayse.com" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
+                echo "Configured the sender because Resend reports riverwayse.com as verified."
+              else
+                echo "::warning::Resend does not report riverwayse.com as a verified sender domain. Set RESEND_FROM_EMAIL to a verified sender before the ads gate."
+              fi
+            else
+              echo "::warning::Could not verify the Resend domain using the configured API key. Set RESEND_FROM_EMAIL to a known verified sender."
             fi
-          done
-          echo "Preview-only database and safe runtime configuration setup is complete."
+          else
+            echo "::warning::RESEND_FROM_EMAIL is not configured; notification delivery remains blocked."
+          fi
+          echo "Preview notification prerequisites checked without changing Production settings."
 
       - name: Deploy feature-branch preview
         uses: cloudflare/wrangler-action@v3
