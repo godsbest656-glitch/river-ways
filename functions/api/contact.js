@@ -44,6 +44,9 @@ export async function onRequestPost({ request, env }) {
   const declaredLength = Number(request.headers.get("content-length") || 0);
   if (declaredLength > MAX_BODY_BYTES) return json({ error: "Request is too large." }, 413);
   if (!env.LEADS_DB) return json({ error: "Enquiry service is not configured yet. Please email akinsify0511@gmail.com instead." }, 503);
+  if (!env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
+    return json({ error: "Enquiry service is not fully configured yet. Please email akinsify0511@gmail.com instead." }, 503);
+  }
 
   let raw;
   try {
@@ -84,10 +87,6 @@ export async function onRequestPost({ request, env }) {
   const submissionKey = providedSubmissionKey || crypto.randomUUID();
   if (!name || !EMAIL_RE.test(email) || !ALLOWED_GOALS.has(goal)) return json({ error: "Please provide your name, a valid email, and select a listed goal." }, 400);
   if (details.length > 3000) return json({ error: "Please shorten your project context." }, 400);
-  if (!env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
-    return json({ error: "Enquiry service is not fully configured yet. Please email akinsify0511@gmail.com instead." }, 503);
-  }
-
   // Hash the platform-provided client IP before using it for short-window rate limiting.
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const ipHash = await hash(ip + env.RATE_LIMIT_SALT);
