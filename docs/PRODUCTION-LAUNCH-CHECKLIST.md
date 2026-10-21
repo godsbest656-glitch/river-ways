@@ -33,7 +33,7 @@ Never prefix these values with `VITE_`; Vite-prefixed variables can be exposed i
 
 1. Open the preview URL linked from the latest successful **Cloudflare Pages preview** workflow.
 2. Confirm the homepage, `/privacy/`, `/field-guide/`, and `/growth-diagnostic/` load and have the expected River Ways branding. Confirm `/growth-diagnostic/diagnostic.js` returns HTTP 200 and the assessment functions under the production Content-Security-Policy.
-3. Confirm `/api/contact` responds with method-not-allowed to a GET request (the function is present).
+3. Confirm `GET /api/contact` returns HTTP 405 only after its non-mutating runtime check verifies the D1 binding, rate-limit salt and `submission_key` schema. HTTP 503 means the runtime configuration or migrations are incomplete.
 4. Submit one clearly labelled internal test enquiry from the preview form.
 5. Confirm the enquiry appears in D1 and the notification arrives in the intended inbox. Verify notification status and reply-to address.
 6. Check that invalid input and cross-origin requests are rejected, repeated submissions are rate-limited, and a retry using the same submission key does not create a second row.
