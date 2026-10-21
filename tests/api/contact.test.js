@@ -10,6 +10,7 @@ const validBody = {
   goal: "Generate more qualified demand",
   details: "We want to improve qualified enquiries.",
   website: "",
+  submissionKey: "11111111-1111-4111-8111-111111111111",
 };
 
 function request(body, options = {}) {
@@ -23,8 +24,9 @@ function request(body, options = {}) {
   });
 }
 
-function fakeDatabase({ recentCount = 0 } = {}) {
+function fakeDatabase({ recentCount = 0, existingSubmission = null, conflictOnInsert = false } = {}) {
   const calls = [];
+  let submissionLookups = 0;
   const db = {
     prepare(sql) {
       return {
@@ -32,10 +34,19 @@ function fakeDatabase({ recentCount = 0 } = {}) {
           calls.push({ sql, values });
           return {
             async first() {
-              return { total: recentCount };
+              if (sql.includes("WHERE submission_key = ?")) {
+                submissionLookups += 1;
+                if (conflictOnInsert && submissionLookups === 1) return null;
+                return existingSubmission;
+              }
+              if (sql.includes("SELECT COUNT(*) AS total")) return { total: recentCount };
+              return null;
             },
             async run() {
-              if (sql.startsWith("INSERT")) return { meta: { last_row_id: 17 } };
+              if (sql.startsWith("INSERT")) {
+                if (conflictOnInsert) throw new Error("UNIQUE constraint failed: leads.submission_key");
+                return { meta: { last_row_id: 17 } };
+              }
               return { meta: {} };
             },
           };
@@ -121,8 +132,10 @@ test("stores a valid enquiry when notifications are not configured", async () =>
   });
   assert.equal(response.status, 200);
   assert.deepEqual(await readJson(response), { ok: true, notification: "not_configured" });
-  assert.equal(calls.filter((call) => call.sql.startsWith("SELECT")).length, 1);
+  assert.equal(calls.filter((call) => call.sql.includes("WHERE submission_key = ?")).length, 1);
+  assert.equal(calls.filter((call) => call.sql.includes("SELECT COUNT(*) AS total")).length, 1);
   assert.equal(calls.filter((call) => call.sql.startsWith("INSERT")).length, 1);
+  assert.equal(calls.find((call) => call.sql.startsWith("INSERT")).values.at(-1), validBody.submissionKey);
   assert.equal(calls.find((call) => call.sql.startsWith("INSERT")).values[0], "Ada Example");
 });
 
@@ -134,6 +147,35 @@ test("rate-limits repeated enquiries from the same connection", async () => {
   });
   assert.equal(response.status, 429);
   assert.equal(calls.some((call) => call.sql.startsWith("INSERT")), false);
+});
+
+
+test("returns the existing result when a submission key is retried", async () => {
+  const { db, calls } = fakeDatabase({
+    existingSubmission: { id: 17, notification_status: "sent" },
+  });
+  const response = await onRequestPost({
+    request: request(validBody, { origin: "https://riverwayse.example" }),
+    env: { LEADS_DB: db, RATE_LIMIT_SALT },
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await readJson(response), { ok: true, notification: "sent", duplicate: true });
+  assert.equal(calls.filter((call) => call.sql.startsWith("INSERT")).length, 0);
+  assert.equal(calls.filter((call) => call.sql.includes("SELECT COUNT(*) AS total")).length, 0);
+});
+
+test("handles simultaneous duplicate submissions using the unique database index", async () => {
+  const { db, calls } = fakeDatabase({
+    existingSubmission: { id: 17, notification_status: "sent" },
+    conflictOnInsert: true,
+  });
+  const response = await onRequestPost({
+    request: request(validBody, { origin: "https://riverwayse.example" }),
+    env: { LEADS_DB: db, RATE_LIMIT_SALT },
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await readJson(response), { ok: true, notification: "sent", duplicate: true });
+  assert.equal(calls.filter((call) => call.sql.startsWith("INSERT")).length, 1);
 });
 
 test("persists first-party campaign attribution and normalizes the landing path", async () => {
@@ -160,5 +202,6 @@ test("persists first-party campaign attribution and normalizes the landing path"
     "rw-diagnostic-test",
     "search-ad-a",
     "demand engineering",
+    validBody.submissionKey,
   ]);
 });
