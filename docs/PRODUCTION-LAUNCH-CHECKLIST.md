@@ -27,6 +27,8 @@ Add these as **server-side environment variables/secrets** in the Cloudflare Pag
 - Variable `RESEND_FROM_EMAIL`: a sender address on a domain verified in Resend.
 - Variable `LEAD_NOTIFICATION_EMAIL`: the inbox that should receive enquiry notifications (currently intended: `akinsify0511@gmail.com`).
 
+The current GitHub Actions `RESEND_API_KEY` returned HTTP 400 (`API key is invalid`) when tested against Resend's domains endpoint. Replace that GitHub Actions secret with a valid key before expecting email notifications. The workflow deliberately removes an invalid Resend key from Preview rather than storing it.
+
 Never prefix these values with `VITE_`; Vite-prefixed variables can be exposed in browser bundles. Redeploy after changing Pages bindings or variables.
 
 ## 3. Verify the preview safely
