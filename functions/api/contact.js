@@ -39,6 +39,7 @@ export async function onRequestGet({ env }) {
         allow: "POST, OPTIONS",
         "cache-control": "no-store",
         "x-content-type-options": "nosniff",
+        "x-river-ways-api-schema": "submission-key-v1",
       },
     });
   } catch {
