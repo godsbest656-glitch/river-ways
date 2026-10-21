@@ -41,6 +41,7 @@ Do not describe the self-assessment as a bespoke audit, guarantee of leads, or f
 ### B. Enquiry capture — hard blocker
 
 - [ ] The intended D1 database is bound as `LEADS_DB` in the preview and its schema migrations `0001_leads.sql`, `0002_campaign_attribution.sql`, then `0003_submission_idempotency.sql` have been applied exactly once.
+- [ ] The non-mutating `GET /api/contact` preflight returns HTTP 405 only when the D1 binding, private rate-limit salt, and latest idempotency schema are ready; HTTP 503 means a configuration or migration is still missing.
 - [ ] A unique, private `RATE_LIMIT_SALT` of at least 32 characters is present in the preview environment.
 - [ ] One labelled end-to-end test from the preview creates exactly one D1 row.
 - [ ] The row contains the correct goal, original landing path and submitted UTM values.
