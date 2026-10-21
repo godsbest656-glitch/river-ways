@@ -49,7 +49,7 @@ The endpoint intentionally returns a configuration error rather than storing an 
 4. Add `RATE_LIMIT_SALT` as a secret containing a long, randomly generated value (at least 32 characters). Do not reuse a public value.
 5. For email notifications, configure `RESEND_API_KEY` as a secret, `RESEND_FROM_EMAIL` as a verified sender, and `LEAD_NOTIFICATION_EMAIL` as the destination inbox. Without these three values, a saved enquiry is still recorded but no email notification is sent.
 6. After changing a preview secret or binding, trigger a **new preview deployment** and test that new deployment's URL. Existing preview deployments may continue using their earlier configuration; a successful build alone does not prove the runtime secret is available.
-7. Test valid and invalid submissions, cross-origin requests, oversized payloads, the honeypot, rate limiting, idempotent retries using the same submission key, and missing configuration. Confirm records are saved in D1 and notifications arrive when configured.
+7. Test the non-mutating `GET /api/contact` readiness probe, valid and invalid submissions, cross-origin requests, oversized payloads, the honeypot, rate limiting, idempotent retries using the same submission key, and missing configuration. Confirm records are saved in D1 and notifications arrive when configured.
 8. Set access controls and retention/deletion procedures before collecting real enquiries. Review Cloudflare and Resend account security and provider terms.
 
 The endpoint stores a lead before attempting notification. Notification delivery problems do not delete a saved lead. Check the D1 `notification_status` field and Cloudflare logs during setup. The contact endpoint does not itself activate CRM, analytics, or social-listening integrations.
