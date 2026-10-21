@@ -75,7 +75,7 @@ jobs:
           slug="${GITHUB_REF_NAME//\//-}"
           BASE_URL="https://${slug}.riverwayse-website.pages.dev"
           html="$(curl --fail --silent --show-error "$BASE_URL/")"
-          if ! printf '%s' "$html" | grep -Fq "name=\\"river-ways-release\\" content=\\"$GITHUB_SHA\\""; then
+          if ! printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"$GITHUB_SHA\""; then
             echo "Preview does not serve this exact source commit ($GITHUB_SHA)"
             exit 1
           fi
