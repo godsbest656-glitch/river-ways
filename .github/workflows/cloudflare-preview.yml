@@ -115,7 +115,7 @@ jobs:
           done
           headers="$(curl --silent --show-error --head "$BASE_URL/")"
           require_header() {
-            if ! printf '%s\n' "$headers" | grep -Eqi "$1"; then
+            if ! printf '%s\n' "$headers" | tr -d '\r' | grep -Eqi "$1"; then
               echo "Missing required preview response header: $1"
               echo "Response headers received:"
               printf '%s\n' "$headers"
