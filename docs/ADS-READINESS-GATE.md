@@ -7,11 +7,18 @@ This is a hard release gate, not a recommendation to launch ads automatically. I
 ## Current verified blockers
 
 - The production domain `https://riverwayse.com/api/contact` returned **HTTP 405** to a non-persisting POST probe. The production enquiry endpoint is not active.
-- The current Pages preview's `POST /api/contact` returned **HTTP 503** with the message that the enquiry service is not configured. The function exists, but its D1 binding is unavailable or missing in that preview.
-- The Cloudflare Workers build bot has reported failed builds on the Pages integration pull request. The repository's Pages deployment workflow and the existing Worker build integration are separate paths; do not interpret these build failures as proof of slow visitor performance.
+- The current Pages preview's non-mutating `GET /api/contact` readiness probe returned **HTTP 503** with code `missing_database_binding`. The branch's automated Preview setup then reported Cloudflare `Authentication error [code: 10000]` when attempting to list D1 databases. The current GitHub Actions `CLOUDFLARE_API_TOKEN` can deploy Pages but needs account-scoped **D1:Edit** access before the workflow can provision/bind the dedicated Preview database. The setup step is allowed to fail without blocking static preview deployment; the Ads Gate must still fail while the database is absent.
+- The Preview secrets step generated `RATE_LIMIT_SALT` and sets the notification destination to `akinsify0511@gmail.com`. The automated Resend domains check did not confirm a verified `riverwayse.com` sender, and the GitHub Actions `RESEND_FROM_EMAIL` value is empty. Email delivery remains unproven; configure a real, verified sender rather than guessing one.
+- The Cloudflare Pages deployment workflow and the existing Worker build integration are separate paths; do not interpret a Worker build failure as proof that Cloudflare is making visitor page loads slow.
 - The latest supplied mobile Lighthouse report recorded LCP at **3.9–4.9 seconds under simulated throttling**. Re-measure the actual candidate landing page before approving spend.
 
-Re-run these checks after configuration; do not infer that a previous result has changed.
+### Exact Preview unblock steps
+
+1. In Cloudflare, open **Profile → API Tokens** and edit the token used by GitHub Actions. Preserve existing Pages deployment permissions and add account-scoped **D1:Edit**. Update the GitHub Actions secret `CLOUDFLARE_API_TOKEN` with that token; never paste its value into code or chat.
+2. In Resend, confirm the API key is valid and that `riverwayse.com` has `verified` status under Domains. Set the GitHub Actions secret `RESEND_FROM_EMAIL` to a sender such as `leads@riverwayse.com` only if that domain is verified; otherwise use a sender on a verified domain.
+3. Rerun the Preview workflow. Require `GET /api/contact` to return HTTP 405 with `x-river-ways-api-schema: submission-key-v1`, then verify a labelled test enquiry stores one D1 row with UTMs and delivers a real notification.
+
+These steps are Preview-only. Do not add a production database binding, change production secrets, or alter DNS until the candidate is proven and a cutover is approved.
 
 ## The first test offer
 
