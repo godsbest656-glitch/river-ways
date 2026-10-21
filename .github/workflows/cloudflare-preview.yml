@@ -37,6 +37,19 @@ jobs:
       - name: Build website
         run: npm run build
 
+      - name: Ensure Pages routing and security files ship in the artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp public/_headers dist/_headers
+          cp public/_redirects dist/_redirects
+          test -s dist/_headers
+          test -s dist/_redirects
+          echo "Verified dist/_headers and dist/_redirects are present."
+          echo "Security header definitions shipped:"
+          cat dist/_headers
+
       - name: Stamp built HTML with this source commit
         env:
           GITHUB_SHA: ${{ github.sha }}
@@ -92,6 +105,8 @@ jobs:
           require_header() {
             if ! printf '%s\n' "$headers" | grep -Eqi "$1"; then
               echo "Missing required preview response header: $1"
+              echo "Response headers received:"
+              printf '%s\n' "$headers"
               exit 1
             fi
           }
