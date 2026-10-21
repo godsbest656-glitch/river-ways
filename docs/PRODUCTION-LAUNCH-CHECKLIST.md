@@ -6,7 +6,7 @@ This checklist is a release gate for the River Ways website. A successful GitHub
 
 In Cloudflare, open **Workers & Pages → riverwayse-website → Settings**.
 
-Configure the following for both **Preview** and **Production** environments:
+**Configure Preview first. Leave Production unchanged until the candidate passes the Ads Readiness Gate and a production cutover is explicitly approved.** In the Preview environment, configure:
 
 - D1 database binding: variable name `LEADS_DB`, connected to the River Ways enquiry database.
 - Secret `RATE_LIMIT_SALT`: a randomly generated secret of at least 32 characters. Use a different value from test/dev environments. Do not commit it or put it in client-side Vite variables.
@@ -21,7 +21,7 @@ openssl rand -hex 32
 
 ## 2. Configure enquiry notification email
 
-Add these as **server-side environment variables/secrets** in Cloudflare Pages for Preview and Production:
+Add these as **server-side environment variables/secrets** in the Cloudflare Pages Preview environment first. Repeat separately for Production only after the release and cutover are approved:
 
 - Secret `RESEND_API_KEY`: a restricted API key with permission to send email.
 - Variable `RESEND_FROM_EMAIL`: a sender address on a domain verified in Resend.
