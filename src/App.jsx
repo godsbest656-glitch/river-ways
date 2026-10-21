@@ -37,6 +37,28 @@ function Eyebrow({ children, light = false }) {
   return <div className={'eyebrow ' + (light ? 'eyebrow-light' : '')}><span className="eyebrow-dot" />{children}</div>;
 }
 
+const SUBMISSION_KEY_STORAGE = 'river-ways:enquiry-submission-key';
+function createSubmissionKey() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  return 'rw-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) + '-' + Math.random().toString(36).slice(2);
+}
+function getSubmissionKey() {
+  try {
+    const existing = window.sessionStorage.getItem(SUBMISSION_KEY_STORAGE);
+    if (existing && /^[A-Za-z0-9._:-]{16,80}$/.test(existing)) return existing;
+    const created = createSubmissionKey();
+    window.sessionStorage.setItem(SUBMISSION_KEY_STORAGE, created);
+    return created;
+  } catch {
+    return createSubmissionKey();
+  }
+}
+function rotateSubmissionKey() {
+  const created = createSubmissionKey();
+  try { window.sessionStorage.setItem(SUBMISSION_KEY_STORAGE, created); } catch {}
+  return created;
+}
+
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -44,6 +66,7 @@ export default function App() {
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionKey, setSubmissionKey] = useState(getSubmissionKey);
   const updateForm = (event) => setForm({ ...form, [event.target.name]: event.target.value });
   const closeMenu = () => setMenuOpen(false);
 
@@ -74,7 +97,7 @@ export default function App() {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, ...attribution })
+        body: JSON.stringify({ ...form, submissionKey, ...attribution })
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) {
@@ -82,12 +105,13 @@ export default function App() {
       }
       if (result.notification === 'sent') {
         setFormSuccess('Your enquiry has been received and the River Ways team has been notified. We will follow up using the email address you provided.');
-      } else if (result.notification === 'failed') {
+      } else if (result.notification === 'failed' || result.notification === 'pending') {
         setFormSuccess('Your enquiry has been saved, but we could not confirm the email notification to our team. For a prompt response, email akinsify0511@gmail.com and mention that you submitted the website form.');
       } else {
         setFormSuccess('Your enquiry has been saved, but email notifications are not fully configured yet. For a prompt response, email akinsify0511@gmail.com and mention that you submitted the website form.');
       }
       setForm({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '', website: '' });
+      setSubmissionKey(rotateSubmissionKey());
     } catch (error) {
       setFormError((error instanceof Error ? error.message : 'Something went wrong.') + ' Email akinsify0511@gmail.com if you need another way to reach us.');
     } finally {
