@@ -130,26 +130,19 @@ jobs:
           echo "OK security response headers"
           api_status="$(curl --silent --show-error --dump-header /tmp/contact-preflight-headers.txt --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
           if [ "$api_status" != "405" ]; then
-            echo "Contact function GET preflight returned HTTP $api_status. Expected 405 only when LEADS_DB, RATE_LIMIT_SALT, and the latest schema migrations are ready; 503 means runtime configuration or schema is missing."
+            echo "Contact function readiness preflight returned HTTP $api_status."
+            echo "HTTP 405 with the current schema marker is required for an ads-ready service; HTTP 503 means runtime configuration or schema is still missing."
             exit 1
           fi
-          if ! tr -d '\r' < /tmp/contact-preflight-headers.txt | grep -Eqi '^x-river-ways-api-schema: submission-key-v1
-          contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' --request POST --header 'Content-Type: application/json' --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' "$BASE_URL/api/contact")"
-          if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
-            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding."
-            cat /tmp/contact-smoke.json
-            exit 1
-          fi
-          echo "OK /api/contact runtime binding (honeypot safely acknowledged; no lead stored)"
-; then
-            echo "The contact endpoint returned 405 but did not expose the expected current-function schema marker; the Pages Function bundle may be stale."
+          if ! tr -d '\r' < /tmp/contact-preflight-headers.txt | grep -Eqi '^x-river-ways-api-schema: submission-key-v1$'; then
+            echo "The contact endpoint did not expose the current schema marker; the deployed Pages Function may be stale."
             cat /tmp/contact-preflight-headers.txt
             exit 1
           fi
           echo "OK /api/contact current-function preflight ($api_status; schema marker verified)"
           contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' --request POST --header 'Content-Type: application/json' --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' "$BASE_URL/api/contact")"
           if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
-            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding."
+            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding and configuration."
             cat /tmp/contact-smoke.json
             exit 1
           fi
