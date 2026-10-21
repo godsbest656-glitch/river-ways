@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { onRequestPost } from "../../functions/api/contact.js";
+import { onRequestGet, onRequestPost } from "../../functions/api/contact.js";
 
 const RATE_LIMIT_SALT = "test-only-salt-that-is-long-enough-123";
 const validBody = {
@@ -24,7 +24,7 @@ function request(body, options = {}) {
   });
 }
 
-function fakeDatabase({ recentCount = 0, existingSubmission = null, conflictOnInsert = false } = {}) {
+function fakeDatabase({ recentCount = 0, existingSubmission = null, conflictOnInsert = false, schemaMissing = false } = {}) {
   const calls = [];
   let submissionLookups = 0;
   const db = {
@@ -35,6 +35,7 @@ function fakeDatabase({ recentCount = 0, existingSubmission = null, conflictOnIn
           return {
             async first() {
               if (sql.includes("WHERE submission_key = ?")) {
+                if (schemaMissing) throw new Error("no such column: submission_key");
                 submissionLookups += 1;
                 if (conflictOnInsert && submissionLookups === 1) return null;
                 return existingSubmission;
@@ -60,6 +61,21 @@ function fakeDatabase({ recentCount = 0, existingSubmission = null, conflictOnIn
 async function readJson(response) {
   return response.json();
 }
+
+
+test("GET preflight returns method-not-allowed only when runtime config and latest schema are present", async () => {
+  const { db } = fakeDatabase();
+  const ready = await onRequestGet({ env: { LEADS_DB: db, RATE_LIMIT_SALT } });
+  assert.equal(ready.status, 405);
+  assert.equal(ready.headers.get("allow"), "POST, OPTIONS");
+
+  const missingSalt = await onRequestGet({ env: { LEADS_DB: db } });
+  assert.equal(missingSalt.status, 503);
+
+  const { db: oldSchemaDb } = fakeDatabase({ schemaMissing: true });
+  const missingMigration = await onRequestGet({ env: { LEADS_DB: oldSchemaDb, RATE_LIMIT_SALT } });
+  assert.equal(missingMigration.status, 503);
+});
 
 test("rejects non-JSON submissions", async () => {
   const response = await onRequestPost({
