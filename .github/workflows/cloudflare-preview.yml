@@ -156,41 +156,54 @@ jobs:
           # This is the approved River Ways notification destination.
           printf '%s' "akinsify0511@gmail.com" | npx --yes wrangler@3.90.0 pages secret put LEAD_NOTIFICATION_EMAIL --project-name="$project_name" --env preview
 
-          if [ -n "${RESEND_API_KEY:-}" ]; then
-            printf '%s' "$RESEND_API_KEY" | npx --yes wrangler@3.90.0 pages secret put RESEND_API_KEY --project-name="$project_name" --env preview
-          else
-            echo "::warning::RESEND_API_KEY is not configured; email delivery cannot pass the ads gate."
-          fi
-
-          sender="${RESEND_FROM_EMAIL:-}"
-          if [ -n "$sender" ]; then
-            printf '%s' "$sender" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
-          elif [ -n "${RESEND_API_KEY:-}" ]; then
+          resend_key="${RESEND_API_KEY:-}"
+          resend_key="$(printf '%s' "$resend_key" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          if [ -n "$resend_key" ]; then
+            # Validate the key before storing it in Cloudflare. Never print its value.
             set +e
-            domain_http="$(curl --silent --show-error --get --output /tmp/river-ways-resend-domains.json --write-out '%{http_code}' --header "Authorization: Bearer $RESEND_API_KEY" 'https://api.resend.com/domains' 2>/tmp/river-ways-resend-curl.log)"
+            domain_http="$(curl --silent --show-error --get --output /tmp/river-ways-resend-domains.json --write-out '%{http_code}' --header "Authorization: Bearer $resend_key" 'https://api.resend.com/domains' 2>/tmp/river-ways-resend-curl.log)"
             domain_curl_status="$?"
             set -e
             if [ "$domain_curl_status" -eq 0 ] && [ "$domain_http" = "200" ]; then
               domains_json="$(cat /tmp/river-ways-resend-domains.json)"
-              verified="$(
-                RESEND_DOMAINS_JSON="$domains_json" node --input-type=module -e '
+              printf '%s' "$resend_key" | npx --yes wrangler@3.90.0 pages secret put RESEND_API_KEY --project-name="$project_name" --env preview
+              echo "Resend API key validated; storing it in Preview."
+
+              sender="${RESEND_FROM_EMAIL:-}"
+              if [ -n "$sender" ]; then
+                sender_domain="$(
+                  SENDER_VALUE="$sender" node --input-type=module -e '
+                    const value = process.env.SENDER_VALUE || "";
+                    const angle = value.match(/<\s*([^<>]+)\s*>/);
+                    const address = (angle ? angle[1] : value).trim();
+                    const at = address.lastIndexOf("@");
+                    process.stdout.write(at > 0 ? address.slice(at + 1).toLowerCase() : "");
+                  '
+                )"
+              else
+                sender_domain="riverwayse.com"
+              fi
+              sender_verified="$(
+                RESEND_DOMAINS_JSON="$domains_json" SENDER_DOMAIN="$sender_domain" node --input-type=module -e '
                   try {
                     const parsed = JSON.parse(process.env.RESEND_DOMAINS_JSON);
                     const domains = Array.isArray(parsed) ? parsed : (parsed.data ?? parsed.result ?? []);
-                    const domain = domains.find((item) => item.name === "riverwayse.com" && item.status === "verified");
-                    process.stdout.write(domain ? "yes" : "no");
+                    const match = domains.find((item) => item.name?.toLowerCase() === (process.env.SENDER_DOMAIN || "") && item.status === "verified");
+                    process.stdout.write(match ? "yes" : "no");
                   } catch { process.stdout.write("no"); }
                 '
               )"
               unset domains_json
-              if [ "$verified" = "yes" ]; then
-                printf '%s' "leads@riverwayse.com" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
-                echo "Configured the sender because Resend reports riverwayse.com as verified."
+              if [ -n "$sender_domain" ] && [ "$sender_verified" = "yes" ]; then
+                if [ -z "$sender" ]; then sender="leads@riverwayse.com"; fi
+                printf '%s' "$sender" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
+                echo "Configured Preview sender from a domain Resend reports as verified."
               else
-                echo "::warning::Resend API responded successfully but riverwayse.com is not verified. Set RESEND_FROM_EMAIL to a verified sender before the ads gate."
+                echo "::warning::No verified domain matched RESEND_FROM_EMAIL. Preview sender was not guessed."
+                npx --yes wrangler@3.90.0 pages secret delete RESEND_FROM_EMAIL --project-name="$project_name" --env preview >/tmp/river-ways-delete-sender.log 2>&1 || true
               fi
             else
-              echo "::warning::Resend domains check failed (curl exit $domain_curl_status, HTTP ${domain_http:-unknown}); sender was not guessed."
+              echo "::warning::Resend API key validation failed (curl exit $domain_curl_status, HTTP ${domain_http:-unknown}); key will not be stored in Preview."
               if [ -s /tmp/river-ways-resend-domains.json ]; then
                 RESEND_ERROR_FILE=/tmp/river-ways-resend-domains.json node --input-type=module -e '
                   import { readFileSync } from "node:fs";
@@ -201,9 +214,14 @@ jobs:
                   } catch {}
                 '
               fi
+              npx --yes wrangler@3.90.0 pages secret delete RESEND_API_KEY --project-name="$project_name" --env preview >/tmp/river-ways-delete-resend-key.log 2>&1 || true
+              npx --yes wrangler@3.90.0 pages secret delete RESEND_FROM_EMAIL --project-name="$project_name" --env preview >/tmp/river-ways-delete-sender.log 2>&1 || true
+              echo "::warning::Replace the GitHub Actions RESEND_API_KEY secret with a valid Resend API key, then verify that riverwayse.com is verified in Resend."
             fi
           else
-            echo "::warning::RESEND_FROM_EMAIL is not configured; notification delivery remains blocked."
+            echo "::warning::RESEND_API_KEY is not configured; email delivery cannot pass the ads gate."
+            npx --yes wrangler@3.90.0 pages secret delete RESEND_API_KEY --project-name="$project_name" --env preview >/tmp/river-ways-delete-resend-key.log 2>&1 || true
+            npx --yes wrangler@3.90.0 pages secret delete RESEND_FROM_EMAIL --project-name="$project_name" --env preview >/tmp/river-ways-delete-sender.log 2>&1 || true
           fi
           echo "Preview notification prerequisites checked without changing Production settings."
 
