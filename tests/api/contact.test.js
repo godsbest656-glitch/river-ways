@@ -65,7 +65,15 @@ async function readJson(response) {
 
 test("GET preflight returns method-not-allowed only when runtime config and latest schema are present", async () => {
   const { db } = fakeDatabase();
-  const ready = await onRequestGet({ env: { LEADS_DB: db, RATE_LIMIT_SALT } });
+  const ready = await onRequestGet({
+    env: {
+      LEADS_DB: db,
+      RATE_LIMIT_SALT,
+      RESEND_API_KEY: "test-key",
+      RESEND_FROM_EMAIL: "notifications@example.com",
+      LEAD_NOTIFICATION_EMAIL: "leads@example.com",
+    },
+  });
   assert.equal(ready.status, 405);
   assert.equal(ready.headers.get("allow"), "POST, OPTIONS");
   assert.equal(ready.headers.get("x-river-ways-api-schema"), "submission-key-v1");
@@ -79,9 +87,21 @@ test("GET preflight returns method-not-allowed only when runtime config and late
   assert.equal((await readJson(missingSalt)).code, "missing_rate_limit_secret");
 
   const { db: oldSchemaDb } = fakeDatabase({ schemaMissing: true });
-  const missingMigration = await onRequestGet({ env: { LEADS_DB: oldSchemaDb, RATE_LIMIT_SALT } });
+  const missingMigration = await onRequestGet({
+    env: {
+      LEADS_DB: oldSchemaDb,
+      RATE_LIMIT_SALT,
+      RESEND_API_KEY: "test-key",
+      RESEND_FROM_EMAIL: "notifications@example.com",
+      LEAD_NOTIFICATION_EMAIL: "leads@example.com",
+    },
+  });
   assert.equal(missingMigration.status, 503);
   assert.equal((await readJson(missingMigration)).code, "submission_idempotency_migration_required");
+
+  const missingNotification = await onRequestGet({ env: { LEADS_DB: db, RATE_LIMIT_SALT } });
+  assert.equal(missingNotification.status, 503);
+  assert.equal((await readJson(missingNotification)).code, "missing_resend_configuration");
 });
 
 test("rejects non-JSON submissions", async () => {

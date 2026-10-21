@@ -36,6 +36,9 @@ export async function onRequestGet({ env }) {
     await env.LEADS_DB.prepare(
       "SELECT id, notification_status FROM leads WHERE submission_key = ? LIMIT 1"
     ).bind("river-ways-readiness-probe-no-record").first();
+    if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL || !env.LEAD_NOTIFICATION_EMAIL) {
+      return json({ error: "Enquiry service is unavailable.", code: "missing_resend_configuration" }, 503);
+    }
     return new Response(null, {
       status: 405,
       headers: {
