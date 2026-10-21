@@ -166,7 +166,12 @@ jobs:
           if [ -n "$sender" ]; then
             printf '%s' "$sender" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
           elif [ -n "${RESEND_API_KEY:-}" ]; then
-            if domains_json="$(curl --fail --silent --show-error --get 'https://api.resend.com/domains' --header "Authorization: Bearer $RESEND_API_KEY" 2>/dev/null)"; then
+            set +e
+            domain_http="$(curl --silent --show-error --get --output /tmp/river-ways-resend-domains.json --write-out '%{http_code}' --header "Authorization: Bearer $RESEND_API_KEY" 'https://api.resend.com/domains' 2>/tmp/river-ways-resend-curl.log)"
+            domain_curl_status="$?"
+            set -e
+            if [ "$domain_curl_status" -eq 0 ] && [ "$domain_http" = "200" ]; then
+              domains_json="$(cat /tmp/river-ways-resend-domains.json)"
               verified="$(
                 RESEND_DOMAINS_JSON="$domains_json" node --input-type=module -e '
                   try {
@@ -182,10 +187,20 @@ jobs:
                 printf '%s' "leads@riverwayse.com" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
                 echo "Configured the sender because Resend reports riverwayse.com as verified."
               else
-                echo "::warning::Resend does not report riverwayse.com as a verified sender domain. Set RESEND_FROM_EMAIL to a verified sender before the ads gate."
+                echo "::warning::Resend API responded successfully but riverwayse.com is not verified. Set RESEND_FROM_EMAIL to a verified sender before the ads gate."
               fi
             else
-              echo "::warning::Could not verify the Resend domain using the configured API key. Set RESEND_FROM_EMAIL to a known verified sender."
+              echo "::warning::Resend domains check failed (curl exit $domain_curl_status, HTTP ${domain_http:-unknown}); sender was not guessed."
+              if [ -s /tmp/river-ways-resend-domains.json ]; then
+                RESEND_ERROR_FILE=/tmp/river-ways-resend-domains.json node --input-type=module -e '
+                  import { readFileSync } from "node:fs";
+                  try {
+                    const parsed = JSON.parse(readFileSync(process.env.RESEND_ERROR_FILE, "utf8"));
+                    const message = typeof parsed.message === "string" ? parsed.message : (typeof parsed.error === "string" ? parsed.error : "");
+                    if (message) console.log("Resend API message: " + message.slice(0, 300));
+                  } catch {}
+                '
+              fi
             fi
           else
             echo "::warning::RESEND_FROM_EMAIL is not configured; notification delivery remains blocked."
