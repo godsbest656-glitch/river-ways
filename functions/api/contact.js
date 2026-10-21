@@ -25,9 +25,12 @@ function clean(value, max) {
 }
 
 export async function onRequestGet({ env }) {
-  // A non-mutating preflight proves the binding, secret, and latest lead schema are available.
-  if (!env.LEADS_DB || !env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
-    return json({ error: "Enquiry service is unavailable." }, 503);
+  // Non-mutating diagnostics identify missing configuration without revealing secret values.
+  if (!env.LEADS_DB) {
+    return json({ error: "Enquiry service is unavailable.", code: "missing_database_binding" }, 503);
+  }
+  if (!env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
+    return json({ error: "Enquiry service is unavailable.", code: "missing_rate_limit_secret" }, 503);
   }
   try {
     await env.LEADS_DB.prepare(
@@ -42,8 +45,13 @@ export async function onRequestGet({ env }) {
         "x-river-ways-api-schema": "submission-key-v1",
       },
     });
-  } catch {
-    return json({ error: "Enquiry service is unavailable." }, 503);
+  } catch (error) {
+    const message = error instanceof Error ? error.message.toLowerCase() : "";
+    const code = message.includes("submission_key") || message.includes("no such column")
+      ? "submission_idempotency_migration_required"
+      : "database_query_failed";
+    console.error("Contact readiness probe failed", code);
+    return json({ error: "Enquiry service is unavailable.", code }, 503);
   }
 }
 
