@@ -77,6 +77,11 @@ export async function onRequestPost({ request, env }) {
   const utmCampaign = clean(body.utmCampaign, 160);
   const utmContent = clean(body.utmContent, 160);
   const utmTerm = clean(body.utmTerm, 160);
+  const providedSubmissionKey = clean(body.submissionKey, 80);
+  if (providedSubmissionKey && !/^[A-Za-z0-9._:-]{16,80}$/.test(providedSubmissionKey)) {
+    return json({ error: "Invalid submission identifier. Please refresh and try again." }, 400);
+  }
+  const submissionKey = providedSubmissionKey || crypto.randomUUID();
   if (!name || !EMAIL_RE.test(email) || !ALLOWED_GOALS.has(goal)) return json({ error: "Please provide your name, a valid email, and select a listed goal." }, 400);
   if (details.length > 3000) return json({ error: "Please shorten your project context." }, 400);
   if (!env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
@@ -90,14 +95,35 @@ export async function onRequestPost({ request, env }) {
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
   try {
+    // A stable client key makes retries idempotent without suppressing a later, intentional enquiry.
+    const priorSubmission = await env.LEADS_DB.prepare(
+      "SELECT id, notification_status FROM leads WHERE submission_key = ? LIMIT 1"
+    ).bind(submissionKey).first();
+    if (priorSubmission) {
+      return json({ ok: true, notification: priorSubmission.notification_status, duplicate: true });
+    }
+
     const recent = await env.LEADS_DB.prepare(
       "SELECT COUNT(*) AS total FROM leads WHERE ip_hash = ? AND created_at >= ?"
     ).bind(ipHash, since).first();
     if ((recent?.total || 0) >= 5) return json({ error: "Too many enquiries from this connection. Please try again later or email us directly." }, 429);
 
-    const result = await env.LEADS_DB.prepare(
-      "INSERT INTO leads (name, email, company, goal, details, source, ip_hash, created_at, notification_status, landing_page, utm_source, utm_medium, utm_campaign, utm_content, utm_term) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)"
-    ).bind(name, email, company || null, goal, details || null, "website-contact", ipHash, now, landingPage, utmSource, utmMedium, utmCampaign, utmContent, utmTerm).run();
+    let result;
+    try {
+      result = await env.LEADS_DB.prepare(
+        "INSERT INTO leads (name, email, company, goal, details, source, ip_hash, created_at, notification_status, landing_page, utm_source, utm_medium, utm_campaign, utm_content, utm_term, submission_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(name, email, company || null, goal, details || null, "website-contact", ipHash, now, landingPage, utmSource, utmMedium, utmCampaign, utmContent, utmTerm, submissionKey).run();
+    } catch (insertError) {
+      // The unique index is the final guard if two retries arrive at the same time.
+      const message = insertError instanceof Error ? insertError.message : "";
+      if (/unique constraint failed: leads\.submission_key/i.test(message)) {
+        const existing = await env.LEADS_DB.prepare(
+          "SELECT id, notification_status FROM leads WHERE submission_key = ? LIMIT 1"
+        ).bind(submissionKey).first();
+        if (existing) return json({ ok: true, notification: existing.notification_status, duplicate: true });
+      }
+      throw insertError;
+    }
     const leadId = result.meta?.last_row_id;
 
     let notificationStatus = "not_configured";
