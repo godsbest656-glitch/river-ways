@@ -128,10 +128,12 @@ jobs:
           require_header '^permissions-policy:'
           require_header '^content-security-policy:'
           echo "OK security response headers"
-          api_status="$(curl --silent --show-error --dump-header /tmp/contact-preflight-headers.txt --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
+          api_status="$(curl --silent --show-error --dump-header /tmp/contact-preflight-headers.txt --output /tmp/contact-preflight.json --write-out '%{http_code}' "$BASE_URL/api/contact")"
           if [ "$api_status" != "405" ]; then
             echo "Contact function readiness preflight returned HTTP $api_status."
-            echo "HTTP 405 with the current schema marker is required for an ads-ready service; HTTP 503 means runtime configuration or schema is still missing."
+            echo "Safe diagnostic response:"
+            cat /tmp/contact-preflight.json
+            echo "HTTP 405 with the current schema marker is required for an ads-ready service."
             exit 1
           fi
           if ! tr -d '\r' < /tmp/contact-preflight-headers.txt | grep -Eqi '^x-river-ways-api-schema: submission-key-v1$'; then
