@@ -87,12 +87,24 @@ jobs:
           set -euo pipefail
           slug="$(printf '%s' "$GITHUB_REF_NAME" | sed 's|/|-|g')"
           BASE_URL="https://${slug}.riverwayse-website.pages.dev"
-          html="$(curl --fail --silent --show-error "$BASE_URL/")"
-          if ! printf '%s' "$html" | grep -Fq "name=\"river-ways-release\" content=\"$GITHUB_SHA\""; then
+          html=""
+          marker="name=\"river-ways-release\" content=\"$GITHUB_SHA\""
+          for attempt in $(seq 1 12); do
+            html="$(curl --fail --silent --show-error "$BASE_URL/")"
+            if printf '%s' "$html" | grep -Fq "$marker"; then
+              echo "OK release marker ($GITHUB_SHA)"
+              break
+            fi
+            echo "Waiting for Pages preview to serve $GITHUB_SHA (attempt $attempt/12)"
+            sleep 5
+          done
+          if ! printf '%s' "$html" | grep -Fq "$marker"; then
             echo "Preview does not serve this exact source commit ($GITHUB_SHA)"
+            echo "Marker expected: $marker"
+            echo "Page title and marker received:"
+            printf '%s' "$html" | grep -Eo '<title>[^<]*</title>|<meta name=\"river-ways-release\"[^>]*>' || true
             exit 1
           fi
-          echo "OK release marker ($GITHUB_SHA)"
           for route in "/" "/privacy/" "/field-guide/" "/growth-diagnostic/" "/growth-diagnostic/diagnostic.js"; do
             status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL$route")"
             if [ "$status" != "200" ]; then
