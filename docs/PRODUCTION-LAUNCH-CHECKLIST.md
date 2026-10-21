@@ -11,7 +11,7 @@ Configure the following for both **Preview** and **Production** environments:
 - D1 database binding: variable name `LEADS_DB`, connected to the River Ways enquiry database.
 - Secret `RATE_LIMIT_SALT`: a randomly generated secret of at least 32 characters. Use a different value from test/dev environments. Do not commit it or put it in client-side Vite variables.
 
-Apply `migrations/0001_leads.sql`, then `migrations/0002_campaign_attribution.sql`, to the selected D1 database using the D1 console or Wrangler migration workflow. Confirm the `leads` table, attribution columns, and indexes exist before testing the form. Apply each migration once per environment.
+Apply `migrations/0001_leads.sql`, `migrations/0002_campaign_attribution.sql`, then `migrations/0003_submission_idempotency.sql`, to the selected D1 database using the D1 console or Wrangler migration workflow. Confirm the `leads` table, attribution columns, and indexes exist before testing the form. Apply each migration once per environment.
 
 Example generation command (run locally; keep the output private):
 
@@ -36,7 +36,7 @@ Never prefix these values with `VITE_`; Vite-prefixed variables can be exposed i
 3. Confirm `/api/contact` responds with method-not-allowed to a GET request (the function is present).
 4. Submit one clearly labelled internal test enquiry from the preview form.
 5. Confirm the enquiry appears in D1 and the notification arrives in the intended inbox. Verify notification status and reply-to address.
-6. Check that invalid input is rejected, cross-origin requests are rejected, and repeated submissions are rate-limited.
+6. Check that invalid input and cross-origin requests are rejected, repeated submissions are rate-limited, and a retry using the same submission key does not create a second row.
 7. Delete the test enquiry in line with the retention policy after confirming the workflow.
 
 Do not run real customer enquiries through the preview while storage or email is unconfigured. The form should clearly report that the service is unavailable and provide the direct email fallback.
