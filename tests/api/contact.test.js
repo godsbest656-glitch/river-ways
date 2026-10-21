@@ -68,6 +68,7 @@ test("GET preflight returns method-not-allowed only when runtime config and late
   const ready = await onRequestGet({ env: { LEADS_DB: db, RATE_LIMIT_SALT } });
   assert.equal(ready.status, 405);
   assert.equal(ready.headers.get("allow"), "POST, OPTIONS");
+  assert.equal(ready.headers.get("x-river-ways-api-schema"), "submission-key-v1");
 
   const missingSalt = await onRequestGet({ env: { LEADS_DB: db } });
   assert.equal(missingSalt.status, 503);
