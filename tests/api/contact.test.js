@@ -107,7 +107,7 @@ test("honeypot submissions receive a neutral response and are not stored", async
   const { db, calls } = fakeDatabase();
   const response = await onRequestPost({
     request: request({ ...validBody, website: "spam payload" }),
-    env: { LEADS_DB: db },
+    env: { LEADS_DB: db, RATE_LIMIT_SALT },
   });
   assert.equal(response.status, 200);
   assert.deepEqual(await readJson(response), { ok: true });
