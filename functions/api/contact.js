@@ -24,6 +24,28 @@ function clean(value, max) {
   return typeof value === "string" ? value.trim().replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").slice(0, max) : "";
 }
 
+export async function onRequestGet({ env }) {
+  // A non-mutating preflight proves the binding, secret, and latest lead schema are available.
+  if (!env.LEADS_DB || !env.RATE_LIMIT_SALT || env.RATE_LIMIT_SALT.length < 32) {
+    return json({ error: "Enquiry service is unavailable." }, 503);
+  }
+  try {
+    await env.LEADS_DB.prepare(
+      "SELECT id, notification_status FROM leads WHERE submission_key = ? LIMIT 1"
+    ).bind("river-ways-readiness-probe-no-record").first();
+    return new Response(null, {
+      status: 405,
+      headers: {
+        allow: "POST, OPTIONS",
+        "cache-control": "no-store",
+        "x-content-type-options": "nosniff",
+      },
+    });
+  } catch {
+    return json({ error: "Enquiry service is unavailable." }, 503);
+  }
+}
+
 async function hash(value) {
   const bytes = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
