@@ -70,12 +70,18 @@ test("GET preflight returns method-not-allowed only when runtime config and late
   assert.equal(ready.headers.get("allow"), "POST, OPTIONS");
   assert.equal(ready.headers.get("x-river-ways-api-schema"), "submission-key-v1");
 
+  const missingDatabase = await onRequestGet({ env: { RATE_LIMIT_SALT } });
+  assert.equal(missingDatabase.status, 503);
+  assert.equal((await readJson(missingDatabase)).code, "missing_database_binding");
+
   const missingSalt = await onRequestGet({ env: { LEADS_DB: db } });
   assert.equal(missingSalt.status, 503);
+  assert.equal((await readJson(missingSalt)).code, "missing_rate_limit_secret");
 
   const { db: oldSchemaDb } = fakeDatabase({ schemaMissing: true });
   const missingMigration = await onRequestGet({ env: { LEADS_DB: oldSchemaDb, RATE_LIMIT_SALT } });
   assert.equal(missingMigration.status, 503);
+  assert.equal((await readJson(missingMigration)).code, "submission_idempotency_migration_required");
 });
 
 test("rejects non-JSON submissions", async () => {
