@@ -89,10 +89,77 @@ jobs:
             echo "OK $route ($status)"
           done
           headers="$(curl --silent --show-error --head "$BASE_URL/")"
-          printf '%s\n' "$headers" | grep -qi '^x-frame-options: DENY' || {
-            echo "Missing X-Frame-Options: DENY on homepage"
+          for header in \
+            '^x-frame-options: DENY
+          api_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
+          if [ "$api_status" != "405" ]; then
+            echo "Contact function GET smoke test returned HTTP $api_status (expected 405)"
             exit 1
-          }
+          fi
+          echo "OK /api/contact function route ($api_status for GET)"
+          # Exercise the Pages Function's runtime binding without creating a lead.
+          # The honeypot response is neutral and must never persist or notify.
+          contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' \
+            "$BASE_URL/api/contact")"
+          if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
+            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding."
+            cat /tmp/contact-smoke.json
+            exit 1
+          fi
+          echo "OK /api/contact runtime binding (honeypot safely acknowledged; no lead stored)"
+ \
+            '^x-content-type-options: nosniff
+          api_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
+          if [ "$api_status" != "405" ]; then
+            echo "Contact function GET smoke test returned HTTP $api_status (expected 405)"
+            exit 1
+          fi
+          echo "OK /api/contact function route ($api_status for GET)"
+          # Exercise the Pages Function's runtime binding without creating a lead.
+          # The honeypot response is neutral and must never persist or notify.
+          contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' \
+            "$BASE_URL/api/contact")"
+          if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
+            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding."
+            cat /tmp/contact-smoke.json
+            exit 1
+          fi
+          echo "OK /api/contact runtime binding (honeypot safely acknowledged; no lead stored)"
+ \
+            '^referrer-policy: strict-origin-when-cross-origin
+          api_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
+          if [ "$api_status" != "405" ]; then
+            echo "Contact function GET smoke test returned HTTP $api_status (expected 405)"
+            exit 1
+          fi
+          echo "OK /api/contact function route ($api_status for GET)"
+          # Exercise the Pages Function's runtime binding without creating a lead.
+          # The honeypot response is neutral and must never persist or notify.
+          contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' \
+            "$BASE_URL/api/contact")"
+          if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
+            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding."
+            cat /tmp/contact-smoke.json
+            exit 1
+          fi
+          echo "OK /api/contact runtime binding (honeypot safely acknowledged; no lead stored)"
+ \
+            '^permissions-policy:' \
+            '^content-security-policy:'; do
+            printf '%s\n' "$headers" | grep -Eqi "$header" || {
+              echo "Missing required preview response header: $header"
+              exit 1
+            }
+          done
           api_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL/api/contact")"
           if [ "$api_status" != "405" ]; then
             echo "Contact function GET smoke test returned HTTP $api_status (expected 405)"
