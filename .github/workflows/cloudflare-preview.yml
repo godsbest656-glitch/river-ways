@@ -1,0 +1,302 @@
+name: Cloudflare Pages preview
+
+on:
+  push:
+    branches:
+      - feat/river-ways-pages-integration
+      - feat/ads-gate-readiness
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    if: startsWith(github.ref_name, 'feat/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test contact endpoint
+        run: npm run test:api
+
+      - name: Build website
+        run: npm run build
+
+      - name: Ensure Pages routing and security files ship in the artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp public/_headers dist/_headers
+          cp public/_redirects dist/_redirects
+          test -s dist/_headers
+          test -s dist/_redirects
+          echo "Verified dist/_headers and dist/_redirects are present."
+          echo "Security header definitions shipped:"
+          cat dist/_headers
+
+      - name: Stamp built HTML with this source commit
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const path = 'dist/index.html';
+          const html = readFileSync(path, 'utf8');
+          const marker = 'name="river-ways-release" content="UNSTAMPED"';
+          if (!html.includes(marker)) throw new Error('Release marker missing; refusing preview deployment.');
+          writeFileSync(path, html.replace(marker, `name="river-ways-release" content="${process.env.GITHUB_SHA}"`));
+          NODE
+
+      - name: Create isolated Pages project if missing
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if npx --yes wrangler@3.90.0 pages project list | grep -Fq 'riverwayse-website'; then
+            echo "Cloudflare Pages project already exists."
+          else
+            npx --yes wrangler@3.90.0 pages project create riverwayse-website --production-branch main
+          fi
+
+      - name: Configure isolated Preview D1 database and migrations
+        continue-on-error: true
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          database_name="river-ways-leads-preview"
+          set +e
+          npx --yes wrangler@3.90.0 d1 list --json >/tmp/river-ways-d1-list.stdout 2>/tmp/river-ways-d1-list.stderr
+          d1_list_status="$?"
+          set -e
+          if [ "$d1_list_status" -ne 0 ]; then
+            echo "::error::Preview D1 setup is blocked. Add D1:Edit to the account-scoped Cloudflare API token used by GitHub Actions."
+            { cat /tmp/river-ways-d1-list.stdout /tmp/river-ways-d1-list.stderr 2>/dev/null || true; } | sed -E 's/[A-Za-z0-9_-]{32,}/[identifier-redacted]/g' | tail -12
+            exit 1
+          fi
+          d1_list="$(cat /tmp/river-ways-d1-list.stdout)"
+          find_database_id() {
+            D1_LIST_JSON="$1" D1_NAME="$2" node --input-type=module -e '
+              const parsed = JSON.parse(process.env.D1_LIST_JSON);
+              const databases = Array.isArray(parsed) ? parsed : (parsed.result ?? parsed.databases ?? []);
+              const database = databases.find((item) => item.name === process.env.D1_NAME);
+              process.stdout.write(database ? String(database.uuid ?? database.database_id ?? database.id ?? "") : "");
+            '
+          }
+          database_id="$(find_database_id "$d1_list" "$database_name")"
+          database_count="$(D1_LIST_JSON="$d1_list" node --input-type=module -e '
+            const parsed = JSON.parse(process.env.D1_LIST_JSON);
+            const databases = Array.isArray(parsed) ? parsed : (parsed.result ?? parsed.databases ?? []);
+            process.stdout.write(String(databases.length));
+          ')"
+          if [ -z "$database_id" ]; then
+            if [ "$database_count" -ge 10 ]; then
+              echo "::error::Cannot create the isolated Preview database: 10 or more D1 databases already exist. No database was created."
+              exit 1
+            fi
+            echo "Creating the isolated Preview database."
+            if ! npx --yes wrangler@3.90.0 d1 create "$database_name" >/tmp/river-ways-d1-create.log 2>&1; then
+              echo "::error::Could not create the isolated Preview database. Check D1:Edit permissions and account limits."
+              exit 1
+            fi
+            d1_list="$(npx --yes wrangler@3.90.0 d1 list --json)"
+            database_id="$(find_database_id "$d1_list" "$database_name")"
+          fi
+          if [ -z "$database_id" ]; then
+            echo "::error::Cloudflare did not return the isolated Preview database ID after provisioning."
+            exit 1
+          fi
+          # This binding exists only in the temporary build config for this preview deployment.
+          cat >> wrangler.toml <<EOF
+          [[env.preview.d1_databases]]
+          binding = "LEADS_DB"
+          database_name = "$database_name"
+          database_id = "$database_id"
+          EOF
+          npx --yes wrangler@3.90.0 d1 migrations apply "$database_name" --remote --env preview --config wrangler.toml
+          echo "Preview D1 database exists and migrations have been applied."
+
+      - name: Configure Preview rate-limit and notification secrets
+        continue-on-error: true
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+        run: |
+          set -euo pipefail
+          project_name="riverwayse-website"
+          secret_list="$(npx --yes wrangler@3.90.0 pages secret list --project-name="$project_name" --env preview 2>&1 || true)"
+          if ! printf '%s' "$secret_list" | grep -Fq "RATE_LIMIT_SALT"; then
+            generated_salt="$(openssl rand -hex 32)"
+            printf '%s' "$generated_salt" | npx --yes wrangler@3.90.0 pages secret put RATE_LIMIT_SALT --project-name="$project_name" --env preview
+            unset generated_salt
+            echo "Created the missing Preview rate-limit secret."
+          fi
+
+          # This is the approved River Ways notification destination.
+          printf '%s' "akinsify0511@gmail.com" | npx --yes wrangler@3.90.0 pages secret put LEAD_NOTIFICATION_EMAIL --project-name="$project_name" --env preview
+
+          resend_key="${RESEND_API_KEY:-}"
+          resend_key="$(printf '%s' "$resend_key" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          if [ -n "$resend_key" ]; then
+            # Validate the key before storing it in Cloudflare. Never print its value.
+            set +e
+            domain_http="$(curl --silent --show-error --get --output /tmp/river-ways-resend-domains.json --write-out '%{http_code}' --header "Authorization: Bearer $resend_key" 'https://api.resend.com/domains' 2>/tmp/river-ways-resend-curl.log)"
+            domain_curl_status="$?"
+            set -e
+            if [ "$domain_curl_status" -eq 0 ] && [ "$domain_http" = "200" ]; then
+              domains_json="$(cat /tmp/river-ways-resend-domains.json)"
+              printf '%s' "$resend_key" | npx --yes wrangler@3.90.0 pages secret put RESEND_API_KEY --project-name="$project_name" --env preview
+              echo "Resend API key validated; storing it in Preview."
+
+              sender="${RESEND_FROM_EMAIL:-}"
+              if [ -n "$sender" ]; then
+                sender_domain="$(
+                  SENDER_VALUE="$sender" node --input-type=module -e '
+                    const value = process.env.SENDER_VALUE || "";
+                    const angle = value.match(/<\s*([^<>]+)\s*>/);
+                    const address = (angle ? angle[1] : value).trim();
+                    const at = address.lastIndexOf("@");
+                    process.stdout.write(at > 0 ? address.slice(at + 1).toLowerCase() : "");
+                  '
+                )"
+              else
+                sender_domain="riverwayse.com"
+              fi
+              sender_verified="$(
+                RESEND_DOMAINS_JSON="$domains_json" SENDER_DOMAIN="$sender_domain" node --input-type=module -e '
+                  try {
+                    const parsed = JSON.parse(process.env.RESEND_DOMAINS_JSON);
+                    const domains = Array.isArray(parsed) ? parsed : (parsed.data ?? parsed.result ?? []);
+                    const match = domains.find((item) => item.name?.toLowerCase() === (process.env.SENDER_DOMAIN || "") && item.status === "verified");
+                    process.stdout.write(match ? "yes" : "no");
+                  } catch { process.stdout.write("no"); }
+                '
+              )"
+              unset domains_json
+              if [ -n "$sender_domain" ] && [ "$sender_verified" = "yes" ]; then
+                if [ -z "$sender" ]; then sender="leads@riverwayse.com"; fi
+                printf '%s' "$sender" | npx --yes wrangler@3.90.0 pages secret put RESEND_FROM_EMAIL --project-name="$project_name" --env preview
+                echo "Configured Preview sender from a domain Resend reports as verified."
+              else
+                echo "::warning::No verified domain matched RESEND_FROM_EMAIL. Preview sender was not guessed."
+                npx --yes wrangler@3.90.0 pages secret delete RESEND_FROM_EMAIL --project-name="$project_name" --env preview >/tmp/river-ways-delete-sender.log 2>&1 || true
+              fi
+            else
+              echo "::warning::Resend API key validation failed (curl exit $domain_curl_status, HTTP ${domain_http:-unknown}); key will not be stored in Preview."
+              if [ -s /tmp/river-ways-resend-domains.json ]; then
+                RESEND_ERROR_FILE=/tmp/river-ways-resend-domains.json node --input-type=module -e '
+                  import { readFileSync } from "node:fs";
+                  try {
+                    const parsed = JSON.parse(readFileSync(process.env.RESEND_ERROR_FILE, "utf8"));
+                    const message = typeof parsed.message === "string" ? parsed.message : (typeof parsed.error === "string" ? parsed.error : "");
+                    if (message) console.log("Resend API message: " + message.slice(0, 300));
+                  } catch {}
+                '
+              fi
+              npx --yes wrangler@3.90.0 pages secret delete RESEND_API_KEY --project-name="$project_name" --env preview >/tmp/river-ways-delete-resend-key.log 2>&1 || true
+              npx --yes wrangler@3.90.0 pages secret delete RESEND_FROM_EMAIL --project-name="$project_name" --env preview >/tmp/river-ways-delete-sender.log 2>&1 || true
+              echo "::warning::Replace the GitHub Actions RESEND_API_KEY secret with a valid Resend API key, then verify that riverwayse.com is verified in Resend."
+            fi
+          else
+            echo "::warning::RESEND_API_KEY is not configured; email delivery cannot pass the ads gate."
+            npx --yes wrangler@3.90.0 pages secret delete RESEND_API_KEY --project-name="$project_name" --env preview >/tmp/river-ways-delete-resend-key.log 2>&1 || true
+            npx --yes wrangler@3.90.0 pages secret delete RESEND_FROM_EMAIL --project-name="$project_name" --env preview >/tmp/river-ways-delete-sender.log 2>&1 || true
+          fi
+          echo "Preview notification prerequisites checked without changing Production settings."
+
+      - name: Deploy feature-branch preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=riverwayse-website --branch=${{ github.ref_name }}
+
+      - name: Smoke-test deployed preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          slug="$(printf '%s' "$GITHUB_REF_NAME" | sed 's|/|-|g')"
+          BASE_URL="https://${slug}.riverwayse-website.pages.dev"
+          html=""
+          marker="name=\"river-ways-release\" content=\"$GITHUB_SHA\""
+          for attempt in $(seq 1 12); do
+            html="$(curl --fail --silent --show-error "$BASE_URL/")"
+            if printf '%s' "$html" | grep -Fq "$marker"; then
+              echo "OK release marker ($GITHUB_SHA)"
+              break
+            fi
+            echo "Waiting for Pages preview to serve $GITHUB_SHA (attempt $attempt/12)"
+            sleep 5
+          done
+          if ! printf '%s' "$html" | grep -Fq "$marker"; then
+            echo "Preview does not serve this exact source commit ($GITHUB_SHA)"
+            echo "Marker expected: $marker"
+            echo "Page title and marker received:"
+            printf '%s' "$html" | grep -Eo '<title>[^<]*</title>|<meta name=\"river-ways-release\"[^>]*>' || true
+            exit 1
+          fi
+          for route in "/" "/privacy/" "/field-guide/" "/growth-diagnostic/" "/growth-diagnostic/diagnostic.js"; do
+            status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE_URL$route")"
+            if [ "$status" != "200" ]; then
+              echo "Preview route $route returned HTTP $status"
+              exit 1
+            fi
+            echo "OK $route ($status)"
+          done
+          headers="$(curl --silent --show-error --head "$BASE_URL/")"
+          require_header() {
+            if ! printf '%s\n' "$headers" | tr -d '\r' | grep -Eqi "$1"; then
+              echo "Missing required preview response header: $1"
+              echo "Response headers received:"
+              printf '%s\n' "$headers"
+              exit 1
+            fi
+          }
+          require_header '^x-frame-options: DENY$'
+          require_header '^x-content-type-options: nosniff$'
+          require_header '^referrer-policy: strict-origin-when-cross-origin$'
+          require_header '^permissions-policy:'
+          require_header '^content-security-policy:'
+          echo "OK security response headers"
+          api_status="$(curl --silent --show-error --dump-header /tmp/contact-preflight-headers.txt --output /tmp/contact-preflight.json --write-out '%{http_code}' "$BASE_URL/api/contact")"
+          if [ "$api_status" != "405" ]; then
+            echo "Contact function readiness preflight returned HTTP $api_status."
+            echo "Safe diagnostic response:"
+            cat /tmp/contact-preflight.json
+            echo "HTTP 405 with the current schema marker is required for an ads-ready service."
+            exit 1
+          fi
+          if ! tr -d '\r' < /tmp/contact-preflight-headers.txt | grep -Eqi '^x-river-ways-api-schema: submission-key-v1$'; then
+            echo "The contact endpoint did not expose the current schema marker; the deployed Pages Function may be stale."
+            cat /tmp/contact-preflight-headers.txt
+            exit 1
+          fi
+          echo "OK /api/contact current-function preflight ($api_status; schema marker verified)"
+          contact_status="$(curl --silent --show-error --output /tmp/contact-smoke.json --write-out '%{http_code}' --request POST --header 'Content-Type: application/json' --data '{"name":"Preview smoke test","email":"preview-smoke@example.invalid","goal":"Generate more qualified demand","website":"automated-honeypot"}' "$BASE_URL/api/contact")"
+          if [ "$contact_status" != "200" ] || ! grep -q '"ok":true' /tmp/contact-smoke.json; then
+            echo "Contact runtime smoke test failed (HTTP $contact_status). Check the Preview LEADS_DB binding and configuration."
+            cat /tmp/contact-smoke.json
+            exit 1
+          fi
+          echo "OK /api/contact runtime binding (honeypot safely acknowledged; no lead stored)"
