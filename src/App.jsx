@@ -140,7 +140,7 @@ export default function App() {
             <div className="river-visual-meta river-meta-top"><span>01 / READ THE FIELD</span><span>INPUTS</span></div>
             <svg className="river-diagram" viewBox="0 0 560 470" role="img" aria-labelledby="river-diagram-title">
               <title id="river-diagram-title">Separate market signals converge into a single path, then branch into measurable outcomes.</title>
-              <defs><linearGradient id="river-flow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#D56A48"/><stop offset=".55" stopColor="#E8B76D"/><stop offset="1" stopColor="#C8D5A0"/></linearGradient></defs>
+              <defs><linearGradient id="river-flow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#55BCE8"/><stop offset=".55" stopColor="#8BDCF0"/><stop offset="1" stopColor="#D3F0F7"/></linearGradient></defs>
               <g className="river-contours" fill="none" stroke="currentColor" strokeWidth="1">
                 <path d="M16 64 C102 20 114 114 178 112 S256 55 303 105 S380 178 536 119"/>
                 <path d="M16 84 C100 40 112 134 177 132 S259 75 300 125 S385 198 536 139"/>
