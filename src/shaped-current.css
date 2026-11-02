@@ -164,3 +164,11 @@ input:focus,textarea:focus,select:focus { border-color: var(--current-blue) !imp
   .audience-card { min-height: 0; padding: 23px; }
   .audience-card h3 { margin-top: 22px; }
 }
+
+/* Balance the final item in the seven-capability desktop grid. */
+@media(min-width:1001px) {
+  .service-card:last-child:nth-child(3n+1) { grid-column: 2; }
+}
+@media(min-width:761px) and (max-width:1000px) {
+  .service-card:last-child:nth-child(2n+1) { grid-column: 1 / -1; width: min(100%, calc(50% - 8px)); justify-self: center; }
+}
