@@ -111,6 +111,9 @@ export async function onRequestPost({ request, env }) {
   const ipHash = await hash(ip + env.RATE_LIMIT_SALT);
   const dayKey = new Date().toISOString().slice(0, 10);
   try {
+    // Keep only a short rolling window of salted usage hashes.
+    const retentionFloor = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    await env.LEADS_DB.prepare("DELETE FROM ai_demand_usage WHERE day_key < ?").bind(retentionFloor).run();
     const quota = await env.LEADS_DB.prepare(
       "INSERT INTO ai_demand_usage (day_key, ip_hash, request_count, updated_at) VALUES (?, ?, 1, datetime('now')) ON CONFLICT(day_key, ip_hash) DO UPDATE SET request_count = request_count + 1, updated_at = datetime('now') WHERE request_count < ? RETURNING request_count"
     ).bind(dayKey, ipHash, DAILY_LIMIT).first();
