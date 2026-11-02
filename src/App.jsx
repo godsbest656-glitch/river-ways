@@ -7,7 +7,8 @@ const services = [
   { number: '03', icon: TrendingUp, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=82', imageAlt: 'Business performance analytics on a screen', title: 'Performance Marketing', description: 'Connect paid media, landing pages and measurement around business outcomes—not vanity metrics.', tags: ['Paid acquisition', 'Conversion optimization', 'Measurement'] },
   { number: '04', icon: MousePointer2, image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=900&q=82', imageAlt: 'Designer working on a digital interface', title: 'Websites That Convert', description: 'Create fast, useful digital experiences that make the next step obvious and friction-free.', tags: ['Web design', 'Landing pages', 'CRO'] },
   { number: '05', icon: Sparkles, image: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=900&q=82', imageAlt: 'Creative visual installation with bold colour and light', title: 'Content & Creative', description: 'Turn your point of view into distinctive creative that earns attention and helps buyers decide.', tags: ['Brand storytelling', 'Creative systems', 'Campaigns'] },
-  { number: '06', icon: AudioWaveform, image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team reviewing information and discussing business opportunities', title: 'Demand Intelligence', description: 'Identify public intent signals, qualify opportunities and help your team respond while interest is fresh.', tags: ['Social listening', 'Intent monitoring', 'Lead workflows'] }
+  { number: '06', icon: AudioWaveform, image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team reviewing information and discussing business opportunities', title: 'Demand Intelligence', description: 'Identify public intent signals, qualify opportunities and help your team respond while interest is fresh.', tags: ['Social listening', 'Intent monitoring', 'Lead workflows'] },
+  { number: '07', icon: Zap, image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team collaborating around connected digital work', title: 'Platforms & Business Systems', description: 'Connect the digital tools and operating workflows behind your customer experience—from internal dashboards to AI-enabled products.', tags: ['Digital products', 'CRM & automation', 'Dashboards & AI integrations'] }
 ];
 const steps = [
   { label: 'Discover', title: 'Find the signal.', text: 'Monitor relevant public conversations, search themes and market questions across selected sources and regions.' },
@@ -79,7 +80,7 @@ export default function App() {
           </div>
           <div className="hero-visual river-field"
             role="img"
-            aria-label="Interactive flowing lines representing strategy, discovery and connected growth."
+            aria-label="Conceptual illustration of strategy, discovery and connected growth."
             onPointerMove={(event) => {
               if (event.pointerType === 'touch') return;
               const bounds = event.currentTarget.getBoundingClientRect();
@@ -145,6 +146,16 @@ export default function App() {
         <article className="principle-card"><span className="principle-num">02 / CONNECTION</span><Globe2 size={24} /><h3>Make every channel connect.</h3><p>Build a joined-up path from first signal to meaningful customer action.</p></article>
         <article className="principle-card"><span className="principle-num">03 / LEARNING</span><BarChart3 size={24} /><h3>Improve what matters.</h3><p>Measure outcomes, learn from the evidence and invest with more intent.</p></article>
       </div></section>
+      <section className="section audience-section reveal-section" id="who-we-help" data-reveal>
+        <div className="container">
+          <div className="section-heading-row audience-heading"><div><Eyebrow>Who we work with</Eyebrow><h2>Different stages.<br /><em>Different currents.</em></h2></div><p>The right system depends on where your business is, what it is trying to change and how much complexity it needs to coordinate.</p></div>
+          <div className="audience-grid">
+            <article className="audience-card"><span>01 / FOUNDERS</span><h3>Build the foundations.</h3><p>Clarify your position, establish a credible digital presence and create a focused path to your first repeatable demand.</p><a href="#contact">Talk about your next stage <ArrowUpRight size={15} /></a></article>
+            <article className="audience-card"><span>02 / GROWTH TEAMS</span><h3>Connect what’s working.</h3><p>Bring channels, creative, conversion and measurement together so growth activity compounds instead of fragmenting.</p><a href="#contact">Improve your growth system <ArrowUpRight size={15} /></a></article>
+            <article className="audience-card"><span>03 / COMPLEX & MULTI-MARKET</span><h3>Coordinate at scale.</h3><p>Align multiple audiences, markets, digital experiences and operating workflows around shared business priorities.</p><a href="#contact">Discuss a complex brief <ArrowUpRight size={15} /></a></article>
+          </div>
+        </div>
+      </section>
       <section className="section services-section reveal-section" id="services" data-reveal><div className="container">
         <div className="section-heading-row"><div><Eyebrow>What we do</Eyebrow><h2>One growth system.<br /><em>Connected capabilities.</em></h2></div><p>Choose the capability you need now. We design the work to connect with the bigger picture.</p></div>
         <div className="services-grid">{services.map((service) => { const Icon = service.icon; return <article className="service-card" key={service.number}><img className="service-card-image" src={service.image} alt={service.imageAlt} loading="lazy" decoding="async" /><div className="service-card-top"><span>{service.number}</span><span className="service-icon"><Icon size={22} strokeWidth={1.7} /></span></div><h3>{service.title}</h3><p>{service.description}</p><div className="service-tags">{service.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a href="#contact" className="service-link" aria-label={'Discuss ' + service.title}>Explore this service <ArrowUpRight size={16} /></a></article>; })}</div>
@@ -153,7 +164,7 @@ export default function App() {
         <div className="intelligence-copy"><Eyebrow light>Demand Intelligence</Eyebrow><h2>Meet your market<br />at the <em>moment of intent.</em></h2><p>People leave clues when they’re comparing options, asking for recommendations or describing a problem your business solves. A thoughtful listening system helps you find those signals, understand context and respond usefully.</p>
           <div className="intelligence-points"><span><Check size={16} /> Global-ready source strategy</span><span><Check size={16} /> Context-aware qualification</span><span><Check size={16} /> Human-led follow-up</span></div><a className="button button-lime" href="#contact">Discuss a listening system <ArrowRight size={17} /></a><p className="small-disclaimer">Actual coverage depends on source access, platform policies, language and available integrations.</p>
         </div>
-        <div className="signal-panel"><div className="panel-header"><div><span className="live-dot" /> SYSTEM FLOW</div><span>01 — 04</span></div>
+        <div className="signal-panel"><div className="panel-header"><div>FOUR-STAGE WORKFLOW</div><span>01 — 04</span></div>
           <div className="step-tabs" role="tablist" aria-label="Demand Intelligence workflow">{steps.map((step,index) => <button key={step.label} role="tab" aria-selected={activeStep === index} className={activeStep === index ? 'step-tab active' : 'step-tab'} onClick={() => setActiveStep(index)}><span>0{index+1}</span>{step.label}</button>)}</div>
           <div className="step-detail" role="tabpanel" key={activeStep}><div className="step-symbol">{activeStep===0?<Search />:activeStep===1?<ShieldCheck />:activeStep===2?<MessageCircle />:<BarChart3 />}</div><span className="mini-label">STEP 0{activeStep+1}</span><h3>{steps[activeStep].title}</h3><p>{steps[activeStep].text}</p></div>
           <div className="flow-rail">{steps.map((step,index) => <span key={step.label} className={index<=activeStep?'rail-node rail-active':'rail-node'} />)}</div><div className="panel-footer"><span>Signal → context → action</span><Zap size={15} /></div>
