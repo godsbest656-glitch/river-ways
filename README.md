@@ -26,7 +26,8 @@ npm run preview
 - `public/field-guide/index.html` — lightweight editorial Demand Engineering guide.
 - `public/privacy/index.html` and `docs/PRIVACY-NOTICE.md` — public privacy notice and its source document.
 - `functions/api/contact.js` — server-side enquiry validation, rate limiting, D1 persistence, and optional Resend notification.
-- `migrations/0001_leads.sql`, `migrations/0002_campaign_attribution.sql`, and `migrations/0003_submission_idempotency.sql` — D1 enquiry schema and first-party campaign attribution.
+- `migrations/0001_leads.sql` through `migrations/0004_lead_operations.sql` — D1 enquiry schema, campaign attribution, idempotency, and lead follow-up lifecycle.
+- `docs/ops/LEAD_OPERATIONS.md` — daily lead triage, follow-up workflow, and read-only D1 review queries.
 - `tests/api/contact.test.js` — automated API validation and abuse-control tests.
 - `docs/ARCHITECTURE.md` — system architecture and integration plan.
 - `docs/DESIGN-CONSTITUTION.md` — editorial art direction and interface standards.
@@ -44,7 +45,7 @@ npm run preview
 The endpoint intentionally returns a configuration error rather than storing an enquiry if the D1 database binding or a sufficiently strong rate-limit salt is missing.
 
 1. Create or select the Cloudflare Pages project for the site. Keep the production branch set to `main`; test this feature branch as a preview.
-2. Create a D1 database and apply `migrations/0001_leads.sql`, followed by `migrations/0002_campaign_attribution.sql` and `migrations/0003_submission_idempotency.sql`.
+2. Create a D1 database and apply migrations `0001_leads.sql` through `0004_lead_operations.sql` in order.
 3. Add a D1 binding named `LEADS_DB` to the Pages Function environment. Configure preview and production bindings separately and verify each database target.
 4. Add `RATE_LIMIT_SALT` as a secret containing a long, randomly generated value (at least 32 characters). Do not reuse a public value.
 5. For email notifications, configure `RESEND_API_KEY` as a secret, `RESEND_FROM_EMAIL` as a verified sender, and `LEAD_NOTIFICATION_EMAIL` as the destination inbox. Without these three values, a saved enquiry is still recorded but no email notification is sent.
@@ -52,7 +53,7 @@ The endpoint intentionally returns a configuration error rather than storing an 
 7. Test the non-mutating `GET /api/contact` readiness probe, valid and invalid submissions, cross-origin requests, oversized payloads, the honeypot, rate limiting, idempotent retries using the same submission key, and missing configuration. Confirm records are saved in D1 and notifications arrive when configured.
 8. Set access controls and retention/deletion procedures before collecting real enquiries. Review Cloudflare and Resend account security and provider terms.
 
-The endpoint stores a lead before attempting notification. Notification delivery problems do not delete a saved lead. Check the D1 `notification_status` field and Cloudflare logs during setup. The contact endpoint does not itself activate CRM, analytics, or social-listening integrations.
+The endpoint stores a lead before attempting notification. Notification delivery problems do not delete a saved lead. Check the D1 `notification_status` field and Cloudflare logs during setup. The contact endpoint does not itself activate CRM, analytics, or social-listening integrations. The D1 lead lifecycle is an intentionally small operational queue, not a full CRM; use `docs/ops/LEAD_OPERATIONS.md` until a separately approved CRM integration exists.
 
 ## Scope and launch checklist
 
