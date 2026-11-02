@@ -151,3 +151,22 @@ A task is done only when:
 ## 13. Conflict resolution
 
 If requirements conflict, prioritize: truth/safety/privacy/security; zero-additional-cost constraint; user/client authorization; data integrity; accessibility and reliability; business outcome; visual novelty. Record unresolved conflicts and ask for an owner decision rather than quietly choosing a costly or risky path.
+
+
+## 14. Mandatory UI/UX state rules
+
+The following ten states are binding across the public website, internal workspace and client workspace: **Loading; Skeleton; Empty / First-use; Success; Error; Saving / Processing; Refreshing; No results; Offline; Permission denied.**
+
+- Every screen and interactive workflow must identify applicable states and define the user experience and recovery path.
+- Distinguish an empty collection from a filtered search with no results; distinguish initial loading from refreshing visible content.
+- Preserve valid existing content during refresh. Do not blank a page unnecessarily.
+- Never report a save, payment, upload, approval, publication or export as successful until authoritative confirmation is received.
+- Prevent duplicate mutations; use idempotency where repeated submission could create duplicate records.
+- Errors must be actionable, preserve recoverable input and must not expose stack traces, secrets or private data.
+- Offline behavior must distinguish locally saved, queued, unsent and server-confirmed work. Never imply synchronization that has not occurred.
+- Permission failures must not leak whether protected records exist and must not trigger automatic retry loops.
+- Progress must be truthful; do not fabricate percentages for indeterminate work.
+- Keep keyboard focus usable and announce important state changes to assistive technology. Never communicate state through color alone.
+- Document any state considered inapplicable and the reason.
+
+These requirements are part of design acceptance, definition of done and release gates. A visually polished default state does not compensate for missing failure, empty, offline or permission behavior.
