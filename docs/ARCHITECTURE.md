@@ -1,7 +1,7 @@
-# Riverwayse Website — Architecture
+# River Ways Website — Architecture
 
 ## Product objective
-Build a conversion-focused, accessible, responsive marketing website that positions Riverwayse around demand generation and Demand Engineering. The website should help qualified prospects understand the offer, explore services, and start a conversation.
+Build an accessible, responsive marketing website that positions River Ways around creative demand engineering: connecting commercial strategy, creative, discovery, digital experiences and business systems. The website should help qualified prospects understand the offer, explore services, and start a conversation.
 
 ## Initial stack
 - React + Vite for a lightweight component-based frontend.
@@ -45,5 +45,5 @@ Build a conversion-focused, accessible, responsive marketing website that positi
 
 ## Deployment notes
 - Vite build output is `dist/`.
-- Netlify configuration provides SPA fallback and security headers; review CSP and hosting-specific behavior before launch.
+- Verify the active production host, routing, fallback and security headers before launch; do not assume the repository's older Netlify notes describe the current Cloudflare setup.
 - Verify the final domain, contact destination, privacy policy, service claims, image choices, and form endpoint before production.
