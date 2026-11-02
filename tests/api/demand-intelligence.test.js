@@ -24,7 +24,7 @@ function fakeDb({ allowed = true } = {}) {
   return {
     calls,
     prepare(sql) {
-      return { bind(...values) { calls.push({ sql, values }); return { async first() { return allowed ? { request_count: 1 } : null; } }; } };
+      return { bind(...values) { calls.push({ sql, values }); return { async first() { return allowed ? { request_count: 1 } : null; }, async run() { return { success: true }; } }; } };
     },
   };
 }
@@ -106,7 +106,8 @@ test("returns a structured assessment and does not persist visitor prompt conten
   assert.equal(result.ok, true);
   assert.equal(result.assessment.headline, "Clarify the path from interest to qualified enquiry");
   assert.equal(model.name, "test/model");
-  assert.equal(db.calls.length, 1);
+  assert.equal(db.calls.length, 2);
+  assert.match(db.calls[0].sql, /DELETE FROM ai_demand_usage/);
   assert.equal(JSON.stringify(db.calls).includes(payload.challenge), false);
 });
 
