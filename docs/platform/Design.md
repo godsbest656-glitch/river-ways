@@ -156,3 +156,60 @@ A design is ready for implementation when:
 - the design has been tested against realistic content, not placeholder-only screenshots.
 
 A design is not accepted merely because it looks good in a static mockup.
+
+
+## 11. Mandatory UI/UX state model
+
+Every interactive screen and workflow must design and implement the applicable states below. A polished default state is not sufficient for acceptance.
+
+| # | State | Required experience |
+|---|---|---|
+| 1 | Loading | Make it clear that information is being fetched and the system is working. |
+| 2 | Skeleton | Show a layout-matched preview while substantial content loads; prevent layout shift. |
+| 3 | Empty / First-use | Explain that no records exist yet and guide the user to create or configure the first one. |
+| 4 | Success | Confirm the action and its outcome only after authoritative confirmation. |
+| 5 | Error | Explain what failed in plain language, preserve recoverable input and offer a safe recovery action. |
+| 6 | Saving / Processing | Show honest progress or pending status for a mutation, upload, transaction or job; prevent duplicate submissions. |
+| 7 | Refreshing | Keep existing valid content visible while newer information loads; retain it if refresh fails and identify its age. |
+| 8 | No results | Explain that the current search/filter returned no matches and offer clear-filter or broaden-search actions. |
+| 9 | Offline | Explain connection loss and distinguish locally saved, queued, unsent and server-confirmed work. |
+| 10 | Permission denied | Explain the access boundary and safe next step without revealing protected data or confirming sensitive record existence. |
+
+### State distinctions and behavior
+
+- **Empty / First-use** means the collection contains no records. **No results** means the current query or filters match none.
+- **Loading** is an initial fetch. **Refreshing** updates visible content without blanking the screen.
+- **Saving / Processing** is a user mutation or long-running job, not passive page loading.
+- **Error** describes a failed operation; **Offline** explains the connectivity condition and its effect on work.
+- Do not show success before the server confirms the result. Payment, upload, approval and publication require authoritative confirmation.
+- Preserve user input on recoverable errors. Prevent duplicate mutations and use idempotency where repeated submissions could create duplicate records.
+- Never fabricate progress percentages. Support cancellation only where safe.
+- Offline UI must never imply a write reached the server when it has not. Define whether each action is locally draftable, queueable, read-only or unavailable.
+- Permission failures are not generic errors. Do not retry denied requests in a loop or leak protected resource details.
+- Announce important state changes to assistive technology, preserve sensible keyboard focus, and never communicate status through color alone.
+
+### Required workflow coverage
+
+| Surface | Required state coverage |
+|---|---|
+| Enquiry form | Submitting, success, validation/server error, offline, duplicate-submit prevention |
+| CRM and lists | Loading, skeleton, first-use empty, no results, refreshing, error, permission denied |
+| Projects and tasks | Loading, skeleton, empty, saving, success, error, refreshing, offline, permission denied |
+| Briefs and uploads | Processing, progress, validation failure, partial failure, retry, cancellation, offline, confirmed success |
+| Creative batches | Queued/running, per-item progress, partial success, failed item, retry, cancellation, completed |
+| Client approvals | Awaiting review, saving feedback, approved, changes requested, error, expired/unauthorized access |
+| Reports | No data for period, partial data, stale/refreshing, source error, no results, permission denied |
+| Finance | Pending/unverified, processing, verified success, failure, permission denied |
+| Public catalogue | Skeleton, empty editorial state, no results, media fallback, unavailable item, publication/permission gate |
+
+### Screen acceptance checklist
+
+- [ ] List applicable states and document entry condition, user-facing message, treatment and recovery action.
+- [ ] Define data behavior: preserve, clear, cache, queue, retry or discard.
+- [ ] Specify keyboard focus and screen-reader announcements.
+- [ ] Test slow and failed requests, zero records, no-match filters, offline behavior and unauthorized access where applicable.
+- [ ] Verify no false success, silent data loss, duplicate mutation or misleading progress.
+- [ ] Include mobile, desktop and reduced-motion behavior.
+- [ ] Record state-test evidence in the implementation PR.
+
+An omitted state requires a documented reason that it is inapplicable; omission is not an implicit pass.
