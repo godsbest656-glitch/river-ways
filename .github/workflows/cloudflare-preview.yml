@@ -5,6 +5,7 @@ on:
     branches:
       - feat/river-ways-pages-integration
       - feat/ads-gate-readiness
+      - feat/river-ways-ai-demand-intelligence
   workflow_dispatch:
 
 permissions:
