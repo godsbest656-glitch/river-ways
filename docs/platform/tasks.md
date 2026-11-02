@@ -223,3 +223,19 @@ This is not a late-stage polish task. Apply the ten essential states to each scr
 | Permission denied | Unauthorized and cross-tenant fixtures; no protected data leakage; safe next action |
 
 **Release gate:** a screen cannot be marked Verified if applicable states are unimplemented or untested. Record inapplicable states with a short rationale rather than silently skipping them.
+
+
+## 11. Reusable component and interaction architecture
+
+See `docs/platform/component-architecture.md` for the proposed component layers, contracts, async state model, accessibility rules, test contract and migration sequence.
+
+- [ ] Verify the active application branch and exact commit before implementation.
+- [ ] Audit current tokens, CSS conventions, routing, enquiry behavior and test tooling.
+- [ ] Establish shared primitives without changing the approved brand direction.
+- [ ] Implement and test the ten reusable state patterns.
+- [ ] Refactor the public enquiry flow first while preserving its current delivery contract.
+- [ ] Introduce shared list/table/detail patterns for CRM and project delivery.
+- [ ] Add client-specific patterns only after server-side authentication and tenant isolation are verified.
+- [ ] Add creative job, upload, review and batch patterns only after their API, permission and file lifecycle contracts exist.
+- **Acceptance:** reusable components have documented APIs, truthful state transitions, keyboard/accessibility and responsive evidence, failure recovery tests and no new paid dependency.
+- **Status:** Architecture documented; implementation not started or claimed.
