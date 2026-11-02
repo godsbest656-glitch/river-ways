@@ -193,3 +193,33 @@ Before any release:
 10. Add client review and catalogue publication.
 
 Do not start with AI image/video generation before the project, rights, cost, approval and evidence foundations exist.
+
+
+## 10. Cross-cutting UI/UX state implementation
+
+This is not a late-stage polish task. Apply the ten essential states to each screen as it is built, beginning with the public enquiry flow and continuing through P1–P5.
+
+- [ ] Establish reusable patterns for loading, skeleton, empty/first-use, success, error, saving/processing, refreshing, no-results, offline and permission-denied states.
+- [ ] Define clear state copy and accessible announcements; avoid generic error messages when the cause and recovery are known.
+- [ ] Define request lifecycle behavior: timeout, retry, cancellation, idempotency and optimistic-update rollback.
+- [ ] Define offline policy per action: local draft, queued operation, read-only cached view or unavailable action.
+- [ ] Add state coverage to design reviews and PR acceptance checklists.
+- [ ] Add automated tests for state transitions and recovery; use browser tests for high-risk journeys where existing free tooling permits.
+- [ ] Test slow response, failed response, empty collection, no-result filter, offline condition and unauthorized request for each applicable workflow.
+- [ ] Verify focus behavior, keyboard navigation, screen-reader announcements, contrast and reduced motion.
+
+### Minimum evidence by state
+
+| State | Required evidence |
+|---|---|
+| Loading / Skeleton | Delayed-response test; stable layout; meaningful accessible status |
+| Empty / First-use | Zero-record fixture; create/setup action works and is permission-checked |
+| Success | Server-confirmed mutation; visible confirmation; no duplicate record on repeated submit |
+| Error | Failed-request fixture; useful message; recoverable input retained; retry/correction works |
+| Saving / Processing | Pending mutation/job; honest progress; duplicate action blocked; cancellation behavior defined |
+| Refreshing | Existing content remains visible; updating/stale indication; refresh failure preserves prior content |
+| No results | Zero-match search/filter fixture; clear or broaden action works |
+| Offline | Network loss during read/write; unsent work identified; reconnect behavior tested |
+| Permission denied | Unauthorized and cross-tenant fixtures; no protected data leakage; safe next action |
+
+**Release gate:** a screen cannot be marked Verified if applicable states are unimplemented or untested. Record inapplicable states with a short rationale rather than silently skipping them.
