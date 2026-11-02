@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowDownRight, ArrowRight, ArrowUpRight, AudioWaveform, BarChart3, Check, ChevronDown, Compass, Globe2, Menu, MessageCircle, MousePointer2, Search, ShieldCheck, Sparkles, Target, TrendingUp, X, Zap } from 'lucide-react';
 
 const services = [
-  { number: '01', icon: Target, image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team collaborating around a strategy table', title: 'Demand Engineering', description: 'Build the strategy, signals and systems that turn attention into a repeatable path to revenue.', tags: ['Go-to-market strategy', 'Demand architecture', 'Growth planning'] },
+  { number: '01', icon: Target, image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=900&q=82', imageAlt: 'Team collaborating around a strategy table', title: 'Creative Demand Engineering', description: 'Connect commercial strategy, creative direction and growth systems to turn attention into a more intentional path to revenue.', tags: ['Go-to-market strategy', 'Demand architecture', 'Growth planning'] },
   { number: '02', icon: Search, image: 'https://images.unsplash.com/photo-1460925895917-af0d2a3f6e4d?auto=format&fit=crop&w=900&q=82', imageAlt: 'Analytics dashboard on a laptop', title: 'Search & AI Discovery', description: 'Make your business easier to discover across search engines, local results and AI-powered answers.', tags: ['Technical SEO', 'GEO & AIO', 'Content strategy'] },
   { number: '03', icon: TrendingUp, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=82', imageAlt: 'Business performance analytics on a screen', title: 'Performance Marketing', description: 'Connect paid media, landing pages and measurement around business outcomes—not vanity metrics.', tags: ['Paid acquisition', 'Conversion optimization', 'Measurement'] },
   { number: '04', icon: MousePointer2, image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=900&q=82', imageAlt: 'Designer working on a digital interface', title: 'Websites That Convert', description: 'Create fast, useful digital experiences that make the next step obvious and friction-free.', tags: ['Web design', 'Landing pages', 'CRO'] },
@@ -17,7 +17,7 @@ const steps = [
   { label: 'Learn', title: 'Improve the system.', text: 'Review outcomes, refine terms and feed what works back into your content, campaigns and customer experience.' }
 ];
 const faqs = [
-  { q: 'What does Demand Engineering mean?', a: 'Demand Engineering connects positioning, discovery, content, campaigns, conversion and measurement into one operating system. The goal is to make demand creation more intentional, observable and improvable—not to promise that every activity will produce a lead.' },
+  { q: 'What does Demand Engineering mean?', a: 'Creative Demand Engineering connects positioning, discovery, content, campaigns, conversion and measurement into one operating system. The goal is to make demand creation more intentional, observable and improvable—not to promise that every activity will produce a lead.' },
   { q: 'Can River Ways work with businesses outside Nigeria?', a: 'Yes. The approach can support businesses serving local, regional or international markets. Source availability, language, platform access and local regulations are considered when designing campaigns and listening workflows.' },
   { q: 'Does Demand Intelligence automatically message every prospect?', a: 'No. A responsible system detects and prioritizes relevant public signals, then supports contextual, human-led outreach. Any automation should respect platform rules, privacy requirements and the expectations of the people being contacted.' },
   { q: 'How do you measure success?', a: 'Measurement is agreed around the business objective: qualified enquiries, conversion rate, acquisition efficiency, search visibility, pipeline contribution or another meaningful outcome. We establish a baseline before making performance claims.' },
@@ -74,7 +74,7 @@ export default function App() {
       <section className="hero section-dark" id="home"><div className="hero-atmosphere" aria-hidden="true" />
         <div className="container hero-layout">
           <div className="hero-copy"><Eyebrow light>Demand, shaped with intent</Eyebrow><h1>Engineer demand.<br /><span>Create momentum.</span></h1>
-            <p className="hero-lede">We connect strategy, discovery and digital experiences into a system that helps the right people find you—and gives them a reason to act.</p>
+            <p className="hero-lede">We connect commercial strategy, creative, discovery and digital experiences into a system that helps the right people find you—and gives them a reason to act.</p>
             <div className="hero-actions"><a className="button button-lime" href="#contact">Build your growth system <ArrowRight size={17} /></a><a className="text-link text-link-light" href="#approach">See how we work <ArrowDownRight size={17} /></a></div>
             <div className="hero-note"><span className="note-line" /> Strategy-led. Connected by design. Built for progress.</div>
           </div>
@@ -129,7 +129,7 @@ export default function App() {
               <path className="current-thread" d="M72 456C145 416 191 316 257 276S362 262 425 194S500 112 562 112" stroke="#A9E8F7" strokeWidth="1.7" strokeLinecap="round" strokeDasharray="2 9"/>
             </svg>
             <div className="river-coordinate coordinate-one"><span>01</span> SIGNAL</div><div className="river-coordinate coordinate-two"><span>02</span> DECISION</div><div className="river-coordinate coordinate-three"><span>03</span> MOMENTUM</div>
-            <div className="visual-card visual-card-top"><span className="mini-label"><span className="live-dot" /> SIGNAL / EXAMPLE</span><div className="signal-bars">{Array.from({ length: 12 }, (_, i) => <i key={i} />)}</div><div className="signal-footer"><span>From signal to useful context</span><span className="signal-status">01 / 03</span></div></div>
+            <div className="visual-card visual-card-top"><span className="mini-label">SIGNAL / EXAMPLE</span><div className="signal-bars">{Array.from({ length: 12 }, (_, i) => <i key={i} />)}</div><div className="signal-footer"><span>From signal to useful context</span><span className="signal-status">01 / 03</span></div></div>
             <div className="visual-core"><span className="core-kicker">THE CONVERGENCE</span><div className="core-ring"><Target size={29} strokeWidth={1.25} /></div><span className="core-title">STRATEGY<br/>IN MOTION</span></div>
             <div className="visual-card visual-card-bottom"><div className="conversion-icon"><TrendingUp size={18} /></div><div><span className="mini-label">INTENDED OUTCOME</span><strong>Connected momentum</strong><small>Signal / Direction / Action</small></div></div>
             <span className="visual-caption">CONNECTED CAPABILITIES</span>
