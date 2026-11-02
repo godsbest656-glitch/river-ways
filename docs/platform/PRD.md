@@ -186,3 +186,31 @@ The MVP must work without paid APIs or subscriptions. If local AI generation is 
 ## 11. Open decisions
 
 Record and resolve before implementation: exact identity provider/session approach; current production database and hosting bindings; local machine GPU/RAM capacity; client file storage/backup capacity; supported social data export formats; payment verification source; reporting timezone policy; retention periods; client permission language; and the precise MVP team roles. Unknowns are blockers or assumptions, not facts.
+
+
+## 12. Product-wide UI/UX state requirements
+
+Every product surface must implement the applicable ten essential states: **Loading; Skeleton; Empty / First-use; Success; Error; Saving / Processing; Refreshing; No results; Offline; Permission denied.**
+
+These are functional requirements because the platform handles client records, payments, uploads, approvals, long-running creative jobs and evidence-based reports. Misleading feedback can cause duplicate work, lost briefs, incorrect payment assumptions or unauthorized disclosure.
+
+- Loading and skeleton states must make waiting understandable without causing avoidable layout shifts.
+- First-use empty states must explain the collection and its next setup/create action.
+- Success states must follow confirmed outcomes, not optimistic assumptions.
+- Error states must preserve recoverable input and provide an actionable recovery path.
+- Saving/processing states must prevent accidental duplicate submissions and show truthful progress.
+- Refreshing must retain existing valid data and identify stale data if refresh fails.
+- No-results states must identify active search/filter context and allow recovery.
+- Offline states must distinguish local drafts, queued operations, unsent work and server-confirmed changes.
+- Permission-denied states must explain the access boundary and safe next step without leaking protected information.
+
+Required coverage:
+- Enquiry: submitting, success, validation/server failure, offline and duplicate-submit handling.
+- CRM/projects: initial load, skeleton, first-use empty, no results, refresh failure and permission denial.
+- Briefs/uploads/deliverables: processing, progress, validation, partial failure, retry, cancellation and confirmed completion.
+- Creative Studio: queued, running, partial completion, failed item, retry, cancelled and completed batch.
+- Client review: awaiting review, saving feedback, approved, changes requested and unauthorized/expired access.
+- Reporting: no data for period, partial source coverage, stale data, refresh, source failure and access denial.
+- Finance: pending/unverified, processing, verified success and failure. A client statement or optimistic UI is not proof of payment.
+
+**Acceptance:** every screen has a state-coverage checklist; applicable states are tested under slow, failed, empty, filtered, offline and unauthorized conditions; no state falsely implies persistence or action completion.
