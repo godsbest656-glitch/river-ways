@@ -47,7 +47,7 @@ Do not describe the self-assessment as a bespoke audit, guarantee of leads, or f
 
 ### B. Enquiry capture — hard blocker
 
-- [ ] The intended D1 database is bound as `LEADS_DB` in the preview and its schema migrations `0001_leads.sql`, `0002_campaign_attribution.sql`, then `0003_submission_idempotency.sql` have been applied exactly once.
+- [ ] The intended D1 database is bound as `LEADS_DB` in the preview and its schema migrations `0001_leads.sql`, `0002_campaign_attribution.sql`, then `0003_submission_idempotency.sql` and `0004_lead_operations.sql` have been applied exactly once.
 - [ ] The non-mutating `GET /api/contact` preflight returns HTTP 405 only when the D1 binding, private rate-limit salt, and latest idempotency schema are ready; HTTP 503 means a configuration or migration is still missing.
 - [ ] A unique, private `RATE_LIMIT_SALT` of at least 32 characters is present in the preview environment.
 - [ ] One labelled end-to-end test from the preview creates exactly one D1 row.
@@ -55,9 +55,18 @@ Do not describe the self-assessment as a bespoke audit, guarantee of leads, or f
 - [ ] A real notification arrives at `akinsify0511@gmail.com` from a verified sender; the record reports notification success.
 - [ ] Retrying the same submission key returns the existing result without creating a second D1 row, including concurrent retries; a new key creates a new enquiry.
 - [ ] Rate limiting, malformed inputs, cross-origin requests, and missing-configuration states behave as intended.
-- [ ] The operator confirms how new leads will be reviewed and responded to. Never accept a UI success message as proof of durable storage or email receipt.
+- [ ] The `ops_open_leads` view and lead lifecycle columns from migration `0004_lead_operations.sql` are present and queried successfully.
+- [ ] The operator confirms how new leads will be reviewed and responded to using `docs/ops/LEAD_OPERATIONS.md`. Never accept a UI success message as proof of durable storage or email receipt.
 
-### C. Measurement and privacy
+### C. Lead operations
+
+- [ ] A named owner is responsible for checking new enquiries at least once each business day.
+- [ ] Every open lead is assigned an owner and next-action timestamp.
+- [ ] Overdue follow-ups and notification exceptions are reviewed daily.
+- [ ] The response target, escalation path, and lead retention period are approved by the business owner.
+- [ ] A test lead is moved through the lifecycle and closed without losing its source attribution.
+
+### D. Measurement and privacy
 
 - [ ] A test URL such as `/growth-diagnostic/?utm_source=google&utm_medium=cpc&utm_campaign=rw-diagnostic-test` retains the tags through the final form submission.
 - [ ] UTM fields are checked in the D1 record and included in the notification.
