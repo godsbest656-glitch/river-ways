@@ -107,3 +107,35 @@ input:focus,textarea:focus,select:focus { border-color: var(--current-blue) !imp
   *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
 }
+
+
+/* Reconcile remaining legacy identity treatments with SHAPED CURRENT. */
+.contact-section {
+  background:
+    radial-gradient(ellipse at 5% 90%, rgba(22,139,183,.18), transparent 42%),
+    linear-gradient(130deg, #06243a, #0a344d);
+}
+.belief-section {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(125deg, #dff3f8, #c9eaf3);
+  color: var(--current-deep);
+}
+.belief-section::after { display: none; }
+.belief-layout blockquote { color: var(--current-deep); }
+.belief-layout blockquote em { color: #087da8; }
+.belief-layout > p { color: #496c7d; }
+.belief-mark > span:last-child { color: #087da8; }
+.site-footer { background: #041d30; }
+.footer-bottom a:hover, .back-top:hover { color: var(--current-sky); }
+.service-card-image { filter: saturate(.82) contrast(1.02); }
+.service-card:hover .service-card-image { filter: saturate(1) contrast(1.02); }
+.core-kicker { color: var(--current-sky); }
+.river-field .core-ring { border-color: rgba(169,232,247,.75); color: var(--current-sky); }
+.core-title { color: var(--current-text); }
+.field-index i { background: var(--current-sky); box-shadow: 0 0 0 3px rgba(169,232,247,.14); }
+.field-geometry { filter: drop-shadow(0 0 10px rgba(22,139,183,.16)); }
+.current-nodes circle { filter: drop-shadow(0 0 5px rgba(169,232,247,.4)); }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none !important; }
+}
