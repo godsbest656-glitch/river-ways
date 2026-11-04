@@ -27,7 +27,7 @@ The primary conversion is a qualified project enquiry. Visual novelty is subordi
 | Deep current | `#06243A` | Primary dark surface, footer, strong CTA |
 | Deep blue | `#092F49` | Secondary dark surface |
 | Current blue | `#168BB7` | Primary accent, links, focus |
-| Signal blue | `#087DA8` | Accent on light surfaces |
+| Signal blue | `#06749E` | Accent on light surfaces with AA contrast |
 | Sky | `#A9E8F7` | Highlight, dark-surface CTA |
 | Ice | `#E8F7FB` | Selected and soft surfaces |
 | Paper | `#F5FBFD` | Main light background |
