@@ -1,38 +1,54 @@
 # River Ways — outstanding release blockers
 
-Last reviewed: 2026-10-15
+Last reviewed: 4 November 2026
 
-## Current status
+## Current candidate
 
-The code in this branch is a candidate release, not a verified production release. Local automated tests and GitHub Actions can establish code quality, but they do not prove that Cloudflare Pages has the right production branch, bindings, database migrations, or email credentials.
+- Candidate branch: `design/shaped-current-rebuild`
+- Pull request: [#31 — Redesign River Ways around SHAPED CURRENT](https://github.com/godsbest656-glitch/river-ways/pull/31)
+- Hosting target: Cloudflare Pages project `riverwayse-website`
+- Candidate homepage: React 18 + Vite 6; the existing Growth Diagnostic and Privacy pages remain static documents.
+- Verified route inventory for this repository candidate: `/`, `/growth-diagnostic/`, and `/privacy/`. Unknown paths must return a real 404. Do not invent additional routes or imply that the missing multiroute bundle is present.
 
-The live site was previously observed serving an older build: the homepage did not contain the `/api/contact` integration, `POST /api/contact` returned `405`, and unknown paths returned the homepage with `200`. Recheck these observations after a deployment; do not assume they have changed.
+## Latest verified preview status
 
-## Release gates
+The first PR preview deployment succeeded and served the exact source commit `babe82f802093517b68254eaa36617ea1448de2b` at:
 
-- [ ] Confirm Cloudflare Pages project and production branch.
-- [ ] Confirm the preview and production environments separately.
-- [ ] Create/identify the D1 database and bind it as `LEADS_DB` in both environments.
-- [ ] Apply `migrations/0001_leads.sql`, then `migrations/0002_lead_pipeline_attribution.sql`, once per database. Check migration history and table columns before rerunning a partially applied migration.
-- [ ] Set `RATE_LIMIT_SALT` to a high-entropy value of at least 32 characters in both environments. If a value already exists, verify it before rotating it.
-- [ ] Configure `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `LEAD_NOTIFICATION_EMAIL` in both environments. Use the currently accessible notification inbox `akinsify0511@gmail.com`.
-- [ ] Confirm the sender identity is verified with Resend. Do not paste credentials into issues, commits, chat, or logs.
-- [ ] Deploy a preview and submit one clearly labelled test enquiry.
-- [ ] Verify exactly one D1 lead row, correct stage/source/UTM attribution, and a received notification email.
-- [ ] Repeat the test for duplicate handling and confirm no duplicate row is created for an identical brief submitted within the duplicate window.
-- [ ] Verify a missing email configuration produces a clear, truthful failure state and never claims the team was notified.
-- [ ] Verify unknown routes return a real 404 status, not the homepage with status 200.
-- [ ] Verify the Search & AI Discovery image responds successfully and that the homepage metadata points to a working social image.
-- [ ] Run a production smoke test after approval to merge and deploy.
+`https://pr-31.riverwayse-website.pages.dev/`
 
-## DNS and mail policy
+On that preview commit:
+- Homepage returned HTTP 200 and rendered the new Creative Demand Engineering proposition.
+- `/growth-diagnostic/` returned HTTP 200 and rendered all ten assessment questions.
+- `/privacy/` returned HTTP 200.
+- An unknown path returned HTTP 404 with the River Ways 404 document.
+- The build, enquiry API tests, and high-severity dependency audit passed.
+- The preview deployment workflow failed its final enquiry readiness probe: a non-persisting POST to `/api/contact` returned HTTP 503 instead of the expected HTTP 415. The response was the endpoint's generic temporary-unavailability message.
 
-No DNS, MX, SPF, DKIM, or DMARC records should be changed as part of this website release. The prior DNS review reported that the apex had a site-verification token and a DKIM key but no SPF record. Adding SPF is a separate mail-deliverability decision and requires reviewing all legitimate senders for the domain first.
+The 503 does not identify which binding or secret is missing. Verify the actual Cloudflare Pages Preview environment; do not guess. The latest homepage and static-page styling changes have been pushed after this first preview and must be re-built and re-verified at the updated PR preview SHA.
+
+## Required before production
+
+- [ ] Confirm the Preview and Production environments are configured independently.
+- [ ] Bind the correct D1 database as `LEADS_DB` in each environment.
+- [ ] Apply `migrations/0001_leads.sql`, then `migrations/0002_lead_pipeline_attribution.sql`, once to each environment's database. Inspect migration history and `PRAGMA table_info(leads)` before attempting recovery from a partial migration.
+- [ ] Set a high-entropy `RATE_LIMIT_SALT` of at least 32 characters in each environment.
+- [ ] Configure `RESEND_API_KEY`, a verified `RESEND_FROM_EMAIL`, and `LEAD_NOTIFICATION_EMAIL=akinsify0511@gmail.com` in each environment.
+- [ ] Confirm the current Resend key is valid and the sender domain is verified. An earlier release audit recorded an invalid-key response; do not assume an existing secret is valid without testing it.
+- [ ] Re-run the preview readiness probe and require HTTP 415 from the non-persisting invalid-content-type POST.
+- [ ] Submit one clearly labelled internal test enquiry in Preview. Confirm exactly one D1 row, correct stage and UTM attribution, and actual receipt of the notification email.
+- [ ] Submit the same brief again within the duplicate window and confirm no second row is created.
+- [ ] Verify validation, honeypot handling, rate limiting, and truthful failure states.
+- [ ] Re-check all three routes, the 404 response, metadata, sitemap, robots directives, mobile navigation, keyboard use, reduced motion, and image loading on the latest preview.
+- [ ] Verify the final release SHA on both `riverwayse-website.pages.dev` and `riverwayse.com` after production deployment.
+
+## Production and DNS safety
+
+No production deployment has been made by this redesign work. Do not merge or deploy while the enquiry service is unverified. No DNS, MX, SPF, DKIM, DMARC, DNSSEC or Worker-route changes are part of this release. Preserve the current live deployment until the candidate is proven and the production release can be verified end to end.
 
 ## Security boundary
 
-Lead data must not be exposed through an unauthenticated dashboard or read API. Keep the internal pipeline private until access control is designed, implemented, and tested. Public-source demand discovery must respect source terms, privacy requirements, and rate limits; outbound contact remains human-reviewed.
+Lead data must not be exposed through an unauthenticated dashboard or read API. Keep the internal pipeline private until access control is designed, implemented and tested. Public-source demand discovery must respect source terms, privacy requirements and rate limits; outbound contact remains human-reviewed.
 
 ## Definition of done
 
-Do not describe the enquiry system as operational until a deployed test proves both durable D1 storage and actual email receipt. A successful browser message alone is not evidence of either.
+The website is not complete merely because it builds or a preview URL exists. Completion requires a verified preview, working D1 persistence and Resend notification, successful quality gates, an approved production release, and confirmation that the live domain serves the exact deployed commit.
