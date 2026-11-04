@@ -12,19 +12,24 @@ Last reviewed: 4 November 2026
 
 ## Latest verified preview status
 
-The first PR preview deployment succeeded and served the exact source commit `babe82f802093517b68254eaa36617ea1448de2b` at:
+The latest PR preview deployment verified the exact candidate commit `cab87a3168c02d270421848dd22293627ee9a9d3` at:
 
 `https://pr-31.riverwayse-website.pages.dev/`
 
-On that preview commit:
-- Homepage returned HTTP 200 and rendered the new Creative Demand Engineering proposition.
+On that exact preview commit:
+- The Vite build passed.
+- The enquiry API unit tests passed.
+- The high-severity dependency audit passed.
+- Cloudflare Pages deployed the preview and the release marker confirmed the exact source commit.
+- Homepage returned HTTP 200 with the Creative Demand Engineering proposition and SHAPED CURRENT content.
 - `/growth-diagnostic/` returned HTTP 200 and rendered all ten assessment questions.
-- `/privacy/` returned HTTP 200.
+- `/privacy/` returned HTTP 200 with the updated notice.
 - An unknown path returned HTTP 404 with the River Ways 404 document.
-- The build, enquiry API tests, and high-severity dependency audit passed.
-- The preview deployment workflow failed its final enquiry readiness probe: a non-persisting POST to `/api/contact` returned HTTP 503 instead of the expected HTTP 415. The response was the endpoint's generic temporary-unavailability message.
+- A separate mobile-mode content scrape returned the expected page content and all navigation/section links.
 
-The 503 does not identify which binding or secret is missing. Verify the actual Cloudflare Pages Preview environment; do not guess. The latest homepage and static-page styling changes have been pushed after this first preview and must be re-built and re-verified at the updated PR preview SHA.
+The preview deployment workflow then failed its final enquiry readiness probe: a non-persisting POST to `/api/contact` returned HTTP 503 instead of the expected HTTP 415. The response was: `Enquiry service is temporarily unavailable. Please email akinsify0511@gmail.com.`
+
+The 503 does not identify which binding or secret is missing. Verify the actual Cloudflare Pages Preview environment; do not guess. No test enquiry was submitted, no lead data was created, and no email delivery was claimed.
 
 ## Current production observation
 
