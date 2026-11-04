@@ -341,7 +341,7 @@ export default function App() {
                 const Icon = service.icon;
                 return (
                   <article className="service-feature" key={service.number}>
-                    <div className="service-image-wrap"><img src={service.image} alt={service.imageAlt} loading="lazy" decoding="async" /><span className="service-image-index">{service.number} / CAPABILITY</span></div>
+                    <div className="service-image-wrap"><img src={service.image} srcSet={service.image.replace("w=1100", "w=520") + " 520w, " + service.image.replace("w=1100", "w=800") + " 800w, " + service.image + " 1100w"} sizes="(max-width: 600px) 100vw, (max-width: 1120px) 50vw, 33vw" alt={service.imageAlt} loading="lazy" decoding="async" /><span className="service-image-index">{service.number} / CAPABILITY</span></div>
                     <div className="service-feature-copy">
                       <div className="service-icon"><Icon size={20} strokeWidth={1.7} /></div>
                       <h3>{service.title}</h3><p>{service.description}</p>
@@ -410,7 +410,7 @@ export default function App() {
                   </button>
                 ))}
               </div>
-              <div className="step-detail" role="tabpanel" aria-live="polite" key={activeStep}>
+              <div className="step-detail" role="region" aria-label="Selected Demand Intelligence workflow step" aria-live="polite" key={activeStep}>
                 {React.createElement(intelligenceSteps[activeStep].icon, { size: 24, className: 'step-symbol' })}
                 <span className="mini-label">STEP 0{activeStep + 1}</span>
                 <h3>{intelligenceSteps[activeStep].title}</h3>
