@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, Check,
-  ChevronDown, Compass, Globe2, Layers3, Menu, MessageCircle, MousePointer2,
+  ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, Check,
+  ChevronDown, Layers3, Menu, MessageCircle,
   Search, ShieldCheck, Sparkles, Target, TrendingUp, Workflow, X, Zap
 } from 'lucide-react';
 
@@ -116,16 +116,6 @@ function Brand() {
 
 function Eyebrow({ children, light = false }) {
   return <div className={'eyebrow ' + (light ? 'eyebrow-light' : '')}><span className="eyebrow-dot" />{children}</div>;
-}
-
-function SectionIntro({ eyebrow, title, children, light = false }) {
-  return (
-    <div className={'section-intro ' + (light ? 'section-intro-light' : '')}>
-      <Eyebrow light={light}>{eyebrow}</Eyebrow>
-      <h2>{title}</h2>
-      {children ? <div className="section-intro-copy">{children}</div> : null}
-    </div>
-  );
 }
 
 export default function App() {
@@ -267,7 +257,7 @@ export default function App() {
               <div className="hero-note"><span className="note-line" /> From attention to action. With intent.</div>
             </div>
 
-            <div className="hero-visual current-stage" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
+            <div className="hero-visual current-stage" role="group" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
               <div className="current-stage-grid" aria-hidden="true" />
               <div className="current-stage-river" aria-hidden="true">
                 <svg viewBox="0 0 660 520" preserveAspectRatio="none">
@@ -413,9 +403,9 @@ export default function App() {
             </div>
             <div className="signal-panel">
               <div className="panel-header"><span><i /> SYSTEM FLOW</span><span>01 — 04</span></div>
-              <div className="step-tabs" role="tablist" aria-label="Demand Intelligence workflow">
+              <div className="step-tabs" role="group" aria-label="Demand Intelligence workflow">
                 {intelligenceSteps.map((step, index) => (
-                  <button key={step.label} type="button" role="tab" aria-selected={activeStep === index} className={activeStep === index ? 'step-tab active' : 'step-tab'} onClick={() => setActiveStep(index)}>
+                  <button key={step.label} type="button" aria-pressed={activeStep === index} className={activeStep === index ? 'step-tab active' : 'step-tab'} onClick={() => setActiveStep(index)}>
                     <span>0{index + 1}</span>{step.label}
                   </button>
                 ))}
