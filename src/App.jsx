@@ -228,10 +228,10 @@ export default function App() {
       <header className="site-header">
         <div className="container nav-wrap">
           <Brand />
-          <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} aria-controls="site-navigation" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
-          <nav className={'main-nav ' + (menuOpen ? 'nav-open' : '')} aria-label="Main navigation">
+          <nav id="site-navigation" className={'main-nav ' + (menuOpen ? 'nav-open' : '')} aria-label="Main navigation">
             <a href="#approach" onClick={closeMenu}>Approach</a>
             <a href="#services" onClick={closeMenu}>Capabilities</a>
             <a href="#intelligence" onClick={closeMenu}>Intelligence</a>
@@ -305,7 +305,7 @@ export default function App() {
           </div>
         </section>
 
-        <div className="ticker" aria-label="River Ways capabilities">
+        <div className="ticker" aria-hidden="true">
           <div className="ticker-track">
             <span>CREATIVE DEMAND ENGINEERING</span><b>✳</b><span>BRAND & CREATIVE</span><b>✳</b><span>DIGITAL EXPERIENCES</span><b>✳</b><span>SEARCH & AI DISCOVERY</span><b>✳</b><span>DEMAND INTELLIGENCE</span><b>✳</b><span>CREATIVE DEMAND ENGINEERING</span><b>✳</b><span>BRAND & CREATIVE</span><b>✳</b><span>DIGITAL EXPERIENCES</span><b>✳</b><span>SEARCH & AI DISCOVERY</span><b>✳</b>
           </div>
