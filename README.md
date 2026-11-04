@@ -29,6 +29,7 @@ npm run preview
 - `docs/ENQUIRY-OPERATIONS.md` — D1, Resend and controlled-verification runbook.
 - `netlify.toml` — SPA fallback and baseline response security headers.
 - `docs/ARCHITECTURE.md` — architecture and future integration plan.
+- `docs/SHAPED-CURRENT-EXPERIENCE-CONSTITUTION.md` — approved website direction, interaction rules and release acceptance gates.
 
 ## Before production launch
 
