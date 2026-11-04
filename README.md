@@ -30,6 +30,7 @@ npm run preview
 - `netlify.toml` — SPA fallback and baseline response security headers.
 - `docs/ARCHITECTURE.md` — architecture and future integration plan.
 - `docs/SHAPED-CURRENT-EXPERIENCE-CONSTITUTION.md` — approved website direction, interaction rules and release acceptance gates.
+- `docs/OUTSTANDING-BLOCKERS.md` — evidence-based preview and production release gates.
 
 ## Before production launch
 
