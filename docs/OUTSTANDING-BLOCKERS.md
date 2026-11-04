@@ -26,6 +26,15 @@ On that preview commit:
 
 The 503 does not identify which binding or secret is missing. Verify the actual Cloudflare Pages Preview environment; do not guess. The latest homepage and static-page styling changes have been pushed after this first preview and must be re-built and re-verified at the updated PR preview SHA.
 
+## Current production observation
+
+The canonical domain has not been changed by this redesign. A live check on 4 November 2026 confirmed:
+- `https://riverwayse.com/` still serves the older homepage, not the SHAPED CURRENT candidate.
+- A GET request to `https://riverwayse.com/api/contact` returns the homepage HTML with HTTP 200 instead of an API method response. The current production routing/Worker path is therefore not serving the Pages Function at that URL.
+- The previously configured catch-all Worker route for `*riverwayse.com/*` is a specific item to inspect in Cloudflare. Confirm whether it is still active and whether it is intercepting the Pages custom domain before release. Do not remove or change it without verifying the intended Pages route and rollback path.
+
+The Pages preview host is separate from the canonical domain. A successful preview deployment does not prove that `riverwayse.com` will serve the same release.
+
 ## Required before production
 
 - [ ] Confirm the Preview and Production environments are configured independently.
