@@ -148,3 +148,10 @@ This is a schema design task, not a cosmetic merge. Keep it separate from the vi
 The Demand Engineering Field Guide from PR #24 has been restored at `public/field-guide/index.html` and restyled to the approved SHAPED CURRENT blue system (removing the earlier terracotta/forest/warm-paper palette). It retains the practical framework content, accessible disclosure steps, and responsible-use caveats. The homepage footer now links to it, and the sitemap includes `/field-guide/`.
 
 **Current verified route inventory on PR #32:** homepage, Growth Diagnostic, Field Guide, Privacy, and a custom 404 document. The sitemap now lists four indexable URLs (home, Growth Diagnostic, Field Guide, Privacy). This is a factual inventory of the current GitHub branch only; it does not resolve the separate local candidate's route-count discrepancy or satisfy the broader intended information architecture.
+
+
+## Consolidated PR topology update
+
+PR #32 has now been retargeted from the stacked base `design/shaped-current-rebuild` to `main`. It therefore represents one reviewable PR containing the full PR #31 SHAPED CURRENT implementation plus the PR #32 headline, governance, Creative Studio, Field Guide, and related refinements. PR #31 remains open as the original visual foundation; it should not be treated as a separate final release. No merge to `main` has occurred.
+
+The latest head at the time of this note is `fb8a1a6f84b5714a4c2c5ffdb45ac1db9c4cf6e6`. The last confirmed GitHub Actions build/API/dependency pass remains the earlier code-bearing commit `e13aa239afa0b3e7d49462691f2f1c78da96fb7a`. Later Field Guide, sitemap, footer, and documentation changes still need an exact-head workflow run. The Cloudflare bot's reported Worker build failure on `e8538aa` has not been diagnosed because the linked dashboard requires an authenticated session.
