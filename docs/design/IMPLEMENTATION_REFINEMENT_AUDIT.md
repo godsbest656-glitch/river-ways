@@ -141,3 +141,10 @@ A file-level comparison of PR #24 and PR #32 shows they use different but partia
 **Integration decision:** do not replace PR #32's schema or copy PR #24 migrations as a blind stack. Design one canonical schema and API contract: preserve UUID IDs and atomic rate limiting unless a tested migration proves otherwise; decide whether to consolidate `stage` and `pipeline_status` into one lifecycle; add stable submission-key idempotency if needed; adapt the readiness probe to the chosen schema; and port PR #24's operational view/assignment/follow-up fields without duplicate or contradictory status fields. Re-run migrations against both an empty database and a populated legacy database, then adapt API and E2E tests.
 
 This is a schema design task, not a cosmetic merge. Keep it separate from the visual redesign commit and do not apply any migration to production during consolidation.
+
+
+## Field Guide restored from the release foundation
+
+The Demand Engineering Field Guide from PR #24 has been restored at `public/field-guide/index.html` and restyled to the approved SHAPED CURRENT blue system (removing the earlier terracotta/forest/warm-paper palette). It retains the practical framework content, accessible disclosure steps, and responsible-use caveats. The homepage footer now links to it, and the sitemap includes `/field-guide/`.
+
+**Current verified route inventory on PR #32:** homepage, Growth Diagnostic, Field Guide, Privacy, and a custom 404 document. The sitemap now lists four indexable URLs (home, Growth Diagnostic, Field Guide, Privacy). This is a factual inventory of the current GitHub branch only; it does not resolve the separate local candidate's route-count discrepancy or satisfy the broader intended information architecture.
