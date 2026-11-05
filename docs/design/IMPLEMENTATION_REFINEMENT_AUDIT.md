@@ -81,3 +81,48 @@ Limitations:
 - The preview's release marker was `a81e7e17ab326b6a73f79564f2e395a039ef9273`, while the branch later advanced to workflow/documentation commits. The rendered application code is the same as the tested code-bearing commit, but the preview is not the exact current branch head.
 
 Therefore: **partial visual inspection only**. A proper device/browser pass at fixed desktop, tablet, and mobile viewport dimensions remains open, along with screenshot evidence and end-to-end enquiry verification.
+
+
+## Cross-branch consolidation findings
+
+The public GitHub design branch is not the whole release story. A comparison of open PRs and the prior release report found these separate workstreams:
+
+### A. Newer local release candidate — must be preserved
+- Reported branch: `build/shaped-current-homepage`
+- Reported commit: `4fd62fc`
+- Reported artifact: 42 commits / 63 files, restore-tested in the separate developer workspace.
+- Reported additions: route registry, prerendering, route-specific documents, sitemap/redirect handling, and unknown-path 404 behavior.
+- **Unresolved discrepancy:** report says 12 sitemap URLs; build summary says 10 route documents plus `404.html`. Do not repeat “12 routes” as verified until the route registry, built output, sitemap, and 404 are reconciled.
+- This branch is not present in the accessible GitHub branch list. Do not overwrite it or treat PR #31/#32 as a complete replacement.
+
+### B. PR #24 — operational release foundation
+PR #24 (`feat/ads-gate-readiness`) contains D1 migrations 0001–0004, idempotent contact submissions, lead operations, Playwright E2E tests, privacy, Growth Diagnostic, and a Demand Engineering field guide. PR #31's changed-file set contains only migrations 0001–0002 and does not include the field guide or Playwright E2E suite. The visual redesign must not accidentally discard these stronger operational capabilities. Integrate by file-level comparison and preserve existing contracts.
+
+### C. PR #30 — gated AI Demand Intelligence
+PR #30 (`feat/river-ways-ai-demand-intelligence`) is stacked on PR #24 and adds a React assessment component, Pages Function, migration 0005, API tests, and an `AI_DEMAND_ENABLED` feature gate. It is limited to visitor-supplied context; it does not crawl external sources or create leads. Keep disabled pending explicit owner cost approval and verified Preview bindings/migration. Do not conflate this with Avenize.
+
+### D. Other workstreams
+- PR #29 is the internal agency operating platform, not the public website redesign.
+- PR #21 is an earlier layered-current-card experiment; PR #31 already has a layered interactive hero, so compare rather than stack.
+- PR #25's design governance has been reconciled into PR #32; PR #27 and #28 remain historical/overlapping explorations.
+
+### E. Route reality
+The PR #32 branch currently has a three-URL sitemap (home, Growth Diagnostic, privacy), plus a custom 404. It does not contain separate Services, Work, About, Approach, Insights, or Contact route documents. The newer local candidate reportedly adds route registry/prerendering, but its count discrepancy remains open. The final route map must be based on verified build output, not the intended IA alone.
+
+## Updated test and deployment record
+
+- The code-bearing commit `e13aa239afa0b3e7d49462691f2f1c78da96fb7a` passed GitHub Actions: production build, enquiry API tests, and dependency audit.
+- The PR #32 preview at `https://pr-32.riverwayse-website.pages.dev/` renders the approved headline and Creative Studio studies. Its release marker remains `a81e7e17ab326b6a73f79564f2e395a039ef9273`, not the latest branch head after later documentation/workflow commits.
+- A live browser QA run observed the desktop hero, Creative Studio, methodology, and contact form. No obvious desktop clipping was reported. The tool could not confirm an exact mobile viewport resize, so mobile QA remains partial.
+- PR #31's earlier Preview contact configuration probe returned HTTP 503, likely due missing `LEADS_DB` or `RATE_LIMIT_SALT`. End-to-end D1 persistence and Resend notification remain unverified.
+- Production has not been changed.
+
+## Priority order revised
+
+1. Preserve and recover the local 42-commit release candidate; obtain its exact route registry and source tree in a GitHub-accessible branch without overwriting it.
+2. Reconcile route registry, prerendered output, sitemap, redirects, and 404; resolve the 12-vs-10 route discrepancy.
+3. Merge the best SHAPED CURRENT / Route 2 visual implementation into that verified route/release foundation.
+4. Reconcile PR #24's contact idempotency, lead operations, field guide, and Playwright tests; preserve the D1/API contract.
+5. Keep PR #30 AI Demand Intelligence gated until explicit cost approval and Preview verification.
+6. Continue visual browser QA at fixed desktop/tablet/mobile viewport sizes, with screenshot evidence.
+7. Verify Preview D1 persistence and Resend notification before any release approval.
