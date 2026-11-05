@@ -79,3 +79,12 @@ Additional checks for this implementation:
 - [ ] Exact preview commit is confirmed and inspected in a real browser at desktop, tablet, and mobile sizes.
 
 A build pass is not a preview pass. A preview deployment is not an enquiry-service pass. An enquiry endpoint responding is not proof of persistence or notification. Mark each as Pass, Fail, or Not tested with evidence.
+
+
+## Cross-branch and route-integrity gate
+- [ ] Compare the selected release candidate against the separate `build/shaped-current-homepage` @ `4fd62fc` work before declaring PR #31/#32 the final implementation base.
+- [ ] Reconcile route registry, prerendered documents, sitemap URLs, redirects, canonical URLs, and the actual 404 response. Explicitly resolve the reported mismatch of 12 sitemap URLs versus 10 built routes plus `404.html`.
+- [ ] Verify every intended public route serves its own distinct document; do not count sitemap URLs as proof of distinct route output.
+- [ ] Preserve PR #24's enquiry idempotency, D1 migrations, lead operations, privacy, Growth Diagnostic, field guide, and Playwright E2E coverage when integrating the visual redesign.
+- [ ] Keep PR #30's AI Demand Intelligence feature disabled until cost approval, Preview binding/migration checks, and live behavior are verified.
+- [ ] Keep PR #29 internal agency-platform work outside public website scope unless separately approved.
