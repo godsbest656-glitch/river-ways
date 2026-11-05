@@ -248,7 +248,7 @@ export default function App() {
           <div className="container hero-layout">
             <div className="hero-copy">
               <Eyebrow light>Creative demand engineering</Eyebrow>
-              <h1>Make demand <span>move.</span></h1>
+              <h1>We engineer <span>demand.</span></h1>
               <p className="hero-lede">River Ways connects strategy, creative, digital experiences and growth systems to turn market attention into meaningful business momentum.</p>
               <div className="hero-actions">
                 <a className="button button-primary" href="#contact">Build your growth system <ArrowUpRight size={17} /></a>
