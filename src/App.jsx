@@ -465,6 +465,7 @@ export default function App() {
               </div>
               <a className="button button-primary" href="#contact">Discuss a listening system <ArrowRight size={17} /></a>
               <p className="small-disclaimer">Coverage depends on source access, platform policies, language and available integrations. This page describes an approach, not a claim that every source is already connected.</p>
+              <a className="text-link text-link-light" href="/field-guide/">Read the Demand Engineering Field Guide <ArrowUpRight size={15} /></a>
             </div>
             <div className="signal-panel">
               <div className="panel-header"><span><i /> SYSTEM FLOW</span><span>01 — 04</span></div>
