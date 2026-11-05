@@ -11,6 +11,7 @@
 5. [Design Agent Protocol](./DESIGN_AGENT_PROTOCOL.md) — required audit, implementation, and review process.
 6. [Design Acceptance Gates](./DESIGN_ACCEPTANCE_GATES.md) — evidence required before approval or release.
 7. [AI Developer Kickoff](./AI_DEVELOPER_KICKOFF.md) — current consolidation and refinement assignment.
+8. [Implementation Refinement Audit](./IMPLEMENTATION_REFINEMENT_AUDIT.md) — observed gaps, completed changes, and evidence still required.
 
 ## Decision status
 
