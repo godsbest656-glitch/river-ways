@@ -155,3 +155,15 @@ The Demand Engineering Field Guide from PR #24 has been restored at `public/fiel
 PR #32 has now been retargeted from the stacked base `design/shaped-current-rebuild` to `main`. It therefore represents one reviewable PR containing the full PR #31 SHAPED CURRENT implementation plus the PR #32 headline, governance, Creative Studio, Field Guide, and related refinements. PR #31 remains open as the original visual foundation; it should not be treated as a separate final release. No merge to `main` has occurred.
 
 The latest head at the time of this note is `fb8a1a6f84b5714a4c2c5ffdb45ac1db9c4cf6e6`. The last confirmed GitHub Actions build/API/dependency pass remains the earlier code-bearing commit `e13aa239afa0b3e7d49462691f2f1c78da96fb7a`. Later Field Guide, sitemap, footer, and documentation changes still need an exact-head workflow run. The Cloudflare bot's reported Worker build failure on `e8538aa` has not been diagnosed because the linked dashboard requires an authenticated session.
+
+
+## Lead operations adapted to the current schema
+
+To preserve PR #24's useful lead ownership and follow-up capability without importing its incompatible `pipeline_status` model, PR #32 now adds:
+
+- `migrations/0003_lead_operations.sql`: `assigned_to`, `next_action_at`, `last_contacted_at`, `closed_at`, `updated_at`, supporting indexes, update triggers, and `ops_open_leads`.
+- `docs/ops/LEAD_OPERATIONS.md`: daily operating rhythm and D1 queries using the current UUID ID and existing `stage` lifecycle.
+
+**Local SQLite verification passed** for the sequence 0001 → 0002 → 0003: existing-row timestamp backfill, insert trigger, overdue follow-up calculation, and exclusion of won/lost records from the open-leads view. This is a local in-memory schema test only; it is not a D1 Preview migration run and has not been applied to any remote database.
+
+Still not integrated: PR #24's stable submission-key idempotency and Playwright E2E suite. The current API uses brief-hash duplicate detection and atomic rate limiting; decide whether stable submission keys are needed and adapt them to UUID IDs before importing. Do not copy PR #24's integer-ID contact handler.
