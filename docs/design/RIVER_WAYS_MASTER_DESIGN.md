@@ -68,29 +68,17 @@ The homepage should tell one connected story in this order:
 
 The exact section composition may evolve after browser review, but the commercial story and message hierarchy should remain coherent.
 
-## 6. Information architecture
+## 6. Information architecture and route reality
 
-Preserve the existing route architecture and working page content. The intended public structure includes:
+The intended public structure is larger than the currently accessible GitHub design branch. Do not confuse the target map with the routes that have been verified in a particular branch.
 
-- Home
-- Services
-- Brand Strategy
-- Digital Experiences
-- Demand Generation
-- Growth Engineering
-- Creative Studio
-- Work
-- Approach
-- About
-- Insights
-- Contact
-- Growth Diagnostic
-- Start a Project
-- Thank You
-- Privacy
-- A genuine not-found experience
+**Verified on PR #32's current GitHub branch:** the source contains the homepage, `/growth-diagnostic/`, `/privacy/`, and a custom 404 document. Its sitemap currently lists three URLs. The homepage navigation is primarily anchor-based. Service detail, Work, About, Approach, Insights, Contact, Start a Project, and Thank You are not present as distinct static route documents in this branch.
 
-Do not collapse distinct service routes into homepage anchors or replace existing routes with a single scrolling brochure. Keep sitemap, canonical metadata, internal links, and 404 behavior aligned with the actual routes.
+**Separate local release candidate:** the earlier `build/shaped-current-homepage` branch at `4fd62fc` was reported to include route registry and prerendering. Its close-out report claimed 12 sitemap URLs, while its build summary reported 10 route documents plus `404.html`. That discrepancy is unresolved. The local branch and its 42-commit / 63-file release bundle are not present on the accessible GitHub branches. Preserve that candidate and reconcile its exact route registry, generated output, sitemap, redirects, and 404 behavior before selecting the final release base. Do not infer the 12 route names or claim the discrepancy is resolved.
+
+**Target public structure, subject to the route inventory:** Home; Services; Brand Strategy; Digital Experiences; Demand Generation; Growth Engineering; Creative Studio; Work; Approach; About; Insights; Contact; Growth Diagnostic; Start a Project; Thank You; Privacy; and a genuine not-found experience.
+
+Do not collapse distinct service routes into homepage anchors or replace existing routes with a single scrolling brochure. Do not add sitemap entries for pages that do not exist. Every shipped route must serve a distinct, useful document, with correct canonical metadata, internal links, robots directives, and 404 behavior.
 
 ## 7. Work, evidence, and honesty
 
@@ -100,29 +88,39 @@ Do not collapse distinct service routes into homepage anchors or replace existin
 - The River Ways website and Growth Diagnostic may be shown as internal demonstrations when accurately labelled.
 - Avenize is a separate in-house AI Business Operating System, not a standard River Ways website feature or client case study.
 
-## 8. Technical preservation
+## 8. Technical preservation and feature dependencies
 
-The design is implemented within the existing React 18 + Vite 6 application and Cloudflare Pages architecture. Preserve existing routes, SEO, security, analytics attribution, and the enquiry contract.
+The public website uses React 18 + Vite 6 and Cloudflare Pages. Preserve this architecture unless a verified architecture decision requires a change. The visual redesign must not reduce the capabilities of the strongest release foundation.
 
-- Preserve the existing `POST /api/contact` flow, server-side validation, D1 persistence, attribution, anti-spam controls, and notification behavior. Do not replace it with a `mailto:` mock or front-end-only success state.
-- Preserve Growth Diagnostic, privacy, 404, sitemap, robots, metadata, and release-marker behavior.
-- Do not introduce paid services, subscriptions, APIs, templates, or stock assets without explicit approval. Prefer free, open-source, locally controllable, or already-approved resources.
+- **PR #24 — release / ads-readiness foundation:** includes the Pages contact function, D1 migrations 0001–0004, idempotent submission handling, attribution, lead operations, Playwright configuration and end-to-end tests, privacy, Growth Diagnostic, and a Demand Engineering field guide. These are valuable release capabilities, but they are not all present in PR #31's changed-file set. Reconcile them into the final release candidate rather than silently dropping them.
+- **PR #31 — SHAPED CURRENT design branch:** preserves the basic contact endpoint, attribution, Growth Diagnostic, privacy, and 404, but its branch currently shows only migrations 0001–0002 and does not include the PR #24 field guide or Playwright E2E suite. Treat it as the visual foundation, not automatically as the complete technical release foundation.
+- **PR #30 — Demand Intelligence AI increment:** adds a visitor-facing React component, a Pages Function, migration 0005, tests, and an owner-controlled `AI_DEMAND_ENABLED` feature gate. It reasons only from visitor-supplied context; it does not crawl the web or create leads. Keep it disabled until the owner approves current model cost/billing and the required Preview bindings and migration are verified. Do not imply the AI feature is live merely because the UI or endpoint exists.
+- Preserve the existing `POST /api/contact` contract, server-side validation, D1 persistence, attribution, idempotency, anti-spam controls, and notification behavior when integrating branches. Do not replace it with a `mailto:` mock or front-end-only success state.
+- Preserve Growth Diagnostic, privacy, field guide, 404, route registry/prerendering, sitemap, robots, redirects, metadata, release-marker behavior, and end-to-end tests where they exist in the selected release candidate.
+- Do not introduce paid services, subscriptions, APIs, templates, or stock assets without explicit approval. Keep the AI feature gated until cost approval.
 - Do not change production DNS, Cloudflare routing, production secrets, or production deployment settings as part of design work.
 - Do not rebuild the application from scratch or create a parallel website to avoid understanding the existing one.
 
-## 9. How previous design efforts fit together
+## 9. How previous design and release efforts fit together
 
-Use this hierarchy when encountering older branches, PRs, prototypes, and documents:
+The final product must combine the best visual direction with the most complete verified route, enquiry, privacy, diagnostic, and deployment foundation. No single currently accessible PR should be assumed to contain everything.
 
-- **Canonical implementation foundation:** PR #31, `design/shaped-current-rebuild` — the integrated SHAPED CURRENT homepage and visual redesign built on the existing application and enquiry infrastructure.
-- **Approved headline and metadata refinement:** PR #32, `design/we-engineer-demand-homepage` — applies the final headline “We engineer demand.” and aligns document/social metadata.
-- **Design constitution and developer standards:** PR #25 and its supporting documents — retain reusable standards and acceptance criteria, but update any outdated exploratory statements to match this canonical decision.
-- **Three-route comparison:** PR #27 — historical exploration only. Route selection is settled; do not reopen the A/B/C identity decision.
-- **Standalone SHAPED CURRENT CSS layer:** PR #28 — exploratory/overlapping implementation. Do not merge independently if its changes are already represented in PR #31.
-- **Earlier interactive hero, card-wave, typography, identity and visual experiments:** retain as reference material where useful; do not stack or merge them independently without a file-level comparison against the canonical implementation.
-- **Standalone static homepage prototype:** reference only. It is not the production application and does not replace the existing React implementation or enquiry API.
+### Visual direction and implementation
+- **PR #31 — `design/shaped-current-rebuild`:** strongest accessible GitHub visual foundation for SHAPED CURRENT and the redesigned homepage. It is not the final release base until reconciled with the newer local release candidate and PR #24's operational features.
+- **PR #32 — `design/we-engineer-demand-homepage`:** current consolidation branch. It applies “We engineer demand.”, aligns metadata, reconciles design governance, and adds the Creative Studio capability studies. It is stacked on PR #31 and remains a draft; do not merge into `main`.
+- **Local release candidate — `build/shaped-current-homepage` @ `4fd62fc`:** newer separate work, reported as a 42-commit / 63-file release bundle with route registry and prerendering. It is not pushed to the accessible GitHub repository. Preserve it; reconcile its route inventory and code with PR #31/#32 before choosing the final release branch. The reported 12-URL sitemap versus 10 route documents plus 404 discrepancy is an open verification item.
+- **PR #24 — `feat/ads-gate-readiness`:** stronger operational/release foundation, including D1 migrations 0001–0004, idempotent enquiry handling, lead operations, Playwright E2E coverage, privacy, Growth Diagnostic, and field guide. It is a separate branch from the visual redesign; integrate its working capabilities deliberately.
+- **PR #30 — `feat/river-ways-ai-demand-intelligence`:** stacked on PR #24. Keep as a gated optional capability. Its AI feature requires owner cost approval, Preview bindings, migration 0005, and live verification. Do not turn it on by default or present it as an already-live capability.
+- **PR #20 — preview gate:** deployment workflow foundation; preserve exact-commit release verification when reconciling CI.
+- **PR #21 — layered current cards:** earlier interaction experiment; compare against PR #31's current-card hero. Do not stack duplicate effects.
+- **PR #25 — design foundation:** source of reusable governance. Its documents are now reconciled into this branch; outdated instructions to compare routes or leave palette undecided are superseded.
+- **PR #27 — three-route comparison:** historical exploration only. Route selection is settled.
+- **PR #28 — separate SHAPED CURRENT CSS layer:** overlapping visual experiment. Do not merge independently if its useful changes are already represented in PR #31/#32.
+- **PR #29 — agency operating platform:** separate internal operating-system scope, not a public website redesign. Keep its internal workspaces and platform requirements out of the public website unless separately approved.
+- **Standalone static homepage prototype:** reference only. It is not the production application and does not replace React, route rendering, or the enquiry API.
 
-This hierarchy is a consolidation policy, not a claim that every listed PR has been merged, tested, or deployed. Keep exploratory work available for traceability; avoid destructive branch deletion.
+### Consolidation rule
+Compare file-level changes and ancestry before integrating. Preserve the best implementation of each capability, remove duplicated versions only after verification, and keep a clear record of provenance. Do not delete historical branches or overwrite the local release bundle.
 
 ## 10. Acceptance gates
 
