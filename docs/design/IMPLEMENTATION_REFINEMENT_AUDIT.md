@@ -60,3 +60,24 @@ The preview workflow originally accepted pull requests targeting only `main`. PR
 - Production has not been changed.
 
 This audit is a living record. Update it with evidence from the exact candidate SHA; do not convert a recommendation into a completed item without verification.
+
+
+## Browser review — partial, not a release pass
+
+A live browser QA run inspected `https://pr-32.riverwayse-website.pages.dev/` after the Creative Studio section was deployed. The extracted page metadata showed the approved title “River Ways — We Engineer Demand.” and the page contained the three new Creative Studio capability studies.
+
+Observed:
+- The hero headline, supporting copy, and primary/secondary actions were legible and aligned in the desktop browser view.
+- The Creative Studio studies rendered with their distinct brand, campaign, and digital/motion compositions.
+- The contact form labels, fields, dropdown, submit control, and privacy note were present and structurally clear.
+- Keyboard tabbing reached the skip link and header navigation controls.
+- The browser agent reported no obvious clipping or horizontal overflow in its narrow-view framing.
+
+Limitations:
+- The browser automation could not programmatically resize the viewport; the reported mobile view used narrow screenshot framing rather than a confirmed exact 390px browser viewport. Do not treat this as a verified 390px responsive test.
+- The automation did not provide independently inspectable screenshot files in this audit record.
+- The actual open/close behavior of the mobile menu was not conclusively demonstrated.
+- The contact form was not submitted; no D1 write or Resend notification was tested.
+- The preview's release marker was `a81e7e17ab326b6a73f79564f2e395a039ef9273`, while the branch later advanced to workflow/documentation commits. The rendered application code is the same as the tested code-bearing commit, but the preview is not the exact current branch head.
+
+Therefore: **partial visual inspection only**. A proper device/browser pass at fixed desktop, tablet, and mobile viewport dimensions remains open, along with screenshot evidence and end-to-end enquiry verification.
