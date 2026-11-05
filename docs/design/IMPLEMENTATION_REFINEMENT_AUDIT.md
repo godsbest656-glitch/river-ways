@@ -126,3 +126,18 @@ The PR #32 branch currently has a three-URL sitemap (home, Growth Diagnostic, pr
 5. Keep PR #30 AI Demand Intelligence gated until explicit cost approval and Preview verification.
 6. Continue visual browser QA at fixed desktop/tablet/mobile viewport sizes, with screenshot evidence.
 7. Verify Preview D1 persistence and Resend notification before any release approval.
+
+
+## Contact schema comparison — do not copy migrations blindly
+
+A file-level comparison of PR #24 and PR #32 shows they use different but partially compatible data models:
+
+- PR #24 `0001_leads.sql` uses an integer autoincrement lead ID and a basic leads table; PR #32 `0001_leads.sql` uses a text UUID primary key, `brief_hash`, notification state constraints, and a `lead_rate_limits` table.
+- PR #32 `0002_lead_pipeline_attribution.sql` already adds attribution fields and a constrained `stage` column. PR #24 `0002_campaign_attribution.sql` is a different migration and is absent from PR #32.
+- PR #24 `0003_submission_idempotency.sql` adds a stable `submission_key`; PR #32 currently deduplicates by a short-window brief hash and does not persist a client submission key.
+- PR #24 `0004_lead_operations.sql` adds `pipeline_status`, assignment/follow-up fields, timestamps, and the `ops_open_leads` view. It expects attribution columns that PR #32's migration 0002 already provides, but it introduces a second lifecycle field alongside PR #32's existing `stage`.
+- PR #24's contact function uses `meta.last_row_id` (integer-ID assumption) and includes a non-mutating GET readiness probe. PR #32's function uses UUID IDs and an atomic `lead_rate_limits` upsert, but does not include the same GET diagnostic probe.
+
+**Integration decision:** do not replace PR #32's schema or copy PR #24 migrations as a blind stack. Design one canonical schema and API contract: preserve UUID IDs and atomic rate limiting unless a tested migration proves otherwise; decide whether to consolidate `stage` and `pipeline_status` into one lifecycle; add stable submission-key idempotency if needed; adapt the readiness probe to the chosen schema; and port PR #24's operational view/assignment/follow-up fields without duplicate or contradictory status fields. Re-run migrations against both an empty database and a populated legacy database, then adapt API and E2E tests.
+
+This is a schema design task, not a cosmetic merge. Keep it separate from the visual redesign commit and do not apply any migration to production during consolidation.
