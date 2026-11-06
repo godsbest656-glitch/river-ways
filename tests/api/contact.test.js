@@ -64,6 +64,44 @@ const envFor = (db) => ({
   LEAD_NOTIFICATION_EMAIL: "team@example.com"
 });
 
+
+test("persists only the selected journey and engagement context with the enquiry", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: request({
+      name: "Ada Example",
+      email: "ada@example.com",
+      goal: "Generate demand",
+      details: "We need a clearer acquisition plan.",
+      journey: "demand-generation",
+      engagement: "defined-project"
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 200);
+  assert.match(db.leads[0].details, /Selected journey: demand-generation/);
+  assert.match(db.leads[0].details, /Preferred engagement: defined-project/);
+  assert.doesNotMatch(db.leads[0].details, /score|assessment answers/i);
+});
+
+test("rejects a cross-origin browser submission", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "Origin": "https://attacker.example",
+        "CF-Connecting-IP": "192.0.2.12"
+      },
+      body: JSON.stringify({ name: "Ada Example", email: "ada@example.com", goal: "Growth" })
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 403);
+  assert.equal(db.leads.length, 0);
+});
+
 test("rejects malformed and invalid submissions", async () => {
   const db = makeDb();
   const invalid = await onRequestPost({ request: request({ name: "", email: "nope", goal: "Growth" }), env: envFor(db) });
@@ -173,9 +211,11 @@ test("does not claim notification success when the email provider fails", async 
     env: envFor(db)
   });
   const body = await response.json();
-  assert.equal(response.status, 503);
-  assert.equal(body.ok, false);
+  assert.equal(response.status, 202);
+  assert.equal(body.ok, true);
   assert.equal(body.saved, true);
+  assert.equal(body.notification, "failed");
+  assert.ok(body.reference);
   assert.equal(db.leads.length, 1);
   assert.equal(db.leads[0].notification_status, "failed");
 });
