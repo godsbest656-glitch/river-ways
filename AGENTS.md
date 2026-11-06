@@ -8,7 +8,8 @@ These rules govern AI coding agents and human contributors in this repository. T
 3. `docs/design/CREATIVE_DIRECTION_BRIEF.md` — brand intent, tensions, and unresolved decisions.
 4. `docs/design/DESIGN_SYSTEM_ARCHITECTURE.md` — token and component architecture.
 5. `docs/design/DESIGN_AGENT_PROTOCOL.md` and `docs/design/DESIGN_ACCEPTANCE_GATES.md`.
-6. Inspect the actual current source, package manifest, deployment files, and relevant tests before editing.
+6. For existing page work, read `.agents/skills/redesign-existing-projects/SKILL.md`; for new page or campaign work, read `.agents/skills/landing-page-design/SKILL.md`; for actual Figma work, read `.agents/skills/figma-designer/SKILL.md` and load its mandatory Figma prerequisites.
+7. Inspect the actual current source, package manifest, deployment files, and relevant tests before editing.
 
 ## Product and brand invariants
 - Public brand spelling: **River Ways** (two words). Preserve the existing domain `riverwayse.com`; spelling of the domain does not change the brand name.
