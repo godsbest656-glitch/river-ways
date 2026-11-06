@@ -141,8 +141,8 @@ export async function onRequestPost({ request, env }) {
   const handoffContext = [
     lead.journeyId ? "Selected journey: " + lead.journeyId : "",
     lead.engagementType ? "Preferred engagement: " + lead.engagementType : ""
-  ].filter(Boolean).join("\n");
-  if (handoffContext) lead.details = [lead.details, handoffContext].filter(Boolean).join("\n\n");
+  ].filter(Boolean).join(" | ");
+  if (handoffContext) lead.details = [lead.details, handoffContext].filter(Boolean).join(" | ");
 
   if (!lead.name || !validEmail(lead.email) || !lead.goal) {
     return json(422, { ok: false, message: "Add your name, a valid email address and a goal so we can route your enquiry." });
