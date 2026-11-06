@@ -4,7 +4,7 @@ const JSON_HEADERS = {
   "x-content-type-options": "nosniff"
 };
 
-const MAX_LENGTHS = { name: 120, email: 254, company: 160, goal: 180, details: 4000, source: 120, landingPage: 240, referrer: 500, utm: 160 };
+const MAX_LENGTHS = { name: 120, email: 254, company: 160, goal: 180, details: 4000, source: 120, landingPage: 240, referrer: 500, utm: 160, journey: 80, engagement: 40 };
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT = 5;
 const DUPLICATE_WINDOW_MS = 2 * 60 * 1000;
@@ -49,6 +49,8 @@ async function sendNotification(env, lead) {
           "Email: " + lead.email,
           "Company: " + (lead.company || "Not provided"),
           "Goal: " + lead.goal,
+          "Journey: " + (lead.journeyId || "Not specified"),
+          "Engagement: " + (lead.engagementType || "Not specified"),
           "Source: " + (lead.utmSource || lead.source || "Direct / unknown"),
           "Campaign: " + (lead.utmCampaign || "Not tagged"),
           "Landing page: " + (lead.landingPage || "/"),
@@ -67,6 +69,17 @@ async function sendNotification(env, lead) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const origin = request.headers.get("Origin");
+  if (origin) {
+    try {
+      if (new URL(origin).origin !== new URL(request.url).origin) {
+        return json(403, { ok: false, message: "Please submit your enquiry from the River Ways website." });
+      }
+    } catch {
+      return json(403, { ok: false, message: "Please submit your enquiry from the River Ways website." });
+    }
+  }
+
   if (!env.LEADS_DB) {
     return json(503, { ok: false, message: "Enquiry service is temporarily unavailable. Please email akinsify0511@gmail.com." });
   }
@@ -107,7 +120,9 @@ export async function onRequestPost({ request, env }) {
     utmMedium: clean(payload.utmMedium, MAX_LENGTHS.utm),
     utmCampaign: clean(payload.utmCampaign, MAX_LENGTHS.utm),
     utmContent: clean(payload.utmContent, MAX_LENGTHS.utm),
-    utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm)
+    utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm),
+    journeyId: /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean(payload.journey, MAX_LENGTHS.journey)) ? clean(payload.journey, MAX_LENGTHS.journey) : "",
+    engagementType: ["diagnostic", "defined-project", "growth-partnership"].includes(clean(payload.engagement, MAX_LENGTHS.engagement)) ? clean(payload.engagement, MAX_LENGTHS.engagement) : ""
   };
 
   if (!lead.name || !validEmail(lead.email) || !lead.goal) {
@@ -132,7 +147,7 @@ export async function onRequestPost({ request, env }) {
     return json(503, { ok: false, message: "Enquiry service is temporarily unavailable. Please email akinsify0511@gmail.com." });
   }
 
-  const briefHash = await sha256(JSON.stringify([lead.name.toLowerCase(), lead.email, lead.company.toLowerCase(), lead.goal.toLowerCase(), lead.details]));
+  const briefHash = await sha256(JSON.stringify([lead.name.toLowerCase(), lead.email, lead.company.toLowerCase(), lead.goal.toLowerCase(), lead.details, lead.journeyId, lead.engagementType]));
   const duplicateCutoff = new Date(now - DUPLICATE_WINDOW_MS).toISOString();
   let record;
   try {
@@ -144,8 +159,8 @@ export async function onRequestPost({ request, env }) {
       const id = crypto.randomUUID();
       const createdAt = new Date(now).toISOString();
       await env.LEADS_DB.prepare(
-        "INSERT INTO leads (id, name, email, company, goal, details, brief_hash, notification_status, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?)"
-      ).bind(id, lead.name, lead.email, lead.company, lead.goal, lead.details, briefHash, ipHash, createdAt, lead.source, lead.landingPage, lead.referrer, lead.utmSource, lead.utmMedium, lead.utmCampaign, lead.utmContent, lead.utmTerm).run();
+        "INSERT INTO leads (id, name, email, company, goal, details, brief_hash, notification_status, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term, journey_id, engagement_type) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(id, lead.name, lead.email, lead.company, lead.goal, lead.details, briefHash, ipHash, createdAt, lead.source, lead.landingPage, lead.referrer, lead.utmSource, lead.utmMedium, lead.utmCampaign, lead.utmContent, lead.utmTerm, lead.journeyId, lead.engagementType).run();
       record = { id, notification_status: "pending" };
     }
   } catch {
@@ -169,16 +184,20 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (notificationStatus !== "sent") {
-    return json(503, {
-      ok: false,
+    return json(202, {
+      ok: true,
       saved: true,
-      message: "Your brief was saved, but we couldn't notify the team automatically. Please email akinsify0511@gmail.com and mention your website enquiry."
+      notification: notificationStatus,
+      reference: record.id,
+      message: "Your enquiry has been safely recorded. We could not confirm the team notification automatically. Keep your reference and, if you need a prompt response, email akinsify0511@gmail.com."
     });
   }
 
   return json(200, {
     ok: true,
-    message: "Thank you. Your enquiry is with the River Ways team. We'll review the context and follow up by email.",
-    reference: record.id
+    saved: true,
+    notification: "sent",
+    reference: record.id,
+    message: "Your enquiry has been recorded. We will review the details and follow up using the email address you provided."
   });
 }
