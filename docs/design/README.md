@@ -11,16 +11,12 @@ This folder is the design source of truth for the AI developer and human reviewe
 
 ## AI design skills
 
-Project-level skills are installed in `.agents/skills/`. Read [AI Skills Integration](./AI_SKILLS_INTEGRATION.md) for their purpose, precedence, validation and provenance. The skills supplement this design foundation; they do not override it.
-
-## AI design skills
-
 Project-level skills are installed in `.agents/skills/`. Read [AI Skills Integration](./AI_SKILLS_INTEGRATION.md) for their purpose, precedence and validation. The skills supplement this design foundation; they do not override it.
 
 ## Required working sequence
 **Audit → evidence-led research → competing routes → prototype → critique → design system → page implementation → validation.**
 
-Do not jump directly from a prompt to a complete homepage. Do not treat inspiration screenshots as permission to copy them. Do not lock palette, type, logo, or motion language before comparing distinct routes against the same criteria.
+Do not jump directly from a prompt to a complete homepage. Do not treat inspiration screenshots as permission to copy them. The approved creative direction is SHAPED CURRENT, Route 2 — Editorial Intelligence. Preserve approved decisions; reopen them only when new evidence or an explicit user request warrants it.
 
 ## Current project facts
 - Repository: `godsbest656-glitch/river-ways`.
@@ -31,7 +27,7 @@ Do not jump directly from a prompt to a complete homepage. Do not treat inspirat
 - Website and brand work must support real business outcomes: clear positioning, service comprehension, credible proof, useful exploration, and low-friction enquiry.
 
 ## Decision status
-No final logo, color palette, typography pairing, art direction, page architecture, or animation specification is approved by these documents alone. The developer must produce a comparative proposal and record recommendations, evidence, trade-offs, and approval-required decisions.
+Approved direction: SHAPED CURRENT, Route 2 — Editorial Intelligence. The homepage headline is “We engineer demand.” Use the established sea and sky blue identity with deep-water contrast and the premium editorial system already selected. The precise current implementation and approved token values remain the source of truth; do not invent replacements or restart route exploration without a clear reason.
 
 ## Required artifacts from the AI design developer
 1. Existing implementation audit and risk list.
