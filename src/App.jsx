@@ -235,6 +235,7 @@ export default function App() {
             <a href="#approach" onClick={closeMenu}>Approach</a>
             <a href="#services" onClick={closeMenu}>Capabilities</a>
             <a href="#studio" onClick={closeMenu}>Creative Studio</a>
+            <a href="#avenize" onClick={closeMenu}>Avenize</a>
             <a href="#intelligence" onClick={closeMenu}>Intelligence</a>
             <a href="#principles" onClick={closeMenu}>Our thinking</a>
             <a className="nav-cta" href="#contact" onClick={closeMenu}>Start a conversation <ArrowUpRight size={15} /></a>
@@ -452,6 +453,37 @@ export default function App() {
           </div>
         </section>
 
+        <section className="avenize-section reveal-section" id="avenize" data-reveal>
+          <div className="container">
+            <div className="avenize-topline">
+              <Eyebrow>Built from the River Ways ecosystem</Eyebrow>
+              <span className="avenize-status"><i /> IN DEVELOPMENT</span>
+            </div>
+            <div className="avenize-layout">
+              <div className="avenize-copy">
+                <p className="avenize-kicker">INTRODUCING AVENIZE</p>
+                <h2>Run the business.<br /><em>See the whole picture.</em></h2>
+                <p className="avenize-lede">Avenize is our in-house AI-powered Business Operating System in development: a connected operating layer designed to help a business understand itself, coordinate its people and work, and act with better context.</p>
+                <p>Where River Ways engineers demand and growth systems, Avenize is being shaped to connect the work happening across the business—so customer relationships, people operations, workflows and business intelligence can inform one another.</p>
+                <a className="button button-primary avenize-cta" href="#contact">Discuss Avenize <ArrowUpRight size={17} /></a>
+                <span className="avenize-note">A product initiative from River Ways. Not yet available for general release.</span>
+              </div>
+              <div className="avenize-system" aria-label="Planned Avenize operating system areas">
+                <div className="avenize-orbit" aria-hidden="true"><span /><span /><span /><b>A</b></div>
+                <div className="avenize-system-heading"><span>AVENIZE / SYSTEM MAP</span><span>01—06</span></div>
+                <div className="avenize-capabilities">
+                  <article><span>01</span><div><strong>Business identity</strong><small>A connected view of the organisation and its relationships.</small></div></article>
+                  <article><span>02</span><div><strong>Customer relationships</strong><small>CRM context that connects conversations, accounts and opportunities.</small></div></article>
+                  <article><span>03</span><div><strong>People & operations</strong><small>People, responsibilities and the work that moves the business.</small></div></article>
+                  <article><span>04</span><div><strong>AI assistant</strong><small>Context-aware assistance to help people understand and act.</small></div></article>
+                  <article><span>05</span><div><strong>Pulse & intelligence</strong><small>Useful signals about business activity, progress and attention.</small></div></article>
+                  <article><span>06</span><div><strong>Marketplace & workflows</strong><small>Connected tools and repeatable ways of getting work done.</small></div></article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="intelligence-section section-dark reveal-section" id="intelligence" data-reveal>
           <div className="container intelligence-layout">
             <div className="intelligence-copy">
@@ -574,6 +606,7 @@ export default function App() {
                   <option>Improve search and AI visibility</option>
                   <option>Increase website conversion</option>
                   <option>Build a Demand Intelligence system</option>
+                  <option>Explore Avenize / business operations</option>
                   <option>Connect marketing and measurement</option>
                   <option>Something else</option>
                 </select>
