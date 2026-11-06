@@ -86,7 +86,7 @@ Do not collapse distinct service routes into homepage anchors or replace existin
 - Distinguish verified client work from internal product work, speculative concepts, experiments, and capability demonstrations.
 - Names previously discussed as possible portfolio work are not automatically approved case studies. Confirm assets, scope, outcomes, permission, and evidence before publication.
 - The River Ways website and Growth Diagnostic may be shown as internal demonstrations when accurately labelled.
-- Avenize is a separate in-house AI Business Operating System, not a standard River Ways website feature or client case study.
+- Avenize remains a distinct in-house AI Business Operating System and product initiative within the wider River Ways ecosystem—not a River Ways agency service or client case study. The public website may introduce Avenize as an in-development sister product, clearly separated from agency capabilities and labelled as not yet generally available. Do not imply that planned modules, integrations, automations, or AI features are already operational.
 
 ## 8. Technical preservation and feature dependencies
 
