@@ -29,6 +29,7 @@ npm run preview
 - `docs/ENQUIRY-OPERATIONS.md` — D1, Resend and controlled-verification runbook.
 - `netlify.toml` — SPA fallback and baseline response security headers.
 - `docs/ARCHITECTURE.md` — architecture and future integration plan.
+- `docs/AVENIZE-ECOSYSTEM-INTEGRATION.md` — Avenize product boundary, public positioning, roadmap direction and release gates.
 - `docs/SHAPED-CURRENT-EXPERIENCE-CONSTITUTION.md` — approved website direction, interaction rules and release acceptance gates.
 - `docs/OUTSTANDING-BLOCKERS.md` — evidence-based preview and production release gates.
 
@@ -43,5 +44,7 @@ npm run preview
 7. Run `npm run build` and `npm run test:api`, then run browser accessibility/performance checks on the deployment preview.
 
 ## Current scope
+
+The Avenize section introduces the distinct in-house Business Operating System as an in-development ecosystem product; it does not imply a live product, account system or operational modules. See `docs/AVENIZE-ECOSYSTEM-INTEGRATION.md` for its boundaries and roadmap gates.
 
 The Demand Intelligence section explains the workflow and user experience. Real-time global social listening, lead qualification, notifications and CRM follow-up require selected data sources, a backend, credentials and compliance review; these integrations are not represented as already connected.
