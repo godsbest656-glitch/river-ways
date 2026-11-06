@@ -35,7 +35,7 @@ These are River Ways adaptations informed by the upstream repositories, not verb
 
 ## Validation
 
-Run `python -m unittest discover tests` and `python scripts/validate_skills.py .agents/skills`. The GitHub Actions workflow runs these checks for pull requests and pushes to main.
+Run `python -m unittest discover tests` and `python scripts/validate_skills.py .agents/skills`. Run these checks locally before opening or updating a pull request. Automated workflow wiring remains a follow-up because the workflow file could not be added in this pass.
 
 ## Provenance
 
