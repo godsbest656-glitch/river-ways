@@ -18,7 +18,8 @@ npm run preview
 
 ## Project structure
 
-- `src/App.jsx` — page sections and interactive components.
+- `src/App.jsx` — homepage sections and interactive components.
+- `public/avenize/index.html` — dedicated Avenize product overview, clearly marked in development.
 - `src/styles.css` — responsive design system, animation and reduced-motion handling.
 - `index.html` — metadata, social sharing tags and Organization JSON-LD.
 - `public/robots.txt` and `public/sitemap.xml` — crawler files.
@@ -45,6 +46,6 @@ npm run preview
 
 ## Current scope
 
-The Avenize section introduces the distinct in-house Business Operating System as an in-development ecosystem product; it does not imply a live product, account system or operational modules. See `docs/AVENIZE-ECOSYSTEM-INTEGRATION.md` for its boundaries and roadmap gates.
+The Avenize homepage introduction and `/avenize/` product overview present the distinct in-house Business Operating System as an in-development ecosystem product; they do not imply a live product, account system or operational modules. See `docs/AVENIZE-ECOSYSTEM-INTEGRATION.md` for its boundaries and roadmap gates.
 
 The Demand Intelligence section explains the workflow and user experience. Real-time global social listening, lead qualification, notifications and CRM follow-up require selected data sources, a backend, credentials and compliance review; these integrations are not represented as already connected.
