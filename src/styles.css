@@ -461,3 +461,51 @@ h3 { letter-spacing: -.035em; }
   .studio-interface { width: 82%; }
   .studio-card-copy { padding: 19px 19px 22px; }
 }
+
+
+/* Avenize — the connected operating layer emerging from the River Ways ecosystem. */
+.avenize-section { position: relative; overflow: hidden; padding: clamp(82px, 10vw, 138px) 0; background: #eaf6f8; color: #082f4a; }
+.avenize-section::before { position: absolute; top: -220px; right: -170px; width: 620px; height: 620px; border: 1px solid rgba(22,139,183,.16); border-radius: 50%; box-shadow: 0 0 0 34px rgba(22,139,183,.035), 0 0 0 78px rgba(22,139,183,.025), 0 0 0 130px rgba(22,139,183,.02); content: ""; pointer-events: none; }
+.avenize-topline { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: clamp(34px, 5vw, 66px); }
+.avenize-status { display: inline-flex; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid rgba(8,47,74,.2); border-radius: 999px; color: #31566a; font-size: 8px; font-weight: 800; letter-spacing: .14em; white-space: nowrap; }
+.avenize-status i { width: 6px; height: 6px; border-radius: 50%; background: #168bb7; box-shadow: 0 0 0 4px rgba(22,139,183,.12); }
+.avenize-layout { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(42px, 7vw, 100px); min-width: 0; }
+.avenize-copy { max-width: 560px; }
+.avenize-kicker { margin: 0 0 18px; color: #168bb7; font-size: 9px; font-weight: 800; letter-spacing: .2em; }
+.avenize-copy h2 { margin: 0 0 24px; color: #082f4a; font-size: clamp(42px, 5.6vw, 76px); font-weight: 600; letter-spacing: -.075em; line-height: .98; }
+.avenize-copy h2 em { color: #168bb7; font-family: var(--serif); font-weight: 400; }
+.avenize-lede { margin: 0 0 16px; color: #123f57; font-size: clamp(16px, 1.5vw, 19px); line-height: 1.7; }
+.avenize-copy > p:not(.avenize-kicker):not(.avenize-lede) { max-width: 520px; margin: 0; color: #557181; font-size: 13px; line-height: 1.9; }
+.avenize-cta { margin-top: 28px; }
+.avenize-note { display: block; margin-top: 14px; color: #627d8b; font-size: 10px; line-height: 1.6; }
+.avenize-system { position: relative; width: 100%; min-width: 0; max-width: 100%; padding: 28px clamp(20px, 3vw, 38px) 24px; border: 1px solid rgba(8,47,74,.15); border-radius: 5px; background: rgba(255,255,255,.72); box-shadow: 0 26px 80px rgba(8,47,74,.09); }
+.avenize-system-heading { display: flex; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid rgba(8,47,74,.12); color: #587181; font-size: 8px; font-weight: 800; letter-spacing: .15em; }
+.avenize-orbit { position: absolute; top: -42px; right: 26px; display: grid; width: 84px; height: 84px; place-items: center; border: 1px solid rgba(22,139,183,.35); border-radius: 50%; background: #eaf6f8; }
+.avenize-orbit::before, .avenize-orbit::after { position: absolute; inset: 10px; border: 1px solid rgba(22,139,183,.3); border-radius: 50%; content: ""; }
+.avenize-orbit::after { inset: 23px; background: rgba(169,232,247,.55); }
+.avenize-orbit b { position: relative; z-index: 1; color: #082f4a; font-size: 24px; font-weight: 800; letter-spacing: -.1em; }
+.avenize-orbit span { position: absolute; z-index: 2; width: 5px; height: 5px; border-radius: 50%; background: #168bb7; }
+.avenize-orbit span:nth-child(1) { top: 7px; left: 39px; }
+.avenize-orbit span:nth-child(2) { right: 9px; bottom: 21px; }
+.avenize-orbit span:nth-child(3) { bottom: 11px; left: 17px; }
+.avenize-capabilities { display: grid; min-width: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; }
+.avenize-capabilities article { display: flex; min-width: 0; gap: 13px; min-height: 104px; align-items: flex-start; padding: 21px 0 17px; border-bottom: 1px solid rgba(8,47,74,.1); }
+.avenize-capabilities article > span { padding-top: 2px; color: #168bb7; font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+.avenize-capabilities strong { display: block; margin-bottom: 7px; color: #082f4a; font-size: 12px; }
+.avenize-capabilities article > div { min-width: 0; }
+.avenize-capabilities small { display: block; overflow-wrap: anywhere; color: #607b89; font-size: 10px; line-height: 1.65; }
+@media (max-width: 900px) {
+  .avenize-layout { grid-template-columns: 1fr; gap: 54px; }
+  .avenize-copy { max-width: 720px; }
+}
+@media (max-width: 620px) {
+  .avenize-section { padding: 76px 0; }
+  .avenize-topline { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .avenize-layout { gap: 48px; }
+  .avenize-system { padding: 25px 17px 18px; }
+  .avenize-capabilities { grid-template-columns: 1fr; }
+  .avenize-capabilities article { min-height: 0; padding: 16px 0; }
+  .avenize-orbit { top: -35px; right: 16px; width: 70px; height: 70px; }
+  .avenize-orbit::after { inset: 20px; }
+  .avenize-orbit b { font-size: 20px; }
+}

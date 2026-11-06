@@ -72,11 +72,11 @@ The exact section composition may evolve after browser review, but the commercia
 
 The intended public structure is larger than the currently accessible GitHub design branch. Do not confuse the target map with the routes that have been verified in a particular branch.
 
-**Verified on PR #32's current GitHub branch:** the source contains the homepage, `/growth-diagnostic/`, `/field-guide/`, `/privacy/`, and a custom 404 document. Its sitemap currently lists four URLs. The homepage navigation is primarily anchor-based. Service detail, Work, About, Approach, Insights, Contact, Start a Project, and Thank You are not present as distinct static route documents in this branch. The Demand Engineering Field Guide has been restored from PR #24 and restyled to SHAPED CURRENT.
+**Verified on PR #32's current GitHub branch:** the source contains the homepage, `/avenize/`, `/growth-diagnostic/`, `/field-guide/`, `/privacy/`, and a custom 404 document. Its sitemap currently lists four URLs. The homepage navigation is primarily anchor-based. Service detail, Work, About, Approach, Insights, Contact, Start a Project, and Thank You are not present as distinct static route documents in this branch. The Demand Engineering Field Guide has been restored from PR #24 and restyled to SHAPED CURRENT.
 
 **Separate local release candidate:** the earlier `build/shaped-current-homepage` branch at `4fd62fc` was reported to include route registry and prerendering. Its close-out report claimed 12 sitemap URLs, while its build summary reported 10 route documents plus `404.html`. That discrepancy is unresolved. The local branch and its 42-commit / 63-file release bundle are not present on the accessible GitHub branches. Preserve that candidate and reconcile its exact route registry, generated output, sitemap, redirects, and 404 behavior before selecting the final release base. Do not infer the 12 route names or claim the discrepancy is resolved.
 
-**Target public structure, subject to the route inventory:** Home; Services; Brand Strategy; Digital Experiences; Demand Generation; Growth Engineering; Creative Studio; Work; Approach; About; Insights; Contact; Growth Diagnostic; Start a Project; Thank You; Privacy; and a genuine not-found experience.
+**Target public structure, subject to the route inventory:** Home; Avenize product overview; Services; Brand Strategy; Digital Experiences; Demand Generation; Growth Engineering; Creative Studio; Work; Approach; About; Insights; Contact; Growth Diagnostic; Start a Project; Thank You; Privacy; and a genuine not-found experience.
 
 Do not collapse distinct service routes into homepage anchors or replace existing routes with a single scrolling brochure. Do not add sitemap entries for pages that do not exist. Every shipped route must serve a distinct, useful document, with correct canonical metadata, internal links, robots directives, and 404 behavior.
 
@@ -86,7 +86,7 @@ Do not collapse distinct service routes into homepage anchors or replace existin
 - Distinguish verified client work from internal product work, speculative concepts, experiments, and capability demonstrations.
 - Names previously discussed as possible portfolio work are not automatically approved case studies. Confirm assets, scope, outcomes, permission, and evidence before publication.
 - The River Ways website and Growth Diagnostic may be shown as internal demonstrations when accurately labelled.
-- Avenize is a separate in-house AI Business Operating System, not a standard River Ways website feature or client case study.
+- Avenize remains a distinct in-house AI Business Operating System and product initiative within the wider River Ways ecosystem—not a River Ways agency service or client case study. The public website may introduce Avenize as an in-development sister product, clearly separated from agency capabilities and labelled as not yet generally available. Do not imply that planned modules, integrations, automations, or AI features are already operational.
 
 ## 8. Technical preservation and feature dependencies
 

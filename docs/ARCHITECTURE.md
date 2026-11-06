@@ -3,6 +3,12 @@
 ## Product objective
 Build an accessible, responsive marketing website for River Ways, a strategy-led creative and digital growth studio. The site should help qualified prospects understand the offer, explore service families, and start a conversation.
 
+## River Ways ecosystem
+
+River Ways is the agency/masterbrand focused on Creative Demand Engineering. **Avenize** is a distinct in-house AI Business Operating System product initiative within the wider ecosystem; it is not a client service, an agency case study, or an assumption that the public website itself is an operating platform.
+
+The public site may introduce Avenize in a clearly separated, explicitly in-development section. Its intended product direction includes connected business identity and relationships, CRM, people operations, workflows, an AI assistant, business intelligence/Pulse, and a marketplace. These are product direction areas, not a claim that each capability is implemented or available. Keep product architecture, authentication, tenant/workspace isolation, data governance, integrations, and release readiness in Avenize's own technical plan. Do not couple the Avenize runtime to the River Ways marketing site or expose internal business data through the public website.
+
 ## Initial stack
 - React + Vite for a lightweight component-based frontend.
 - Plain CSS with design tokens to keep styling fast and maintainable.
