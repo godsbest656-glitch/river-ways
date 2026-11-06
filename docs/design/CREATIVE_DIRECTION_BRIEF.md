@@ -92,3 +92,17 @@ The proposed direction should be:
 - Flexible enough for the masterbrand to grow.
 - Accessible, performant, responsive, and maintainable.
 - Designed to create qualified conversations, not just admiration.
+
+---
+
+## Approved creative direction addendum
+
+The exploration above is historical context. The current approved direction is **SHAPED CURRENT, Route 2 — Editorial Intelligence**. Do not reopen the route-selection exercise by default.
+
+- Public headline: **“We engineer demand.”**
+- Visual identity: premium editorial clarity, sea and sky blue with deep-water contrast, purposeful dimensionality and controlled motion.
+- Experience ambition: cinematic, creative, interactive and conversion-aware, while remaining accessible, fast and useful.
+- Homepage hero: use the user's supplied centred editorial header as a compositional reference. Centre the main proposition, keep the supporting explanation concise, give one primary action and one quieter secondary route, then use the interactive current/card field as a visual proof of the connected system.
+- Preserve the approved brand and existing source decisions. Do not substitute a generic dark SaaS template, random gradients, generic stock gallery or unrelated palette.
+- The hero composition is a working implementation direction, not permission to fabricate proof. Real project evidence and licensed imagery must be used where appropriate.
+- Any proposed change to the approved route must explain the new evidence, expected visitor benefit, implementation cost and regression risk before work begins.
