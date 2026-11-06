@@ -20,6 +20,19 @@ The current schema's `stage` field is the single commercial lifecycle field:
 
 Every open lead should have an owner and next-action date. Do not leave a lead unassigned or without a follow-up plan.
 
+
+## Enquiry handoff and notification truth
+
+The public enquiry endpoint stores the lead in D1 before attempting the Resend notification.
+
+- A successful API response with `notification: "sent"` means the Resend API accepted the notification request (HTTP success). It does **not** prove that the message reached the destination inbox or was read.
+- A saved enquiry whose notification is not confirmed returns an accepted response with a reference. The visitor is told that the enquiry was saved but the team notification could not be confirmed; the visitor is given the approved direct email fallback.
+- The form must not tell a visitor that an enquiry was lost when D1 confirms it was saved.
+- No background notification retry worker is currently implemented. Review `pending`, `failed` and `not_configured` records operationally. A repeated identical submission may retry a failed notification only within the short duplicate window; do not ask customers to resubmit as the normal recovery process.
+- Confirm actual delivery in the Resend event/log view before recording inbox delivery as verified. Provider acceptance and inbox delivery are different states.
+
+The diagnostic handoff may carry only a validated journey identifier and engagement preference. These values are appended as minimal context to the existing enquiry details field for compatibility with the current schema. Diagnostic answers, scores and response payloads must never be copied into the enquiry, URL or notification.
+
 ## Daily operating rhythm
 
 1. Review new submissions and notification exceptions.
