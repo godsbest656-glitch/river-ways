@@ -107,6 +107,17 @@ export async function onRequestPost({ request, env }) {
   // Quietly discard automated submissions caught by the honeypot.
   if (clean(payload.website, 200)) return json(202, { ok: true, message: "Thank you. Your enquiry has been received." });
 
+  let pageContext = new URL(request.url);
+  const browserReferrer = request.headers.get("Referer");
+  if (browserReferrer) {
+    try {
+      const candidate = new URL(browserReferrer);
+      if (candidate.origin === pageContext.origin) pageContext = candidate;
+    } catch {
+      // Ignore malformed referrer metadata; it is not required to submit an enquiry.
+    }
+  }
+
   const lead = {
     name: clean(payload.name, MAX_LENGTHS.name),
     email: clean(payload.email, MAX_LENGTHS.email).toLowerCase(),
@@ -121,8 +132,8 @@ export async function onRequestPost({ request, env }) {
     utmCampaign: clean(payload.utmCampaign, MAX_LENGTHS.utm),
     utmContent: clean(payload.utmContent, MAX_LENGTHS.utm),
     utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm),
-    journeyId: /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean(payload.journey, MAX_LENGTHS.journey)) ? clean(payload.journey, MAX_LENGTHS.journey) : "",
-    engagementType: ["diagnostic", "defined-project", "growth-partnership"].includes(clean(payload.engagement, MAX_LENGTHS.engagement)) ? clean(payload.engagement, MAX_LENGTHS.engagement) : ""
+    journeyId: /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean(payload.journey || pageContext.searchParams.get("journey"), MAX_LENGTHS.journey)) ? clean(payload.journey || pageContext.searchParams.get("journey"), MAX_LENGTHS.journey) : "",
+    engagementType: ["diagnostic", "defined-project", "growth-partnership"].includes(clean(payload.engagement || pageContext.searchParams.get("engagement"), MAX_LENGTHS.engagement)) ? clean(payload.engagement || pageContext.searchParams.get("engagement"), MAX_LENGTHS.engagement) : ""
   };
 
   // Keep the minimal handoff context in the existing brief field so this change
