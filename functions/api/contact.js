@@ -89,8 +89,8 @@ export async function onRequestPost({ request, env }) {
 
   let payload;
   try {
-    const contentType = request.headers.get("content-type") || "";
-    if (!contentType.toLowerCase().includes("application/json")) {
+    const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+    if (contentType !== "application/json") {
       return json(415, { ok: false, message: "Please submit the form using this page." });
     }
     const raw = await request.text();
