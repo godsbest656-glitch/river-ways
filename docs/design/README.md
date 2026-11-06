@@ -9,6 +9,10 @@ This folder is the design source of truth for the AI developer and human reviewe
 4. [Design Agent Protocol](./DESIGN_AGENT_PROTOCOL.md) — how to research, make decisions, document, and implement.
 5. [Design Acceptance Gates](./DESIGN_ACCEPTANCE_GATES.md) — measurable review criteria and stop/go conditions.
 
+## AI design skills
+
+Project-level skills are installed in `.agents/skills/`. Read [AI Skills Integration](./AI_SKILLS_INTEGRATION.md) for their purpose, precedence, validation and provenance. The skills supplement this design foundation; they do not override it.
+
 ## Required working sequence
 **Audit → evidence-led research → competing routes → prototype → critique → design system → page implementation → validation.**
 
