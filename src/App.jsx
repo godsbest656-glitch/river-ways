@@ -630,6 +630,7 @@ export default function App() {
         <div className="container footer-bottom">
           <span>© {new Date().getFullYear()} River Ways. All rights reserved.</span>
           <span>Find the current. Shape what follows.</span>
+          <a href="#avenize">Avenize</a>
           <a href="/field-guide/">Field Guide</a>
           <a href="/privacy/">Privacy</a>
           <a href="mailto:akinsify0511@gmail.com">Contact</a>
