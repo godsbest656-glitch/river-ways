@@ -2,7 +2,7 @@ name: River Ways preview deployment
 
 on:
   pull_request:
-    branches: [main, design/shaped-current-rebuild]
+    branches: [main, design/shaped-current-rebuild, design/we-engineer-demand-homepage]
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
