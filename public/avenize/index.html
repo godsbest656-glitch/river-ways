@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#082f4a">
+  <title>Avenize — The Business Operating System in Development</title>
+  <meta name="description" content="Avenize is an in-house AI-powered Business Operating System in development within the River Ways ecosystem, designed to connect business context, people, relationships and work.">
+  <link rel="canonical" href="https://riverwayse.com/avenize/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="River Ways">
+  <meta property="og:title" content="Avenize — See the whole business">
+  <meta property="og:description" content="A connected operating layer for business context, people, relationships and work. In development by River Ways.">
+  <meta property="og:url" content="https://riverwayse.com/avenize/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:light;font-family:Manrope,Inter,ui-sans-serif,system-ui,sans-serif;color:#082f4a;background:#f4fafb;font-synthesis:none;text-rendering:optimizeLegibility;--deep:#082f4a;--blue:#168bb7;--sky:#a9e8f7;--muted:#587181;--line:rgba(8,47,74,.14);--serif:Newsreader,Georgia,serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}a{color:inherit}button,a{ -webkit-tap-highlight-color:transparent}.skip{position:absolute;top:-60px;left:16px;z-index:5;padding:12px;background:white}.skip:focus{top:12px}
+    .shell{width:min(1160px,calc(100% - 48px));margin:auto}.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-size:20px;font-weight:800;letter-spacing:-.06em}.mark{width:31px;height:31px;fill:none;stroke:var(--blue);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.toplinks{display:flex;gap:24px;align-items:center;font-size:12px;color:var(--muted)}.toplinks a{text-decoration:none}.toplinks a:hover{color:var(--blue)}.toplinks .back{padding:11px 15px;border-radius:99px;background:var(--deep);color:white}
+    .hero{position:relative;overflow:hidden;padding:clamp(82px,11vw,150px) 0 105px;background:radial-gradient(ellipse at 83% 40%,rgba(22,139,183,.24),transparent 34%),linear-gradient(125deg,#061f33,#0b3c57);color:#f2fbff}.hero:after{position:absolute;right:-150px;bottom:-390px;width:720px;height:720px;border:1px solid rgba(169,232,247,.23);border-radius:50%;box-shadow:0 0 0 35px rgba(169,232,247,.04),0 0 0 85px rgba(169,232,247,.035),0 0 0 145px rgba(169,232,247,.025);content:"";pointer-events:none}
+    .eyebrow{display:flex;align-items:center;gap:10px;color:#a9d7e6;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.dot{width:7px;height:7px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 4px rgba(169,232,247,.12)}.status{display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:8px 12px;border:1px solid rgba(169,232,247,.35);border-radius:99px;color:#c7edf7;font-size:9px;font-weight:800;letter-spacing:.14em}
+    h1{max-width:900px;margin:26px 0 24px;font-size:clamp(54px,8.6vw,112px);font-weight:600;letter-spacing:-.085em;line-height:.91}h1 em{color:var(--sky);font-family:var(--serif);font-weight:400}.hero-copy{max-width:660px;color:#c0d9e4;font-size:clamp(16px,1.5vw,19px);line-height:1.85}.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}.button{display:inline-flex;min-height:50px;align-items:center;justify-content:center;padding:0 19px;border-radius:99px;text-decoration:none;font-size:12px;font-weight:800}.primary{background:var(--sky);color:var(--deep)}.secondary{border:1px solid rgba(169,232,247,.45);color:white}
+    .intro{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(40px,8vw,110px);padding:105px 0}.intro h2,.modules h2,.boundary h2{margin:14px 0 0;font-size:clamp(36px,5vw,62px);font-weight:600;letter-spacing:-.07em;line-height:1}.intro h2 em,.modules h2 em,.boundary h2 em{color:var(--blue);font-family:var(--serif);font-weight:400}.intro-copy{max-width:620px;color:var(--muted);font-size:14px;line-height:1.95}.intro-copy strong{color:var(--deep)}
+    .modules{padding:100px 0;background:#eaf6f8}.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:44px}.section-head p{max-width:410px;color:var(--muted);font-size:13px;line-height:1.8}.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.module{min-height:225px;padding:24px;border:1px solid var(--line);background:rgba(255,255,255,.68)}.module span{color:var(--blue);font-size:9px;font-weight:800;letter-spacing:.14em}.module h3{margin:34px 0 10px;font-size:18px;letter-spacing:-.04em}.module p{margin:0;color:var(--muted);font-size:11px;line-height:1.8}
+    .boundary{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:100px 0}.boundary-list{display:grid;gap:14px}.boundary-list div{padding:18px 0;border-bottom:1px solid var(--line)}.boundary-list strong{display:block;margin-bottom:7px;font-size:13px}.boundary-list p{margin:0;color:var(--muted);font-size:11px;line-height:1.8}
+    .closing{padding:78px 0;background:var(--deep);color:#f2fbff}.closing h2{max-width:700px;margin:16px 0 22px;font-size:clamp(42px,6vw,74px);letter-spacing:-.08em;line-height:.98}.closing h2 em{color:var(--sky);font-family:var(--serif);font-weight:400}.closing p{max-width:560px;color:#c0d9e4;font-size:13px;line-height:1.85}.foot{display:flex;justify-content:space-between;gap:20px;padding:26px 0;color:#708897;font-size:10px}.foot a{color:var(--muted);text-decoration:none}
+    @media(max-width:760px){.shell{width:min(100% - 36px,600px)}.topbar{height:68px}.toplinks{gap:12px}.toplinks a:not(.back){display:none}.intro,.boundary{grid-template-columns:1fr;gap:24px;padding:76px 0}.section-head{align-items:flex-start;flex-direction:column;gap:12px}.modules{padding:76px 0}.module-grid{grid-template-columns:1fr 1fr}.module{min-height:190px;padding:18px}.module h3{margin-top:25px}.hero{padding:82px 0}.closing{padding:68px 0}.foot{flex-direction:column}}
+    @media(max-width:460px){.module-grid{grid-template-columns:1fr}.module{min-height:0}.module h3{margin-top:20px}.actions{align-items:stretch;flex-direction:column}.button{width:100%}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="shell topbar">
+    <a class="brand" href="/" aria-label="River Ways home"><svg class="mark" viewBox="0 0 36 36" aria-hidden="true"><path d="M3 7H13L23 18H33M3 18H13L23 18M3 29H13L23 18M23 18L31 10M23 18L31 26"/></svg><span>River Ways</span></a>
+    <nav class="toplinks" aria-label="Page navigation"><a href="/#services">River Ways capabilities</a><a href="/#avenize">Ecosystem overview</a><a class="back" href="/#contact?interest=avenize">Discuss Avenize ↗</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="shell">
+        <div class="eyebrow"><i class="dot"></i> A product initiative from River Ways</div>
+        <span class="status"><i class="dot"></i> IN DEVELOPMENT · NOT GENERALLY AVAILABLE</span>
+        <h1>See the whole<br><em>business.</em></h1>
+        <p class="hero-copy">Avenize is an AI-powered Business Operating System in development: a connected operating layer designed to help a business understand itself, coordinate its people and work, and act with better context.</p>
+        <div class="actions"><a class="button primary" href="/?interest=avenize#contact">Discuss the Avenize direction ↗</a><a class="button secondary" href="#system">Explore the system map ↓</a></div>
+      </div>
+    </section>
+    <section class="shell intro">
+      <div><div class="eyebrow" style="color:#168bb7"><i class="dot"></i> The idea</div><h2>One business.<br><em>Connected context.</em></h2></div>
+      <div class="intro-copy"><p>Businesses rarely operate in one place. Customer relationships, people, responsibilities, decisions, workflows and performance signals are spread across tools and teams. The gaps between them make it harder to see what is happening and what needs attention.</p><p><strong>Avenize is being shaped around that reality.</strong> Its ambition is to connect the context behind business activity—so people can understand the whole picture, coordinate work and make better-informed decisions.</p><p>This is a product direction, not a claim that every module or integration is already built.</p></div>
+    </section>
+    <section class="modules" id="system">
+      <div class="shell">
+        <div class="section-head"><div><div class="eyebrow" style="color:#168bb7"><i class="dot"></i> System map / 01—06</div><h2>Six connected<br><em>operating areas.</em></h2></div><p>These are the planned capability areas guiding the product architecture. Their availability, scope and integrations will be confirmed as each part is designed, built and verified.</p></div>
+        <div class="module-grid">
+          <article class="module"><span>01 / IDENTITY</span><h3>Business identity & graph</h3><p>A connected model of the organisation, its entities, relationships, roles, resources and operating context.</p></article>
+          <article class="module"><span>02 / CUSTOMERS</span><h3>Customer relationships</h3><p>CRM context for accounts, contacts, conversations, opportunities, activity and follow-through.</p></article>
+          <article class="module"><span>03 / PEOPLE</span><h3>People & operations</h3><p>People, roles, responsibilities and HR-adjacent workflows with appropriate privacy and access controls.</p></article>
+          <article class="module"><span>04 / ASSISTANCE</span><h3>AI assistant</h3><p>Context-aware assistance to help authorised users understand information, plan work and take permitted actions.</p></article>
+          <article class="module"><span>05 / PULSE</span><h3>Pulse & intelligence</h3><p>Useful views of activity, progress, exceptions, trends and decisions that need attention.</p></article>
+          <article class="module"><span>06 / EXTENSIONS</span><h3>Marketplace & workflows</h3><p>Approved tools, connected extensions and repeatable processes that help work move across the business.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="shell boundary">
+      <div><div class="eyebrow" style="color:#168bb7"><i class="dot"></i> Product boundary</div><h2>Built to connect.<br><em>Designed to respect.</em></h2></div>
+      <div class="boundary-list">
+        <div><strong>A separate product</strong><p>Avenize has its own product identity, roadmap, application architecture, data model and release process. It is not part of the River Ways marketing website.</p></div>
+        <div><strong>Permission-aware by design</strong><p>Business and people data require clear ownership, role-based access, privacy controls, retention rules and auditable actions.</p></div>
+        <div><strong>Human accountability</strong><p>AI assistance must respect user permissions, explain its context, preserve provenance and request confirmation for consequential actions.</p></div>
+        <div><strong>Honest release status</strong><p>Avenize is in development. No public sign-up, product workspace, live integrations, pricing or launch date is being offered here.</p></div>
+      </div>
+    </section>
+    <section class="closing">
+      <div class="shell"><div class="eyebrow"><i class="dot"></i> Shape what comes next</div><h2>Better context.<br><em>Better decisions.</em></h2><p>We are developing the product direction and operating foundations before opening Avenize to general use. If the problem it is being built to solve is relevant to your organisation, tell us about it.</p><div class="actions"><a class="button primary" href="/?interest=avenize#contact">Start an Avenize conversation ↗</a><a class="button secondary" href="/">Return to River Ways ↗</a></div></div>
+    </section>
+  </main>
+  <footer class="shell foot"><span>© 2026 River Ways · Avenize product initiative</span><a href="/privacy/">Privacy</a><a href="/">River Ways home</a></footer>
+</body>
+</html>
