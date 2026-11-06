@@ -102,6 +102,27 @@ test("rejects a cross-origin browser submission", async () => {
   assert.equal(db.leads.length, 0);
 });
 
+
+test("reads the journey and engagement from a same-origin service handoff URL", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "Origin": "https://riverwayse.com",
+        "Referer": "https://riverwayse.com/?journey=demand-generation&engagement=growth-partnership#services",
+        "CF-Connecting-IP": "192.0.2.13"
+      },
+      body: JSON.stringify({ name: "Ada Example", email: "ada@example.com", goal: "Generate demand" })
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 200);
+  assert.match(db.leads[0].details, /Selected journey: demand-generation/);
+  assert.match(db.leads[0].details, /Preferred engagement: growth-partnership/);
+});
+
 test("rejects malformed and invalid submissions", async () => {
   const db = makeDb();
   const invalid = await onRequestPost({ request: request({ name: "", email: "nope", goal: "Growth" }), env: envFor(db) });
