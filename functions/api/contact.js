@@ -125,6 +125,14 @@ export async function onRequestPost({ request, env }) {
     engagementType: ["diagnostic", "defined-project", "growth-partnership"].includes(clean(payload.engagement, MAX_LENGTHS.engagement)) ? clean(payload.engagement, MAX_LENGTHS.engagement) : ""
   };
 
+  // Keep the minimal handoff context in the existing brief field so this change
+  // remains compatible with the current UUID schema and requires no D1 migration.
+  const handoffContext = [
+    lead.journeyId ? "Selected journey: " + lead.journeyId : "",
+    lead.engagementType ? "Preferred engagement: " + lead.engagementType : ""
+  ].filter(Boolean).join("\n");
+  if (handoffContext) lead.details = [lead.details, handoffContext].filter(Boolean).join("\n\n");
+
   if (!lead.name || !validEmail(lead.email) || !lead.goal) {
     return json(422, { ok: false, message: "Add your name, a valid email address and a goal so we can route your enquiry." });
   }
@@ -159,8 +167,8 @@ export async function onRequestPost({ request, env }) {
       const id = crypto.randomUUID();
       const createdAt = new Date(now).toISOString();
       await env.LEADS_DB.prepare(
-        "INSERT INTO leads (id, name, email, company, goal, details, brief_hash, notification_status, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term, journey_id, engagement_type) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-      ).bind(id, lead.name, lead.email, lead.company, lead.goal, lead.details, briefHash, ipHash, createdAt, lead.source, lead.landingPage, lead.referrer, lead.utmSource, lead.utmMedium, lead.utmCampaign, lead.utmContent, lead.utmTerm, lead.journeyId, lead.engagementType).run();
+        "INSERT INTO leads (id, name, email, company, goal, details, brief_hash, notification_status, ip_hash, created_at, stage, source, landing_page, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(id, lead.name, lead.email, lead.company, lead.goal, lead.details, briefHash, ipHash, createdAt, lead.source, lead.landingPage, lead.referrer, lead.utmSource, lead.utmMedium, lead.utmCampaign, lead.utmContent, lead.utmTerm).run();
       record = { id, notification_status: "pending" };
     }
   } catch {
