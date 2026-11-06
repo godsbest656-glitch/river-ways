@@ -129,6 +129,15 @@ test("rejects malformed and invalid submissions", async () => {
   assert.equal(invalid.status, 422);
   const wrongType = await onRequestPost({ request: new Request("https://riverwayse.com/api/contact", { method: "POST", body: "not json" }), env: envFor(db) });
   assert.equal(wrongType.status, 415);
+  const jsonp = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/jsonp" },
+      body: "{}"
+    }),
+    env: envFor(db)
+  });
+  assert.equal(jsonp.status, 415);
 });
 
 test("stores a valid lead once and reuses an identical brief within two minutes", async () => {
