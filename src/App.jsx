@@ -123,7 +123,7 @@ export default function App() {
   const [activeCurrent, setActiveCurrent] = useState(1);
   const [activeStep, setActiveStep] = useState(0);
   const [form, setForm] = useState({
-    name: '', email: '', company: '', goal: 'Generate more qualified demand',
+    name: '', email: '', company: '', goal: new URLSearchParams(window.location.search).get('interest') === 'avenize' ? 'Explore Avenize / business operations' : 'Generate more qualified demand',
     details: '', website: ''
   });
   const [formError, setFormError] = useState('');
@@ -235,7 +235,7 @@ export default function App() {
             <a href="#approach" onClick={closeMenu}>Approach</a>
             <a href="#services" onClick={closeMenu}>Capabilities</a>
             <a href="#studio" onClick={closeMenu}>Creative Studio</a>
-            <a href="#avenize" onClick={closeMenu}>Avenize</a>
+            <a href="/avenize/" onClick={closeMenu}>Avenize</a>
             <a href="#intelligence" onClick={closeMenu}>Intelligence</a>
             <a href="#principles" onClick={closeMenu}>Our thinking</a>
             <a className="nav-cta" href="#contact" onClick={closeMenu}>Start a conversation <ArrowUpRight size={15} /></a>
@@ -466,6 +466,7 @@ export default function App() {
                 <p className="avenize-lede">Avenize is our in-house AI-powered Business Operating System in development: a connected operating layer designed to help a business understand itself, coordinate its people and work, and act with better context.</p>
                 <p>Where River Ways engineers demand and growth systems, Avenize is being shaped to connect the work happening across the business—so customer relationships, people operations, workflows and business intelligence can inform one another.</p>
                 <a className="button button-primary avenize-cta" href="#contact">Discuss Avenize <ArrowUpRight size={17} /></a>
+                <a className="text-link avenize-explore" href="/avenize/">Explore the Avenize product direction <ArrowUpRight size={15} /></a>
                 <span className="avenize-note">A product initiative from River Ways. Not yet available for general release.</span>
               </div>
               <div className="avenize-system" aria-label="Planned Avenize operating system areas">
@@ -630,7 +631,7 @@ export default function App() {
         <div className="container footer-bottom">
           <span>© {new Date().getFullYear()} River Ways. All rights reserved.</span>
           <span>Find the current. Shape what follows.</span>
-          <a href="#avenize">Avenize</a>
+          <a href="/avenize/">Avenize</a>
           <a href="/field-guide/">Field Guide</a>
           <a href="/privacy/">Privacy</a>
           <a href="mailto:akinsify0511@gmail.com">Contact</a>
