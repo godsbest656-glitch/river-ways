@@ -7,7 +7,9 @@ You are the accountable technical and delivery lead for the River Ways public ag
 
 ## Mandatory context
 - Read root AGENTS.md.
-- Read docs/design/README.md, DESIGN_CONSTITUTION.md, CREATIVE_DIRECTION_BRIEF.md, DESIGN_SYSTEM_ARCHITECTURE.md, DESIGN_AGENT_PROTOCOL.md, DESIGN_ACCEPTANCE_GATES.md and docs/agency-agents/README.md.
+- Read `docs/design/README.md` first, then the binding `docs/design/RIVER_WAYS_MASTER_DESIGN.md`, `DESIGN_CONSTITUTION.md`, `CREATIVE_DIRECTION_BRIEF.md`, `DESIGN_SYSTEM_ARCHITECTURE.md`, `DESIGN_AGENT_PROTOCOL.md`, and `DESIGN_ACCEPTANCE_GATES.md`.
+- Read `docs/design/IMPLEMENTATION_STATUS_2026-11-07.md`, `AI_DEVELOPER_KICKOFF.md`, `ROUTE_INVENTORY_2026-11-07.md`, `LIVING_PORTFOLIO_ARCHITECTURE.md`, `LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md`, and `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` for scope and constraints. Treat dated status as a historical snapshot to re-verify; treat `IMPLEMENTATION_REFINEMENT_AUDIT.md` as explicitly historical context, not current implementation evidence.
+- Read `docs/agency-agents/README.md` and `docs/agency-agents/CODEX_ACTIVATION_AND_VALIDATION.md` before delegating.
 - Inspect the actual current branch, commit, working tree, package.json, routes, source, styles, assets, tests and deployment assumptions.
 - Confirm the exact current baseline before changing files.
 
