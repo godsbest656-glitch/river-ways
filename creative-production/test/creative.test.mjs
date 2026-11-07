@@ -355,6 +355,20 @@ test('refuses ComfyUI generation for models disabled in the model registry', asy
       }),
       /Model is disabled/
     );
+    approvedBrief.rights.hardwareCompatibilityReviewed = true;
+    await writeFile(path.join(root, 'brief', 'approved-brief.json'), JSON.stringify(approvedBrief));
+    await assert.rejects(
+      runComfyProduction({
+        projectDirectory: root,
+        workflowPath: 'workflows/api.json',
+        modelId: 'wan-2.2-ti2v-5b',
+        checkpointFile: 'wan2.2_ti2v_5B_fp16.safetensors',
+        approved: true,
+        benchmarkOnly: true,
+        fetchImpl: async () => { throw new Error('mock ComfyUI connection failure'); }
+      }),
+      /mock ComfyUI connection failure/
+    );
   } finally {
     await rm(root, { recursive: true, force: true });
   }
