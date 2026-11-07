@@ -89,3 +89,11 @@ The project includes a curated Agency Agents team under `.codex/agents/`. These 
 Use `website-orchestrator` for substantial website work. It coordinates UX Researcher, Brand Guardian, UI Designer, Frontend Developer, SEO Specialist, Growth Hacker, Accessibility Auditor and Code Reviewer as appropriate. The root instructions and canonical `docs/design/` governance remain authoritative. Verify that Codex actually discovers and invokes named agents; TOML files alone are not proof of runtime activation.
 
 Validate the agent definitions with `python scripts/validate_codex_agents.py .codex/agents`. The Python regression suite covers this validator. Do not open or update a PR without owner approval because pull-request workflows automatically deploy Cloudflare Preview. No merge, production deployment, DNS/config changes, external outreach or customer-data access is authorised by the presence of these agents.
+
+
+## Local creative production boundaries
+- The internal production foundation lives in `creative-production/`; read its README and model registry before changing it.
+- Keep GPU inference and rendering on an authorised local/private workstation. Never expose ComfyUI or a render daemon directly to the public website or internet.
+- Treat repository code licenses and model-weight licenses separately. A model marked disabled stays disabled until its exact checkpoint license, territory, revenue threshold, hardware and benchmark are verified.
+- Do not send client assets to a model, train/fine-tune on client assets, publish generated media, or deliver client work without the required written rights and human approvals.
+- The public Creative Studio section must not claim automated production capabilities that have not been implemented and verified end to end.
