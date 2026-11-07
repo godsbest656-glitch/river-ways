@@ -32,7 +32,7 @@ First follow `docs/agency-agents/CODEX_ACTIVATION_AND_VALIDATION.md` and record 
 
 ## Phase B — Audit the actual website
 
-Inspect the current checkout, not stale reports or screenshots alone.
+Inspect the current checkout, not stale reports or screenshots alone. First read `docs/design/README.md` and the binding `docs/design/RIVER_WAYS_MASTER_DESIGN.md`, followed by the design constitution, creative direction, design-system architecture, agent protocol and acceptance gates. Also inspect the dated implementation status, route inventory, AI developer kickoff, living-portfolio architecture/contracts and production-environment checklist. Treat dated snapshots as context to re-verify; the implementation refinement audit is historical and must not be reported as current evidence.
 
 Delegate these independent read-only reviews:
 - UX Researcher + Growth Hacker: audience comprehension, offer clarity, conversion path, enquiry friction and experiment opportunities.
