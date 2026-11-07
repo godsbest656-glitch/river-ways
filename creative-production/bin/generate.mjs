@@ -109,6 +109,17 @@ export async function runComfyProduction({
   const registry = await readJson(modelRegistryPath);
   const model = registry.videoModels?.find((candidate) => candidate.id === modelId);
   if (!model) throw new Error('Model ID is not present in the approved model registry: ' + modelId);
+  if (Array.isArray(model.territoryExclusions) && model.territoryExclusions.length > 0) {
+    const territories = brief.campaign?.targetTerritories;
+    if (brief.rights?.territoryReviewed !== true || !Array.isArray(territories) || territories.length === 0) {
+      throw new Error('This model requires an explicit targetTerritories list and territory review in the approved brief');
+    }
+    const blocked = territories.find((territory) => {
+      const normalized = String(territory).trim().toLowerCase();
+      return model.territoryExclusions.some((excluded) => normalized === excluded.toLowerCase());
+    });
+    if (blocked) throw new Error('Model licence excludes campaign territory: ' + blocked);
+  }
   if (model.enabled !== true && !(benchmarkOnly === true && model.benchmarkAllowed === true)) {
     throw new Error('Model is disabled for production; only an explicitly approved, hardware-cleared benchmark is permitted: ' + modelId);
   }
