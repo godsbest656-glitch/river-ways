@@ -83,17 +83,25 @@ export async function saveComfyOutput({
   if (!output || typeof output.filename !== 'string' || !output.filename) {
     throw new Error('ComfyUI output must include a filename');
   }
-  const origin = assertLocalComfyUrl(baseUrl);
-  const url = new URL(origin + '/view');
-  url.searchParams.set('filename', output.filename);
-  url.searchParams.set('subfolder', output.subfolder ?? '');
-  url.searchParams.set('type', output.type ?? 'output');
-  const response = await fetchImpl(url);
-  if (!response.ok) throw new Error('ComfyUI output download failed (' + response.status + ')');
   const safeName = path.basename(output.filename);
   if (safeName !== output.filename || safeName === '.' || safeName === '..') {
     throw new Error('ComfyUI output filename is not a safe basename');
   }
+  const subfolder = output.subfolder ?? '';
+  if (path.isAbsolute(subfolder) || subfolder.split(/[\\/]+/).some((part) => part === '..')) {
+    throw new Error('ComfyUI output subfolder is not a safe relative path');
+  }
+  const outputType = output.type ?? 'output';
+  if (!['output', 'temp', 'input'].includes(outputType)) {
+    throw new Error('ComfyUI output type is not supported');
+  }
+  const origin = assertLocalComfyUrl(baseUrl);
+  const url = new URL(origin + '/view');
+  url.searchParams.set('filename', safeName);
+  url.searchParams.set('subfolder', subfolder);
+  url.searchParams.set('type', outputType);
+  const response = await fetchImpl(url);
+  if (!response.ok) throw new Error('ComfyUI output download failed (' + response.status + ')');
   await mkdir(destinationDirectory, { recursive: true });
   const destination = path.join(destinationDirectory, safeName);
   await writeFile(destination, Buffer.from(await response.arrayBuffer()), { flag: 'wx' });
