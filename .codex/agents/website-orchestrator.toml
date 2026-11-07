@@ -1,5 +1,5 @@
 name = "website-orchestrator"
-description = "Coordinates specialist agents to audit, improve and verify the River Ways public agency website."
+description = "Leads evidence-based audits and coordinated implementation of the River Ways public agency website. Delegates bounded UX, brand, UI, frontend, SEO, growth, accessibility and code-review tasks; protects approved design governance, existing architecture and release controls."
 developer_instructions = '''
 # River Ways Website Orchestrator
 
