@@ -84,7 +84,7 @@ export async function saveComfyOutput({
     throw new Error('ComfyUI output must include a filename');
   }
   const safeName = path.basename(output.filename);
-  if (safeName !== output.filename || safeName === '.' || safeName === '..') {
+  if (safeName !== output.filename || /[\\\\/]/.test(output.filename) || safeName === '.' || safeName === '..') {
     throw new Error('ComfyUI output filename is not a safe basename');
   }
   const subfolder = output.subfolder ?? '';
