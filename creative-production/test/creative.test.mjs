@@ -9,7 +9,7 @@ import { assertLocalComfyUrl, queueWorkflow, waitForPrompt, saveComfyOutput } fr
 import { runHyperframesChecks, renderHyperframes, renderRemotion } from '../bin/render-adapter.mjs';
 import { probeMedia, validateMediaSpec } from '../bin/media-qa.mjs';
 import { validateBenchmark, scoreRun, summarizeBenchmarks } from '../bin/benchmark.mjs';
-import { runComfyProduction } from '../bin/generate.mjs';
+import { runComfyProduction, readGpuTelemetry } from '../bin/generate.mjs';
 
 const validBrief = {
   schemaVersion: '1.0',
@@ -293,6 +293,7 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
       approved: true,
       pollIntervalMs: 0,
       sleepImpl: async () => {},
+      gpuQueryImpl: () => [{ name: 'RTX 4090', memoryTotalMiB: 24564, memoryUsedMiB: 18000, utilizationPercent: 92, temperatureC: 71 }],
       fetchImpl: async (url, options = {}) => {
         const parsed = new URL(String(url));
         if (parsed.pathname === '/prompt') {
@@ -324,6 +325,8 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
     assert.deepEqual(manifest.provenance.seed, [42]);
     assert.equal(manifest.metrics.totalOutputBytes, 4);
     assert.equal(manifest.metrics.outputCount, 1);
+    assert.equal(manifest.metrics.gpu.peakMemoryUsedMiB, 18000);
+    assert.equal(manifest.metrics.gpu.peakUtilizationPercent, 92);
     const saved = path.join(root, 'assets', 'generated', 'test_job_1', 'node-7', 'final.mp4');
     assert.equal((await readFile(saved)).length, 4);
   } finally {
@@ -569,4 +572,16 @@ test('benchmark validation rejects fabricated or incomplete evidence fields', ()
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((item) => item.includes('workflowSha256')));
   assert.ok(result.errors.some((item) => item.includes('failureReason')));
+});
+
+
+test('GPU telemetry parser captures per-device memory and utilisation samples', () => {
+  const samples = readGpuTelemetry(() => ({
+    status: 0,
+    stdout: 'NVIDIA GeForce RTX 4090, 24564, 18240, 96, 73\\nNVIDIA RTX A4000, 16376, 10240, 65, 68',
+    stderr: ''
+  }));
+  assert.equal(samples.length, 2);
+  assert.equal(samples[0].memoryUsedMiB, 18240);
+  assert.equal(samples[1].utilizationPercent, 65);
 });
