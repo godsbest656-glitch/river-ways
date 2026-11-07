@@ -64,12 +64,80 @@ const envFor = (db) => ({
   LEAD_NOTIFICATION_EMAIL: "team@example.com"
 });
 
+
+test("persists only the selected journey and engagement context with the enquiry", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: request({
+      name: "Ada Example",
+      email: "ada@example.com",
+      goal: "Generate demand",
+      details: "We need a clearer acquisition plan.",
+      journey: "demand-generation",
+      engagement: "defined-project"
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 200);
+  assert.match(db.leads[0].details, /Selected journey: demand-generation/);
+  assert.match(db.leads[0].details, /Preferred engagement: defined-project/);
+  assert.doesNotMatch(db.leads[0].details, /score|assessment answers/i);
+});
+
+test("rejects a cross-origin browser submission", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "Origin": "https://attacker.example",
+        "CF-Connecting-IP": "192.0.2.12"
+      },
+      body: JSON.stringify({ name: "Ada Example", email: "ada@example.com", goal: "Growth" })
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 403);
+  assert.equal(db.leads.length, 0);
+});
+
+
+test("reads the journey and engagement from a same-origin service handoff URL", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "Origin": "https://riverwayse.com",
+        "Referer": "https://riverwayse.com/?journey=demand-generation&engagement=growth-partnership#services",
+        "CF-Connecting-IP": "192.0.2.13"
+      },
+      body: JSON.stringify({ name: "Ada Example", email: "ada@example.com", goal: "Generate demand" })
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 200);
+  assert.match(db.leads[0].details, /Selected journey: demand-generation/);
+  assert.match(db.leads[0].details, /Preferred engagement: growth-partnership/);
+});
+
 test("rejects malformed and invalid submissions", async () => {
   const db = makeDb();
   const invalid = await onRequestPost({ request: request({ name: "", email: "nope", goal: "Growth" }), env: envFor(db) });
   assert.equal(invalid.status, 422);
   const wrongType = await onRequestPost({ request: new Request("https://riverwayse.com/api/contact", { method: "POST", body: "not json" }), env: envFor(db) });
   assert.equal(wrongType.status, 415);
+  const jsonp = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/jsonp" },
+      body: "{}"
+    }),
+    env: envFor(db)
+  });
+  assert.equal(jsonp.status, 415);
 });
 
 test("stores a valid lead once and reuses an identical brief within two minutes", async () => {
@@ -165,6 +233,43 @@ test("rejects control characters in contact fields", async () => {
   assert.equal(db.leads.length, 0);
 });
 
+test("keeps handoff context within the details length limit", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: request({
+      name: "Ada Example",
+      email: "ada@example.com",
+      goal: "Generate demand",
+      details: "x".repeat(4000),
+      journey: "growth-diagnostic",
+      engagement: "diagnostic"
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 200);
+  assert.ok(db.leads[0].details.length <= 4000);
+  assert.match(db.leads[0].details, /Selected journey: growth-diagnostic/);
+  assert.match(db.leads[0].details, /Preferred engagement: diagnostic/);
+});
+
+test("ignores unapproved engagement values and malformed journey identifiers", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: new Request("https://riverwayse.com/api/contact", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "Origin": "https://riverwayse.com",
+        "Referer": "https://riverwayse.com/?journey=not%20valid&engagement=enterprise"
+      },
+      body: JSON.stringify({ name: "Ada Example", email: "ada@example.com", goal: "Growth" })
+    }),
+    env: envFor(db)
+  });
+  assert.equal(response.status, 200);
+  assert.doesNotMatch(db.leads[0].details, /Selected journey|Preferred engagement/);
+});
+
 test("does not claim notification success when the email provider fails", async () => {
   const db = makeDb();
   globalThis.fetch = async () => new Response(JSON.stringify({ message: "provider unavailable" }), { status: 503 });
@@ -173,9 +278,11 @@ test("does not claim notification success when the email provider fails", async 
     env: envFor(db)
   });
   const body = await response.json();
-  assert.equal(response.status, 503);
-  assert.equal(body.ok, false);
+  assert.equal(response.status, 202);
+  assert.equal(body.ok, true);
   assert.equal(body.saved, true);
+  assert.equal(body.notification, "failed");
+  assert.ok(body.reference);
   assert.equal(db.leads.length, 1);
   assert.equal(db.leads[0].notification_status, "failed");
 });

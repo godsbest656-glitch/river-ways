@@ -32,7 +32,7 @@ const form = document.getElementById('assessment');
       const report='River Ways Growth Diagnostic\nOverall self-assessment: '+pct+'/100\n'+title+'\n\n'+scores.map(c=>c.label+': '+c.score+'/6').join('\n')+'\n\nRecommended next moves:\n'+ranked.slice(0,3).map(c=>'- '+c.label+': '+c.advice).join('\n')+'\n\nThis is a directional self-assessment based on my answers, not an automated audit.';
       document.getElementById('copy-result').onclick=async()=>{const button=document.getElementById('copy-result');try{await navigator.clipboard.writeText(report);button.textContent='Copied';}catch{const area=document.createElement('textarea');area.value=report;area.setAttribute('readonly','');area.style.position='absolute';area.style.left='-9999px';document.body.appendChild(area);area.select();const copied=document.execCommand('copy');area.remove();button.textContent=copied?'Copied':'Select and copy manually';}setTimeout(()=>button.textContent='Copy summary',2200)};
       const link=document.getElementById('brief-link');
-      const params=new URLSearchParams({diagnostic:'1',diagnostic_score:String(pct),diagnostic_focus:ranked[0].label,diagnostic_title:title,diagnostic_summary:summary});
+      const params=new URLSearchParams({journey:'growth-diagnostic'});
       link.href='/?'+params.toString()+'#contact';
       link.setAttribute('aria-label','Discuss my growth diagnostic with River Ways');
     }

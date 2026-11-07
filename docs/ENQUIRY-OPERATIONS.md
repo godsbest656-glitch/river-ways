@@ -17,6 +17,7 @@ Apply `migrations/0001_leads.sql` first, then `migrations/0002_lead_pipeline_att
 ## What is captured
 
 - Lead contact details and selected service goal.
+- A validated journey identifier and engagement preference when the same-origin handoff URL supplies them. These minimal values are appended to the existing details field; diagnostic answers, scores and response payloads are never captured.
 - Initial pipeline stage (`new`) and notification status.
 - Landing path, document referrer, and UTM source, medium, campaign, content and term when present.
 - A salted hash of the client IP for rate limiting; the raw IP is not written to the lead record.
@@ -35,12 +36,21 @@ UTM values and referrers are bounded and treated as attribution hints, not verif
 8. Verify invalid input, rate limiting and missing-configuration responses.
 9. Repeat separately in Preview and Production.
 
-A successful build or HTTP response does not prove D1 and email delivery are configured. Do not call the live enquiry flow production-ready until the controlled test above passes.
+A successful build or HTTP response does not prove D1 and email delivery are configured. A successful Resend API response means the provider accepted the notification request; it does not prove delivery to or receipt in the destination inbox. Verify the Resend event and actual inbox arrival separately.
+
+The visitor-facing endpoint distinguishes these outcomes:
+- HTTP 200 with `notification: "sent"`: the lead was saved and the Resend API accepted the notification request.
+- HTTP 202 with `saved: true` and `notification: "failed"` or `"not_configured"`: the lead was saved, but the team notification was not confirmed. The response includes a reference and an email fallback; the visitor must not be told the enquiry was lost.
+- HTTP 503: the endpoint could not confirm the required save infrastructure/configuration or could not persist the lead. Treat this as an unsuccessful submission and investigate before asking the visitor to retry.
+
+There is no background notification retry worker yet. Review pending/failed/not-configured records operationally. Do not use customer resubmission as the normal recovery process.
+
+Do not call the live enquiry flow production-ready until the controlled test above passes.
 
 ## Troubleshooting
 
 - `503` before save: check `LEADS_DB`, both migrations and `RATE_LIMIT_SALT`.
-- `503` with `saved: true`: the brief was stored, but the email handoff failed or is not configured. Check the Resend key, verified sender and notification recipient, then use the manual email fallback.
+- `202` with `saved: true`: the brief was stored, but the email handoff failed or is not configured. Check the Resend key, verified sender and notification recipient, then use the manual email fallback. Keep the returned reference for reconciliation.
 - `429`: wait for the rate window to reset; do not rotate the salt to bypass the limit.
 - Missing attribution: check whether the original landing URL carried UTM tags and remember that referrers may be omitted by browsers or privacy settings.
 - No email: inspect the Resend response/logs and verify sender-domain status. Never log full enquiry bodies or raw client IP addresses.

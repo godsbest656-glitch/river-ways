@@ -4,7 +4,7 @@ const JSON_HEADERS = {
   "x-content-type-options": "nosniff"
 };
 
-const MAX_LENGTHS = { name: 120, email: 254, company: 160, goal: 180, details: 4000, source: 120, landingPage: 240, referrer: 500, utm: 160 };
+const MAX_LENGTHS = { name: 120, email: 254, company: 160, goal: 180, details: 4000, source: 120, landingPage: 240, referrer: 500, utm: 160, journey: 80, engagement: 40 };
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT = 5;
 const DUPLICATE_WINDOW_MS = 2 * 60 * 1000;
@@ -49,6 +49,8 @@ async function sendNotification(env, lead) {
           "Email: " + lead.email,
           "Company: " + (lead.company || "Not provided"),
           "Goal: " + lead.goal,
+          "Journey: " + (lead.journeyId || "Not specified"),
+          "Engagement: " + (lead.engagementType || "Not specified"),
           "Source: " + (lead.utmSource || lead.source || "Direct / unknown"),
           "Campaign: " + (lead.utmCampaign || "Not tagged"),
           "Landing page: " + (lead.landingPage || "/"),
@@ -67,6 +69,17 @@ async function sendNotification(env, lead) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const origin = request.headers.get("Origin");
+  if (origin) {
+    try {
+      if (new URL(origin).origin !== new URL(request.url).origin) {
+        return json(403, { ok: false, message: "Please submit your enquiry from the River Ways website." });
+      }
+    } catch {
+      return json(403, { ok: false, message: "Please submit your enquiry from the River Ways website." });
+    }
+  }
+
   if (!env.LEADS_DB) {
     return json(503, { ok: false, message: "Enquiry service is temporarily unavailable. Please email akinsify0511@gmail.com." });
   }
@@ -76,8 +89,8 @@ export async function onRequestPost({ request, env }) {
 
   let payload;
   try {
-    const contentType = request.headers.get("content-type") || "";
-    if (!contentType.toLowerCase().includes("application/json")) {
+    const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+    if (contentType !== "application/json") {
       return json(415, { ok: false, message: "Please submit the form using this page." });
     }
     const raw = await request.text();
@@ -94,6 +107,17 @@ export async function onRequestPost({ request, env }) {
   // Quietly discard automated submissions caught by the honeypot.
   if (clean(payload.website, 200)) return json(202, { ok: true, message: "Thank you. Your enquiry has been received." });
 
+  let pageContext = new URL(request.url);
+  const browserReferrer = request.headers.get("Referer");
+  if (browserReferrer) {
+    try {
+      const candidate = new URL(browserReferrer);
+      if (candidate.origin === pageContext.origin) pageContext = candidate;
+    } catch {
+      // Ignore malformed referrer metadata; it is not required to submit an enquiry.
+    }
+  }
+
   const lead = {
     name: clean(payload.name, MAX_LENGTHS.name),
     email: clean(payload.email, MAX_LENGTHS.email).toLowerCase(),
@@ -107,8 +131,23 @@ export async function onRequestPost({ request, env }) {
     utmMedium: clean(payload.utmMedium, MAX_LENGTHS.utm),
     utmCampaign: clean(payload.utmCampaign, MAX_LENGTHS.utm),
     utmContent: clean(payload.utmContent, MAX_LENGTHS.utm),
-    utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm)
+    utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm),
+    journeyId: /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean(payload.journey || pageContext.searchParams.get("journey"), MAX_LENGTHS.journey)) ? clean(payload.journey || pageContext.searchParams.get("journey"), MAX_LENGTHS.journey) : "",
+    engagementType: ["diagnostic", "defined-project", "growth-partnership"].includes(clean(payload.engagement || pageContext.searchParams.get("engagement"), MAX_LENGTHS.engagement)) ? clean(payload.engagement || pageContext.searchParams.get("engagement"), MAX_LENGTHS.engagement) : ""
   };
+
+  // Keep the minimal handoff context in the existing brief field so this change
+  // remains compatible with the current UUID schema and requires no D1 migration.
+  const handoffContext = [
+    lead.journeyId ? "Selected journey: " + lead.journeyId : "",
+    lead.engagementType ? "Preferred engagement: " + lead.engagementType : ""
+  ].filter(Boolean).join(" | ");
+  if (handoffContext) {
+    const separator = lead.details ? " | " : "";
+    const context = separator + handoffContext;
+    // Preserve the validated handoff context within the existing details bound.
+    lead.details = lead.details.slice(0, Math.max(0, MAX_LENGTHS.details - context.length)) + context;
+  }
 
   if (!lead.name || !validEmail(lead.email) || !lead.goal) {
     return json(422, { ok: false, message: "Add your name, a valid email address and a goal so we can route your enquiry." });
@@ -132,7 +171,7 @@ export async function onRequestPost({ request, env }) {
     return json(503, { ok: false, message: "Enquiry service is temporarily unavailable. Please email akinsify0511@gmail.com." });
   }
 
-  const briefHash = await sha256(JSON.stringify([lead.name.toLowerCase(), lead.email, lead.company.toLowerCase(), lead.goal.toLowerCase(), lead.details]));
+  const briefHash = await sha256(JSON.stringify([lead.name.toLowerCase(), lead.email, lead.company.toLowerCase(), lead.goal.toLowerCase(), lead.details, lead.journeyId, lead.engagementType]));
   const duplicateCutoff = new Date(now - DUPLICATE_WINDOW_MS).toISOString();
   let record;
   try {
@@ -169,16 +208,20 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (notificationStatus !== "sent") {
-    return json(503, {
-      ok: false,
+    return json(202, {
+      ok: true,
       saved: true,
-      message: "Your brief was saved, but we couldn't notify the team automatically. Please email akinsify0511@gmail.com and mention your website enquiry."
+      notification: notificationStatus,
+      reference: record.id,
+      message: "Your enquiry has been safely recorded. We could not confirm the team notification automatically. Keep your reference and, if you need a prompt response, email akinsify0511@gmail.com."
     });
   }
 
   return json(200, {
     ok: true,
-    message: "Thank you. Your enquiry is with the River Ways team. We'll review the context and follow up by email.",
-    reference: record.id
+    saved: true,
+    notification: "sent",
+    reference: record.id,
+    message: "Your enquiry has been recorded. We will review the details and follow up using the email address you provided."
   });
 }

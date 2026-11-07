@@ -201,7 +201,9 @@ export default function App() {
         utmMedium: params.get('utm_medium') || '',
         utmCampaign: params.get('utm_campaign') || '',
         utmContent: params.get('utm_content') || '',
-        utmTerm: params.get('utm_term') || ''
+        utmTerm: params.get('utm_term') || '',
+        journey: params.get('journey') || '',
+        engagement: params.get('engagement') || ''
       };
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -213,7 +215,8 @@ export default function App() {
         setFormError(result.message || result.error || 'We could not send your brief right now. Please email akinsify0511@gmail.com.');
         return;
       }
-      setFormSuccess(result.message || 'Thank you. Your enquiry has been received.');
+      const successMessage = result.message || 'Thank you. Your enquiry has been received.';
+      setFormSuccess(result.reference ? `${successMessage} Reference: ${result.reference}` : successMessage);
       setForm({ name: '', email: '', company: '', goal: 'Generate more qualified demand', details: '', website: '' });
     } catch {
       setFormError('We could not connect to the enquiry service. Please email akinsify0511@gmail.com.');
