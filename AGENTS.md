@@ -97,3 +97,9 @@ Validate the agent definitions with `python scripts/validate_codex_agents.py .co
 - Treat repository code licenses and model-weight licenses separately. A model marked disabled stays disabled until its exact checkpoint license, territory, revenue threshold, hardware and benchmark are verified.
 - Do not send client assets to a model, train/fine-tune on client assets, publish generated media, or deliver client work without the required written rights and human approvals.
 - The public Creative Studio section must not claim automated production capabilities that have not been implemented and verified end to end.
+
+
+## Creative production agent orchestration
+- Follow `creative-production/AGENT_WORKFLOW.md` for role contracts, sequential gates, permitted parallel work and reporting requirements.
+- A specialist role in that document is not evidence that a corresponding agent implementation exists or is enabled. Verify the installed agent catalogue before assigning work.
+- Generation, delivery, model enablement, licence acceptance and client publication remain approval-gated.
