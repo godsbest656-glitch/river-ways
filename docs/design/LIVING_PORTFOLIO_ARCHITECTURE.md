@@ -85,7 +85,7 @@ The default source is local static JavaScript. There is no CMS, vendor, API key,
 - Responsive source sets require URL/width pairs with increasing widths and a `sizes` value.
 - Optional focal points use normalized x/y values from 0 to 1.
 - Keyboard, touch, responsive behavior and reduced motion are mandatory. No information may exist only in WebGL/canvas.
-- The five SVG covers in `public/portfolio/` are original River Ways illustrations for the initial capability studies and internal demos. They are not client screenshots or third-party stock. They must be added to the Media Manifest when that separate package is reconciled.
+- The first three capability studies retain their original CSS artwork through three controlled local renderer keys; their SVG files in `public/portfolio/` are static fallback artwork and provenance assets. The two internal demonstrations use original SVG cover artwork. None are client screenshots or third-party stock. All five assets must be reconciled into the Media Manifest when that separate package is available.
 
 ## Implementation sequence
 

@@ -1,6 +1,6 @@
 import { deepFreeze } from "./schema.js";
 
-const originalMedia = (src, alt) => ({
+const originalMedia = (src, alt, renderer = null) => ({
   kind: "image",
   src,
   alt,
@@ -12,7 +12,8 @@ const originalMedia = (src, alt) => ({
     source: "River Ways original SVG artwork",
     attributionRequired: false
   },
-  focalPoint: { x: 0.5, y: 0.5 }
+  focalPoint: { x: 0.5, y: 0.5 },
+  ...(renderer ? { renderer } : {})
 });
 
 export const projectRecords = deepFreeze([
@@ -29,7 +30,7 @@ export const projectRecords = deepFreeze([
     status: "published", visibility: "public",
     problem: null, approach: null, outcome: null, client: null,
     results: [], testimonials: [],
-    media: { cover: originalMedia("/portfolio/studio-study-brand-worlds.svg", "Illustrative brand-system composition with FORM / FIELD typography, a rule and a circular mark."), gallery: [] },
+    media: { cover: originalMedia("/portfolio/studio-study-brand-worlds.svg", "Illustrative brand-system composition with FORM / FIELD typography, a rule and a circular mark.", "studio-brand-worlds"), gallery: [] },
     featured: ["studio"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
   },
   {
@@ -45,7 +46,7 @@ export const projectRecords = deepFreeze([
     status: "published", visibility: "public",
     problem: null, approach: null, outcome: null, client: null,
     results: [], testimonials: [],
-    media: { cover: originalMedia("/portfolio/studio-study-campaign-worlds.svg", "Illustrative campaign composition with the message MAKE IT MATTER and a campaign systems label."), gallery: [] },
+    media: { cover: originalMedia("/portfolio/studio-study-campaign-worlds.svg", "Illustrative campaign composition with the message MAKE IT MATTER and a campaign systems label.", "studio-campaign-worlds"), gallery: [] },
     featured: ["studio"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
   },
   {
@@ -61,7 +62,7 @@ export const projectRecords = deepFreeze([
     status: "published", visibility: "public",
     problem: null, approach: null, outcome: null, client: null,
     results: [], testimonials: [],
-    media: { cover: originalMedia("/portfolio/studio-study-digital-experiences.svg", "Illustrative digital interface with orbiting forms and the words FROM SIGNAL TO MEANING."), gallery: [] },
+    media: { cover: originalMedia("/portfolio/studio-study-digital-experiences.svg", "Illustrative digital interface with orbiting forms and the words FROM SIGNAL TO MEANING.", "studio-digital-experiences"), gallery: [] },
     featured: ["studio"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
   },
   {

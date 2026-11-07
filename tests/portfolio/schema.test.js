@@ -174,3 +174,15 @@ test("unverified results are filtered from the normalized public view", () => {
   assert.equal(normalized.results.length, 1);
   assert.equal(normalized.results[0].label, "Verified");
 });
+
+
+test("known studio renderers are accepted for image media", () => {
+  const record = project();
+  record.media.cover.renderer = "studio-brand-worlds";
+  assert.deepEqual(validateMedia(record.media.cover), []);
+});
+
+test("unknown studio renderers and renderers on video are rejected", () => {
+  assert.ok(validateMedia(image({ renderer: "unknown-renderer" })).some((issue) => issue.includes("not an approved local renderer")));
+  assert.ok(validateMedia({ kind: "video", src: "/clip.mp4", alt: "A clip", renderer: "studio-brand-worlds", poster: "/poster.jpg", fallback: "Static fallback", license: { kind: "original", source: "River Ways" } }).some((issue) => issue.includes("only supported for image media")));
+});

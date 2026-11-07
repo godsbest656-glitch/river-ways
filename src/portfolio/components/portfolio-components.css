@@ -374,3 +374,26 @@
     transition: none !important;
   }
 }
+
+
+.rw-project-media-rendered {
+  position: relative;
+  display: block;
+  min-height: 330px;
+}
+
+.rw-project-media-rendered .rw-project-media-renderer-fallback {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rw-project-media-rendered .studio-art {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 330px;
+}

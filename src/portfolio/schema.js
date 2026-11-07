@@ -8,6 +8,8 @@ import {
   isKnownService
 } from "./taxonomy.js";
 
+export const MEDIA_RENDERERS = Object.freeze(["studio-brand-worlds", "studio-campaign-worlds", "studio-digital-experiences"]);
+
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const TYPE_LABELS = {
   client: "Client project",
@@ -67,6 +69,10 @@ export function validateMedia(media, path = "media") {
   }
   if (typeof media.src !== "string" || !media.src.trim()) {
     add(issues, path + ".src", "is required");
+  }
+  if (media.renderer != null) {
+    if (!MEDIA_RENDERERS.includes(media.renderer)) add(issues, path + ".renderer", "is not an approved local renderer");
+    if (media.kind !== "image") add(issues, path + ".renderer", "is only supported for image media");
   }
   if (typeof media.alt !== "string") {
     add(issues, path + ".alt", "must be a string");

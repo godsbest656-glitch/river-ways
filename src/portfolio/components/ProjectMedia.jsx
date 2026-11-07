@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { StudioArtwork } from "./StudioArtwork.jsx";
 
 export function ProjectMedia({ media, className = "", loading = "lazy" }) {
   const [failed, setFailed] = useState(false);
@@ -16,6 +17,24 @@ export function ProjectMedia({ media, className = "", loading = "lazy" }) {
     return (
       <div className={classes + " rw-project-media-fallback"} role={hidden ? undefined : "img"} aria-label={hidden ? undefined : media.alt} aria-hidden={hidden || undefined}>
         <span>{fallback}</span>
+      </div>
+    );
+  }
+
+  if (media.kind === "image" && media.renderer) {
+    return (
+      <div className={classes + " rw-project-media-rendered"} role={hidden ? undefined : "img"} aria-label={hidden ? undefined : media.alt} aria-hidden={hidden || undefined}>
+        <img
+          className="rw-project-media-renderer-fallback"
+          src={media.src}
+          alt=""
+          aria-hidden="true"
+          width={media.width}
+          height={media.height}
+          loading={loading}
+          decoding="async"
+        />
+        <StudioArtwork variant={media.renderer} />
       </div>
     );
   }
