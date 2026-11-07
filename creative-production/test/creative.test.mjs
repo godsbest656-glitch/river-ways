@@ -585,3 +585,56 @@ test('GPU telemetry parser captures per-device memory and utilisation samples', 
   assert.equal(samples[0].memoryUsedMiB, 18240);
   assert.equal(samples[1].utilizationPercent, 65);
 });
+
+
+test('Hunyuan generation blocks excluded client territories before ComfyUI is contacted', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-hunyuan-territory-'));
+  try {
+    await mkdir(path.join(root, 'brief'), { recursive: true });
+    await mkdir(path.join(root, 'workflows'), { recursive: true });
+    const modelRegistryPath = path.join(root, 'models.json');
+    await writeFile(modelRegistryPath, JSON.stringify({
+      videoModels: [{
+        id: 'hunyuan-video-1.5',
+        name: 'HunyuanVideo 1.5',
+        license: 'Tencent Hunyuan Community License',
+        upstream: 'https://github.com/Tencent-Hunyuan/HunyuanVideo-1.5',
+        enabled: true,
+        territoryExclusions: ['European Union', 'EU', 'United Kingdom', 'UK', 'South Korea']
+      }]
+    }));
+    const approvedBrief = {
+      ...validBrief,
+      campaign: { ...validBrief.campaign, targetTerritories: ['EU'] },
+      approval: { status: 'approved', approvedBy: 'Creative Director', approvedAt: '2026-11-07T10:00:00Z' },
+      rights: {
+        clientAssetsApprovedForGeneration: true,
+        modelLicenseReviewed: true,
+        territoryReviewed: true
+      }
+    };
+    await writeFile(path.join(root, 'brief', 'approved-brief.json'), JSON.stringify(approvedBrief));
+    await writeFile(path.join(root, 'project.json'), JSON.stringify({
+      status: 'brief-approved', approvalRequiredBeforeGeneration: false, briefFile: 'brief/approved-brief.json'
+    }));
+    await writeFile(path.join(root, 'workflows', 'api.json'), JSON.stringify({
+      '1': { class_type: 'UNETLoader', inputs: { unet_name: 'hunyuan_video_1.5.safetensors' } }
+    }));
+    let contacted = false;
+    await assert.rejects(
+      runComfyProduction({
+        projectDirectory: root,
+        workflowPath: 'workflows/api.json',
+        modelId: 'hunyuan-video-1.5',
+        checkpointFile: 'hunyuan_video_1.5.safetensors',
+        modelRegistryPath,
+        approved: true,
+        fetchImpl: async () => { contacted = true; throw new Error('backend must not be contacted'); }
+      }),
+      /excludes campaign territory/
+    );
+    assert.equal(contacted, false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
