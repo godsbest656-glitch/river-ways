@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { access, copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -138,6 +138,9 @@ async function initCommand(args) {
   ];
   await mkdir(target, { recursive: true });
   for (const directory of directories) await mkdir(path.join(target, directory), { recursive: true });
+  const starterTemplate = path.join(ROOT_DIR, 'templates', 'hyperframes');
+  await copyFile(path.join(starterTemplate, 'index.html'), path.join(target, 'compositions', 'hyperframes', 'index.html'));
+  await copyFile(path.join(starterTemplate, 'style.css'), path.join(target, 'compositions', 'hyperframes', 'style.css'));
 
   const approvalStatus = brief.approval.status;
   const briefFile = approvalStatus === 'approved' ? 'approved-brief.json' : 'draft-brief.json';
