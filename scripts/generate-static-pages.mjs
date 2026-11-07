@@ -70,7 +70,7 @@ function shell({ title, description, route, activeNav, content, robots = "index,
 }
 
 function hero(eyebrow, title, lede) {
-  return '<section class="rw-page-hero"><div class="rw-wrap"><p class="rw-eyebrow">' + eyebrow + "</p><h1>" + title + "</h1><p class="rw-lede">" + lede + "</p></div></section>";
+  return '<section class="rw-page-hero"><div class="rw-wrap"><p class="rw-eyebrow">' + eyebrow + '</p><h1>' + title + '</h1><p class="rw-lede">' + lede + '</p></div></section>';
 }
 
 function ctaBand(title, description, href = "/contact/", label = "Start a conversation") {
@@ -119,7 +119,7 @@ function projectCard(project) {
     '<a class="rw-project-card-link" href="/work/' + escapeHtml(project.slug) + '/">' +
     '<div class="rw-project-card-media"><img src="' + escapeHtml(cover.src) + '" alt="' + escapeHtml(cover.alt) + '" width="' + cover.width + '" height="' + cover.height + '" loading="lazy" decoding="async"></div>' +
     '<div class="rw-project-card-body"><div class="rw-project-badges"><span class="rw-project-badge">' + escapeHtml(project.typeLabel) + '</span><span class="rw-project-badge rw-project-truth">' + escapeHtml(truthLabels[project.deliveryTruth] || "Project") + "</span></div>" +
-    "<h3>" + escapeHtml(project.title) + "</h3><p class="rw-project-card-summary">" + escapeHtml(project.summary) + "</p>" +
+    "<h3>" + escapeHtml(project.title) + '</h3><p class="rw-project-card-summary">' + escapeHtml(project.summary) + "</p>" +
     (serviceLabels.length ? '<div class="rw-project-detail-meta">' + serviceLabels.map((label) => "<span>" + escapeHtml(label) + "</span>").join("") + "</div>" : "") +
     (project.disclaimer ? '<p class="rw-project-disclaimer">' + escapeHtml(project.disclaimer) + "</p>" : "") +
     '<span class="rw-project-link-label">Explore this project <span aria-hidden="true">↗</span></span></div></a></article>';
@@ -150,7 +150,7 @@ const projectGroups = [
 const groupMarkup = projectGroups.map((group) => {
   const groupProjects = projects.filter((project) => project.type === group.type);
   if (!groupProjects.length) return "";
-  return '<section class="rw-project-group" data-work-group><h2>' + group.title + "</h2><p class="rw-project-group-intro">" + group.intro + '</p><div class="rw-project-grid" data-work-grid>' +
+  return '<section class="rw-project-group" data-work-group><h2>' + group.title + '</h2><p class="rw-project-group-intro">' + group.intro + '</p><div class="rw-project-grid" data-work-grid>' +
     groupProjects.map(projectCard).join("") + "</div></section>";
 }).join("");
 

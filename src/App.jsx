@@ -241,9 +241,9 @@ export default function App() {
           <nav id="site-navigation" className={'main-nav ' + (menuOpen ? 'nav-open' : '')} aria-label="Main navigation">
             <a href="#approach" onClick={closeMenu}>Approach</a>
             <a href="#services" onClick={closeMenu}>Capabilities</a>
-            <a href="#studio" onClick={closeMenu}>Creative Studio</a>
-            <a href="#intelligence" onClick={closeMenu}>Intelligence</a>
-            <a href="#principles" onClick={closeMenu}>Our thinking</a>
+            <a href="/work/" onClick={closeMenu}>Work</a>
+            <a href="/insights/" onClick={closeMenu}>Insights</a>
+            <a href="/about/" onClick={closeMenu}>About</a>
             <a className="nav-cta" href="#contact" onClick={closeMenu}>Start a conversation <ArrowUpRight size={15} /></a>
           </nav>
         </div>
@@ -398,6 +398,7 @@ export default function App() {
               cardClassName="studio-card"
               copyClassName="studio-card-copy"
               disclaimerClassName="studio-disclaimer"
+              onProjectSelect={({ slug }) => window.location.assign("/work/" + slug + "/")}
             />
             <p className="studio-disclaimer">Illustrative capability studies — not client case studies or claims of commissioned work.</p>
           </div>
@@ -566,9 +567,15 @@ export default function App() {
         <div className="container footer-bottom">
           <span>© {new Date().getFullYear()} River Ways. All rights reserved.</span>
           <span>Find the current. Shape what follows.</span>
+          <a href="/about/">About</a>
+          <a href="/services/">Services</a>
+          <a href="/work/">Work</a>
+          <a href="/insights/">Insights</a>
           <a href="/field-guide/">Field Guide</a>
+          <a href="/growth-diagnostic/">Growth Diagnostic</a>
           <a href="/privacy/">Privacy</a>
-          <a href="mailto:akinsify0511@gmail.com">Contact</a>
+          <a href="/terms/">Terms</a>
+          <a href="/contact/">Contact</a>
         </div>
       </footer>
     </>
