@@ -2,7 +2,7 @@
 
 **Snapshot:** 7 November 2026  
 **Working branch:** `feat/creative-production-engine-rebased`  
-**Latest implementation commit before this status file:** `c0591051324e153a409a5fd4e1d98b7cea6f0608`  
+**Base snapshot:** `build/river-ways-execution-agency-agents` at `240475d0c35ffd93b5dc908dcb6c5a9b388a876a` (file-level updates synchronized; Git ancestry remains diverged)  
 **Production / Preview:** not deployed; no PR opened
 
 ## Implemented in the repository
@@ -59,3 +59,8 @@ Node.js v22.16.0 isolated harness: **13/13 tests passed** across brief validatio
 ## Current owner input needed
 
 The next hardware-dependent step cannot be selected responsibly without the GPU model and dedicated VRAM of the machine that will run generation. Do not download multi-gigabyte checkpoints before that is known.
+
+
+## Branch reconciliation note
+
+The working branch was recreated from the agency-agent integration branch after that branch advanced. The latest observed base-only changes to the orchestrator prompt, Codex agent configuration, first-audit task and agency-agent status were synchronized into this branch. GitHub compare still reports four commits of ancestry divergence; no rebase or merge was performed. Reconcile ancestry before opening a PR. The feature branch remains unmerged and undeployed.
