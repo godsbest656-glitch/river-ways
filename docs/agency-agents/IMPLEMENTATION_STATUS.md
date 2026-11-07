@@ -43,3 +43,7 @@
 The repository integration is implemented. The full Agency Agents rollout is not complete until latest-head CI passes; the owner verifies all nine agents in the local Codex runtime and demonstrates real delegation; the newest local website worktree is preserved and reconciled; the orchestrator audits that worktree; critical findings are implemented and independently reviewed; and the owner authorises any PR/Preview and later release steps.
 
 Passing CI validates repository artifacts and website regressions. It does not prove local runtime activation, reconciliation with unpushed local work, or production readiness.
+
+
+## Creative production workstream
+The local-first creative-production foundation is being developed separately on `feat/creative-production-engine-integration`. It is not merged, deployed, or represented as a verified production capability. See `creative-production/IMPLEMENTATION_STATUS.md` for evidence and remaining gates.
