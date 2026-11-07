@@ -2,7 +2,7 @@
 
 **Snapshot:** 7 November 2026  
 **Working branch:** `build/river-ways-execution`  
-**Snapshot commit:** `b259dcf9796748ee0462f52ec50e1e2bf723acae`  
+**Snapshot commit:** `c78a796a85dc6b18b5fc2230d0e95f5763815927`  
 **Base:** `design/we-engineer-demand-homepage`  
 **Production deployment:** not performed  
 **Preview for this branch:** not created; no pull request opened
@@ -11,7 +11,7 @@
 
 The work has moved from resource research and baseline audit into a consolidated implementation branch. The branch is 20 commits ahead of its base and contains the AI development resources, canonical portfolio foundation, static route generation, enquiry hardening, D1 operations schema, and desktop/mobile browser test harness.
 
-The latest browser run is being rechecked after the last reported accessibility issue was corrected. Do not describe the current exact head as fully green until the workflow for `b259dcf` completes successfully.
+The latest code-bearing commit `b259dcf9796748ee0462f52ec50e1e2bf723acae` passed the complete topic-branch workflow. The current branch head `c78a796a85dc6b18b5fc2230d0e95f5763815927` contains documentation-only updates after that tested code tree; no source or runtime files changed after the green run.
 
 ## Implemented
 
@@ -31,25 +31,23 @@ The latest browser run is being rechecked after the last reported accessibility 
 
 ## CI evidence
 
-### Earlier verified green baseline
+**Verified run:** https://github.com/godsbest656-glitch/river-ways/actions/runs/42370364488  
+**Tested code commit:** `b259dcf9796748ee0462f52ec50e1e2bf723acae`  
+**Result:** SUCCESS
 
-Commit `55927352aa7443530d6bd9a8c1e46b08c2a7e100` completed the non-browser pipeline successfully:
+- Agent Skills validator and Python regression tests passed.
+- Three D1 migrations validated in in-memory SQLite: 25 required lead columns, 7 indexes, 2 triggers, the `ops_open_leads` view, defaults, overdue follow-up logic and CHECK constraints.
+- Vite production build and static route generation passed.
+- Route validator confirmed 12 route patterns, 10 fixed route outputs, 5 project detail pages, internal links, sitemap and 404 assets.
+- Playwright/axe browser suite: **22/22 desktop and mobile tests passed** in 28.5 seconds.
+- Enquiry API suite: **18/18 passed**.
+- Portfolio suite: **51/51 passed**.
+- Public portfolio data validation passed for 5 public records.
+- Dependency audit: **0 vulnerabilities**.
 
-- Agent Skills validation and validator regression tests passed.
-- D1 migrations passed in-memory SQLite validation.
-- Vite build and static route generation passed.
-- Enquiry API and portfolio test suites passed (69 tests combined).
-- Public portfolio data validation passed.
-- Dependency audit reported no high-severity vulnerability.
+The 22 browser checks include primary navigation, route outputs and canonical metadata, portfolio filtering, project detail navigation, Demand Intelligence controls, form validation, saved-but-unnotified messaging, Growth Diagnostic attribution handoff, axe scans on key routes, and horizontal overflow.
 
-This is a verified earlier commit, not the current exact head.
-
-### Browser test integration and remediation
-
-- First browser run: the harness exposed stale selectors and real homepage accessibility issues. Seven failures included strict locator collisions, an incorrect filter assertion and two contrast/name issues.
-- Second browser run: 20 of 22 desktop/mobile checks passed. The only remaining failure was a low-contrast eyebrow label in the Growth Diagnostic sidebar, repeated across desktop and mobile.
-- Fix committed at `b259dcf`: the sidebar eyebrow now uses the approved light sky token on its dark surface.
-- The exact-head CI run must finish before the browser suite can be called green.
+This is a complete green code pipeline for the tested source tree. It is not a Cloudflare Preview test, a D1 deployment, a live email test, or production approval.
 
 ## Release blockers — do not bypass
 
@@ -67,14 +65,13 @@ This is a verified earlier commit, not the current exact head.
 
 ## Next execution order
 
-1. Finish the exact-head CI run and resolve every browser/axe failure without weakening the tests.
-2. Add structured data and validate page metadata against the canonical route inventory.
-3. Establish Lighthouse CI baselines and performance budgets on the generated static output.
-4. Reconcile the reported local visual candidate and all remaining branch/PR ancestry.
-5. Conduct manual desktop/mobile, keyboard, reduced-motion and assistive-technology review.
-6. Prepare a single consolidated review PR only after the owner authorises Preview.
-7. Configure and verify Cloudflare Preview, D1 migrations and Resend in a controlled environment.
-8. Request explicit production release approval only after every gate passes.
+1. Add structured data and validate page metadata against the canonical route inventory.
+2. Establish Lighthouse CI baselines and performance budgets on the generated static output.
+3. Reconcile the reported local visual candidate and all remaining branch/PR ancestry.
+4. Conduct manual desktop/mobile, keyboard, reduced-motion and assistive-technology review.
+5. Prepare a single consolidated review PR only after the owner authorises Preview.
+6. Configure and verify Cloudflare Preview, D1 migrations and Resend in a controlled environment.
+7. Request explicit production release approval only after every gate passes.
 
 ## What this status does not claim
 

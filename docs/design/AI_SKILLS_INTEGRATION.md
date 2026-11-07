@@ -1,6 +1,6 @@
 # River Ways — AI development resource integration
 
-**Status:** Five project-level skills, the validator and the browser-quality workflow are integrated on `build/river-ways-execution`. The skill and migration validators pass. The latest browser/accessibility run is being rechecked after fixing the last reported contrast issue; see `IMPLEMENTATION_STATUS_2026-11-07.md`.
+**Status:** Five project-level skills, the validator and the browser-quality workflow are integrated on `build/river-ways-execution`. The skill and migration validators pass. The full topic-branch pipeline is green: 22/22 Playwright/axe browser checks, 18/18 API tests, 51/51 portfolio tests, route/data validation and zero dependency vulnerabilities. See `IMPLEMENTATION_STATUS_2026-11-07.md` for exact commit and release boundaries.
 
 ## Why this exists
 

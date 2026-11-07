@@ -41,16 +41,16 @@ If another document conflicts with the Master Website Design, the master documen
 
 
 ## Portfolio system
-9. [Living Portfolio Architecture](./LIVING_PORTFOLIO_ARCHITECTURE.md) — canonical project schema, data source, evidence rules and integration sequence.
-10. [Living Portfolio Component Contracts](./LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md) — shared media/badge/disclaimer primitives and gallery interaction contracts.
+10. [Living Portfolio Architecture](./LIVING_PORTFOLIO_ARCHITECTURE.md) — canonical project schema, data source, evidence rules and integration sequence.
+11. [Living Portfolio Component Contracts](./LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md) — shared media/badge/disclaimer primitives and gallery interaction contracts.
 
 
 ## Route architecture
-11. [Route Inventory and Static Page Generation](./ROUTE_INVENTORY_2026-11-07.md) — verified current routes, target route patterns, build-time generation and 404/sitemap controls.
+12. [Route Inventory and Static Page Generation](./ROUTE_INVENTORY_2026-11-07.md) — verified current routes, target route patterns, build-time generation and 404/sitemap controls.
 
 
 ## Operations
-12. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
+13. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
 
 
 ## Browser and accessibility regression
