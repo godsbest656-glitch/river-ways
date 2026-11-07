@@ -120,9 +120,9 @@ function Eyebrow({ children, light = false }) {
   return <div className={'eyebrow ' + (light ? 'eyebrow-light' : '')}><span className="eyebrow-dot" />{children}</div>;
 }
 
-export default const portfolioSource = createProjectSource(projectRecords);
+const portfolioSource = createProjectSource(projectRecords);
 
-function App() {
+export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeCurrent, setActiveCurrent] = useState(1);
   const [activeStep, setActiveStep] = useState(0);
