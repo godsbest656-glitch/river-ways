@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0",
+  "client": {
+    "name": "Internal River Ways Test",
+    "id": "internal-test"
+  },
+  "campaign": {
+    "name": "Shaped Current Motion Test",
+    "slug": "shaped-current-motion-test"
+  },
+  "objective": "Test the local creative-production project scaffold without generating or publishing media.",
+  "audience": "Internal River Ways reviewers",
+  "primaryMessage": "We engineer demand.",
+  "platforms": ["website"],
+  "deliverables": [
+    {
+      "type": "website-hero-loop",
+      "aspectRatio": "16:9",
+      "durationSeconds": 8,
+      "quantity": 1
+    }
+  ],
+  "brandKit": {
+    "direction": "SHAPED CURRENT / Editorial Intelligence",
+    "approvedAssets": [],
+    "restrictedAssets": []
+  },
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null
+  },
+  "rights": {
+    "clientAssetsApprovedForGeneration": false,
+    "modelLicenseReviewed": false,
+    "musicRightsCleared": false
+  }
+}
