@@ -49,6 +49,9 @@ If another document conflicts with the Master Website Design, the master documen
 12. [Route Inventory and Static Page Generation](./ROUTE_INVENTORY_2026-11-07.md) — verified current routes, target route patterns, build-time generation and 404/sitemap controls.
 
 
+## Creative production
+13. [Local Creative Production Engine](../../creative-production/README.md) — local-first brief validation, ComfyUI adapter, local renderers, model licensing and approval gates. [Implementation status](../../creative-production/IMPLEMENTATION_STATUS.md).
+
 ## Operations
 13. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
 
