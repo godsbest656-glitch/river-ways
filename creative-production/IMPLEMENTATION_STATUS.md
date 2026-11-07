@@ -14,7 +14,7 @@
 - SHAPED CURRENT 8-second HyperFrames starter composition copied into each new project.
 - Loopback-only ComfyUI adapter for queueing API-format workflows, polling job history and saving outputs.
 - Local renderer adapters for HyperFrames and optional Remotion. Both require explicit human approval, refuse overwrites, constrain output paths and verify a non-empty render output.
-- HyperFrames pinned to version 0.9.17 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
+- HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
 - Remotion remains optional and gated by explicit license acknowledgement and confirmed free-license eligibility.
 - Model registry for Wan 2.2 TI2V-5B, HunyuanVideo 1.5 and LTX-2.5 with license/hardware notes and all model adapters disabled by default.
 - Tests included in the repository test script and GitHub Actions CI workflow.
