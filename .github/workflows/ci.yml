@@ -4,7 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, feat/creative-production-engine-integration]
 
 permissions:
   contents: read
@@ -55,6 +55,8 @@ jobs:
         run: npm run test:api
       - name: Test portfolio contracts
         run: npm run test:portfolio
+      - name: Test creative production foundation
+        run: npm run test:creative
       - name: Validate public portfolio data
         run: npm run validate:portfolio
       - name: Audit dependencies
