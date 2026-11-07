@@ -80,3 +80,12 @@ Use `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` as the deployment preparation
 - Playwright is the single browser/E2E harness. Extend `tests/e2e`; do not introduce a competing browser runner.
 - Automated axe scans are a regression aid, not a complete WCAG 2.2 AA audit. Also inspect keyboard use, focus visibility, screen-reader semantics, zoom/reflow, motion preferences and contrast manually.
 - Browser tests use the built static output through Vite preview. A passing local preview test does not prove Cloudflare Pages status codes, D1 bindings, email delivery or deployment readiness.
+
+
+## Project-scoped website specialist agents
+
+The project includes a curated Agency Agents team under `.codex/agents/`. These are development-time Codex subagents for the public River Ways website, not a production visitor-facing AI feature. Read `docs/agency-agents/README.md` before using them and follow the first mission in `docs/agency-agents/FIRST_WEBSITE_AUDIT_TASK.md`.
+
+Use `website-orchestrator` for substantial website work. It coordinates UX Researcher, Brand Guardian, UI Designer, Frontend Developer, SEO Specialist, Growth Hacker, Accessibility Auditor and Code Reviewer as appropriate. The root instructions and canonical `docs/design/` governance remain authoritative. Verify that Codex actually discovers and invokes named agents; TOML files alone are not proof of runtime activation.
+
+Validate the agent definitions with `python scripts/validate_codex_agents.py .codex/agents`. The Python regression suite covers this validator. Do not open or update a PR without owner approval because pull-request workflows automatically deploy Cloudflare Preview. No merge, production deployment, DNS/config changes, external outreach or customer-data access is authorised by the presence of these agents.
