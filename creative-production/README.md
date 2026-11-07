@@ -126,6 +126,10 @@ production/<client-campaign>/
 6. Integrate the internal Creative Studio UI only after the local service has authentication, file boundaries, audit events and human approval.
 7. Keep all deployment and public website changes behind the existing River Ways release gates.
 
+## Agency agent workflow
+
+See [AGENT_WORKFLOW.md](./AGENT_WORKFLOW.md) for the specialist roles, task handoffs, parallel work rules, evidence requirements and human approval gates.
+
 ## Model installation runbook
 
 See [MODEL_INSTALLATION.md](./MODEL_INSTALLATION.md) for per-model hardware/licence gates, ComfyUI workflow handoff, benchmark protocol and production activation criteria.
