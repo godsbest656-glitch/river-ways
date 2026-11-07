@@ -17,6 +17,51 @@ function clean(value, max) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+function hasControlCharacters(value) {
+  return typeof value === "string" && Array.from(value).some((character) => {
+    const code = character.charCodeAt(0);
+    return code <= 31 || code === 127;
+  });
+}
+
+function cleanMetadata(value, max) {
+  const cleaned = Array.from(clean(value, max), (character) => {
+    const code = character.charCodeAt(0);
+    return code <= 31 || code === 127 ? " " : character;
+  }).join("");
+  return cleaned.split(" ").filter(Boolean).join(" ");
+}
+
+function cleanLandingPage(value, requestUrl) {
+  if (hasControlCharacters(value)) return "/";
+  const candidate = cleanMetadata(value, MAX_LENGTHS.landingPage);
+  if (!candidate) return "/";
+  try {
+    const requestOrigin = new URL(requestUrl).origin;
+    const parsed = new URL(candidate, requestUrl);
+    if (parsed.origin !== requestOrigin || !["http:", "https:"].includes(parsed.protocol)) return "/";
+    parsed.hash = "";
+    return parsed.pathname || "/";
+  } catch {
+    return "/";
+  }
+}
+
+function cleanReferrer(value) {
+  if (hasControlCharacters(value)) return "";
+  const candidate = cleanMetadata(value, MAX_LENGTHS.referrer);
+  if (!candidate) return "";
+  try {
+    const parsed = new URL(candidate);
+    if (!["http:", "https:"].includes(parsed.protocol)) return "";
+    parsed.search = "";
+    parsed.hash = "";
+    return (parsed.origin + parsed.pathname).slice(0, MAX_LENGTHS.referrer);
+  } catch {
+    return "";
+  }
+}
+
 function validEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
 }
@@ -124,14 +169,14 @@ export async function onRequestPost({ request, env }) {
     company: clean(payload.company, MAX_LENGTHS.company),
     goal: clean(payload.goal, MAX_LENGTHS.goal),
     details: clean(payload.details, MAX_LENGTHS.details),
-    source: clean(payload.source, MAX_LENGTHS.source) || "website",
-    landingPage: clean(payload.landingPage, MAX_LENGTHS.landingPage) || "/",
-    referrer: clean(payload.referrer, MAX_LENGTHS.referrer),
-    utmSource: clean(payload.utmSource, MAX_LENGTHS.utm),
-    utmMedium: clean(payload.utmMedium, MAX_LENGTHS.utm),
-    utmCampaign: clean(payload.utmCampaign, MAX_LENGTHS.utm),
-    utmContent: clean(payload.utmContent, MAX_LENGTHS.utm),
-    utmTerm: clean(payload.utmTerm, MAX_LENGTHS.utm),
+    source: ["website", "campaign", "referral"].includes(cleanMetadata(payload.source, MAX_LENGTHS.source)) ? cleanMetadata(payload.source, MAX_LENGTHS.source) : "website",
+    landingPage: cleanLandingPage(payload.landingPage, request.url),
+    referrer: cleanReferrer(payload.referrer),
+    utmSource: cleanMetadata(payload.utmSource, MAX_LENGTHS.utm),
+    utmMedium: cleanMetadata(payload.utmMedium, MAX_LENGTHS.utm),
+    utmCampaign: cleanMetadata(payload.utmCampaign, MAX_LENGTHS.utm),
+    utmContent: cleanMetadata(payload.utmContent, MAX_LENGTHS.utm),
+    utmTerm: cleanMetadata(payload.utmTerm, MAX_LENGTHS.utm),
     journeyId: /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean(payload.journey || pageContext.searchParams.get("journey"), MAX_LENGTHS.journey)) ? clean(payload.journey || pageContext.searchParams.get("journey"), MAX_LENGTHS.journey) : "",
     engagementType: ["diagnostic", "defined-project", "growth-partnership"].includes(clean(payload.engagement || pageContext.searchParams.get("engagement"), MAX_LENGTHS.engagement)) ? clean(payload.engagement || pageContext.searchParams.get("engagement"), MAX_LENGTHS.engagement) : ""
   };

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build && node scripts/generate-static-pages.mjs && node scripts/validate-static-pages.mjs",
     "preview": "vite preview",
-    "check": "vite build",
+    "check": "npm run build",
     "test:api": "node --test tests/api/*.test.js",
     "test": "npm run test:api && npm run test:portfolio",
     "test:portfolio": "node --test tests/portfolio/*.test.js",

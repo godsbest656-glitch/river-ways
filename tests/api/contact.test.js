@@ -287,3 +287,47 @@ test("does not claim notification success when the email provider fails", async 
   assert.equal(db.leads[0].notification_status, "failed");
 });
 
+
+
+test("normalizes attribution metadata and rejects off-site landing-page values", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: request({
+      name: "Ada Example",
+      email: "ada@example.com",
+      goal: "Growth",
+      source: "unknown\nsource",
+      landingPage: "https://attacker.example/landing",
+      referrer: "https://example.org/start\nInjected: header",
+      utmSource: "newsletter\npartner",
+      utmCampaign: "autumn\tcampaign"
+    }),
+    env: envFor(db)
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(db.leads[0].source, "website");
+  assert.equal(db.leads[0].landing_page, "/");
+  assert.equal(db.leads[0].referrer, "");
+  assert.equal(db.leads[0].utm_source, "newsletter partner");
+  assert.equal(db.leads[0].utm_campaign, "autumn campaign");
+});
+
+
+test("stores only the landing path and referrer origin plus path", async () => {
+  const db = makeDb();
+  const response = await onRequestPost({
+    request: request({
+      name: "Ada Example",
+      email: "ada@example.com",
+      goal: "Growth",
+      landingPage: "/work/identity-with-a-point-of-view/?email=private#proof",
+      referrer: "https://example.org/article?token=private#section"
+    }),
+    env: envFor(db)
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(db.leads[0].landing_page, "/work/identity-with-a-point-of-view/");
+  assert.equal(db.leads[0].referrer, "https://example.org/article");
+});

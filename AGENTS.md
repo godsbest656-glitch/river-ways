@@ -69,3 +69,7 @@ Before changing portfolio data, media or gallery components, read `docs/design/L
 
 ## Route and page implementation rules
 Treat `scripts/generate-static-pages.mjs` as the source for generated About, Services, Work, project-detail, Contact, Insights and Terms pages. Do not create duplicate hand-maintained copies under `public/`. If route content changes, update the generator, `public/sitemap.xml`, the route inventory and validation checks together. Preserve the existing static Growth Diagnostic, Field Guide and Privacy pages unless a separately verified migration is planned. Unknown routes must remain genuine Cloudflare Pages 404 responses; do not add a catch-all SPA rewrite. Run `npm run build` and confirm `scripts/validate-static-pages.mjs` passes. Never deploy as part of route implementation.
+
+
+## Production environment and D1 rules
+Use `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` as the deployment preparation source. Never invent a D1 database ID, sender identity, secret or Cloudflare binding. Inspect the target D1 schema before applying migrations; migrations 0002 and 0003 use `ALTER TABLE ADD COLUMN` and must not be blindly rerun. Run `python scripts/validate_migrations.py` in CI, but do not confuse in-memory SQLite validation with proof that Cloudflare D1 has been migrated. Never deploy, change DNS or apply production migrations without explicit owner approval.

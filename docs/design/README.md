@@ -46,3 +46,7 @@ If another document conflicts with the Master Website Design, the master documen
 
 ## Route architecture
 11. [Route Inventory and Static Page Generation](./ROUTE_INVENTORY_2026-11-07.md) — verified current routes, target route patterns, build-time generation and 404/sitemap controls.
+
+
+## Operations
+12. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
