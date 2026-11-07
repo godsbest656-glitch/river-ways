@@ -264,6 +264,8 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
   try {
     await mkdir(path.join(root, 'brief'), { recursive: true });
     await mkdir(path.join(root, 'workflows'), { recursive: true });
+    const modelRegistryPath = path.join(root, 'models.json');
+    await writeFile(modelRegistryPath, JSON.stringify({ videoModels: [{ id: 'wan-2.2-ti2v-5b', name: 'Wan 2.2 TI2V-5B', license: 'Apache-2.0', upstream: 'https://github.com/Wan-Video/Wan2.2', enabled: true }] }));
     const approvedBrief = {
       ...validBrief,
       approval: { status: 'approved', approvedBy: 'Creative Director', approvedAt: '2026-11-07T10:00:00Z' },
@@ -276,11 +278,15 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
       briefFile: 'brief/approved-brief.json'
     }));
     await writeFile(path.join(root, 'workflows', 'api.json'), JSON.stringify({
-      '1': { class_type: 'SaveVideo', inputs: {} }
+      '1': { class_type: 'UNETLoader', inputs: { unet_name: 'wan2.2_ti2v_5B_fp16.safetensors' } },
+      '2': { class_type: 'SaveVideo', inputs: {} }
     }));
     const result = await runComfyProduction({
       projectDirectory: root,
       workflowPath: 'workflows/api.json',
+      modelId: 'wan-2.2-ti2v-5b',
+      checkpointFile: 'wan2.2_ti2v_5B_fp16.safetensors',
+      modelRegistryPath,
       approved: true,
       pollIntervalMs: 0,
       sleepImpl: async () => {},
@@ -306,8 +312,44 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
     const manifest = JSON.parse(await readFile(result.manifestPath, 'utf8'));
     assert.equal(manifest.approval.deliveryApproved, false);
     assert.match(manifest.provenance.workflowSha256, /^[a-f0-9]{64}$/);
+    assert.equal(manifest.provenance.model.id, 'wan-2.2-ti2v-5b');
+    assert.equal(manifest.provenance.checkpoint, 'wan2.2_ti2v_5B_fp16.safetensors');
     const saved = path.join(root, 'assets', 'generated', 'test_job_1', 'node-7', 'final.mp4');
     assert.equal((await readFile(saved)).length, 4);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+
+test('refuses ComfyUI generation for models disabled in the model registry', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-disabled-model-'));
+  try {
+    await mkdir(path.join(root, 'brief'), { recursive: true });
+    await mkdir(path.join(root, 'workflows'), { recursive: true });
+    const approvedBrief = {
+      ...validBrief,
+      approval: { status: 'approved', approvedBy: 'Creative Director', approvedAt: '2026-11-07T10:00:00Z' },
+      rights: { clientAssetsApprovedForGeneration: true, modelLicenseReviewed: true }
+    };
+    await writeFile(path.join(root, 'brief', 'approved-brief.json'), JSON.stringify(approvedBrief));
+    await writeFile(path.join(root, 'project.json'), JSON.stringify({
+      status: 'brief-approved', approvalRequiredBeforeGeneration: false, briefFile: 'brief/approved-brief.json'
+    }));
+    await writeFile(path.join(root, 'workflows', 'api.json'), JSON.stringify({
+      '1': { class_type: 'UNETLoader', inputs: { unet_name: 'wan2.2_ti2v_5B_fp16.safetensors' } }
+    }));
+    await assert.rejects(
+      runComfyProduction({
+        projectDirectory: root,
+        workflowPath: 'workflows/api.json',
+        modelId: 'wan-2.2-ti2v-5b',
+        checkpointFile: 'wan2.2_ti2v_5B_fp16.safetensors',
+        approved: true,
+        fetchImpl: async () => { throw new Error('backend must not be called'); }
+      }),
+      /Model is disabled/
+    );
   } finally {
     await rm(root, { recursive: true, force: true });
   }
