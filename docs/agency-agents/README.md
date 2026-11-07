@@ -2,6 +2,8 @@
 
 ## Purpose and scope
 
+See [`IMPLEMENTATION_STATUS.md`](./IMPLEMENTATION_STATUS.md) for the current evidence record and outstanding owner-side gates.
+
 This integration brings a curated subset of the MIT-licensed `msitarzewski/agency-agents` specialist roster into the River Ways website repository as **project-scoped Codex custom agents**.
 
 These are development-time agents that help inspect, design, implement, optimise and review the River Ways website. They are not a production chatbot, website visitor-facing agent runtime, autonomous deployment system, or replacement for Harvey, Rebuilder or Revenue OS.
