@@ -1,7 +1,7 @@
 # River Ways — Living Portfolio Architecture
 
-**Scope:** issue #35 — architecture and data contract only.  
-**Status:** reconstructed and implemented on a topic branch; gallery UI is not included.
+**Scope:** issue #35 — architecture and data contract.  
+**Status:** foundation implemented; three presentation components implemented; Scroll Gallery integrated into the existing studio section. No new portfolio routes or 3D experience are released.
 
 ## Provenance and source integrity
 
@@ -16,9 +16,9 @@ The existing `#studio` section contains three hand-authored studies:
 - Ideas built to travel.
 - Experiences with dimension.
 
-They are illustrative capability studies, not commissioned client work or performance proof. The data source represents these three records without changing their copy or the homepage component. Two internal demonstrations are also represented: the River Ways website and Growth Diagnostic. Both carry an explicit internal-demonstration disclaimer.
+They are illustrative capability studies, not commissioned client work or performance proof. The canonical data source now powers those three cards through `ScrollGallery`; the existing titles and descriptions are preserved. Two internal demonstrations are also represented: the River Ways website and Growth Diagnostic. Both receive an explicit internal-demonstration disclaimer from the normalized project model.
 
-No gallery UI is implemented here. `src/App.jsx` is not modified by this portfolio increment.
+The Scroll Gallery is integrated into `#studio`. Shuffle Gallery and Card Folder are implemented as reusable components but are not wired to a route. The Editorial Case Study template and 3D Memory Album remain outstanding.
 
 ## Canonical project schema
 
@@ -87,28 +87,30 @@ The default source is local static JavaScript. There is no CMS, vendor, API key,
 - Keyboard, touch, responsive behavior and reduced motion are mandatory. No information may exist only in WebGL/canvas.
 - The five SVG covers in `public/portfolio/` are original River Ways illustrations for the initial capability studies and internal demos. They are not client screenshots or third-party stock. They must be added to the Media Manifest when that separate package is reconciled.
 
-## Integration sequence
+## Implementation sequence
 
-1. **Foundation (this increment):** schema, taxonomy, selectors, source, static records, validation script, tests and contracts. No gallery UI.
-2. **Shared primitives:** `ProjectMedia`, `ProjectBadge`, `ProjectDisclaimer`, with one owner.
-3. **Simple presentations:** Scroll Gallery and Card Folder.
-4. **Interactive presentations:** Shuffle Gallery and Editorial Case Studies.
-5. **3D Memory Album:** last, with a full-content non-3D fallback.
-6. **Homepage integration:** one owner wires the source into `#studio`; component workstreams do not edit `src/App.jsx` independently.
-7. **Media governance:** reconcile the original Media Manifest bundle and add all approved assets before production publication.
+1. **Foundation — complete:** schema, taxonomy, selectors, source, static records, validation script and automated tests.
+2. **Shared primitives — complete:** ProjectMedia, ProjectBadge, ProjectDisclaimer and ProjectCard.
+3. **Simple presentations — implemented:** Scroll Gallery, Shuffle Gallery and Card Folder. Scroll Gallery is wired to the existing `#studio` section; the other two remain reusable and unconnected.
+4. **Editorial Case Study — pending:** semantic long-form project template and route integration.
+5. **3D Memory Album — deferred:** last, with a full-content non-3D fallback.
+6. **Route integration — pending:** complete the work index and individual project routes after the route registry is established.
+7. **Media governance — pending:** reconcile the original Media Manifest bundle and add all approved assets before production publication.
 
 ## File map
 
 - `src/portfolio/taxonomy.js`
 - `src/portfolio/schema.js`
 - `src/portfolio/selectors.js`
+- `src/portfolio/shuffle.js`
 - `src/portfolio/projectSource.js`
 - `src/portfolio/projects.js`
 - `src/portfolio/index.js`
+- `src/portfolio/components/`
 - `tests/portfolio/`
 - `scripts/validate-portfolio.mjs`
 - `public/portfolio/`
 
 ## Non-goals
 
-No gallery components, no homepage wiring, no route changes, no paid CMS, no external media service, no fabricated client work or results, no production media release, no D1 or deployment changes.
+No 3D album yet, no individual case-study routes yet, no paid CMS, no external media service, no fabricated client work or results, no production media release, no D1 or deployment changes.

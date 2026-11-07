@@ -2,4 +2,5 @@ export { CATEGORY_GROUPS, CATEGORIES, CATEGORY_IDS, SERVICES, SERVICE_IDS, FEATU
 export { validateMedia, validateProject, normalizeProject, buildProjectCollection, isPublishableAsProof, deepFreeze } from "./schema.js";
 export { selectGalleryProjects, selectFiltered, selectFeatured, selectHomeShowcase } from "./selectors.js";
 export { createProjectSource } from "./projectSource.js";
+export { stableShuffle } from "./shuffle.js";
 export { projectRecords } from "./projects.js";

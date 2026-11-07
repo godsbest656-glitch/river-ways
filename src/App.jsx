@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { createProjectSource, projectRecords } from './portfolio/index.js';
+import { ScrollGallery } from './portfolio/components/index.js';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, Check,
   ChevronDown, Layers3, Menu, MessageCircle,
@@ -118,7 +120,9 @@ function Eyebrow({ children, light = false }) {
   return <div className={'eyebrow ' + (light ? 'eyebrow-light' : '')}><span className="eyebrow-dot" />{children}</div>;
 }
 
-export default function App() {
+export default const portfolioSource = createProjectSource(projectRecords);
+
+function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeCurrent, setActiveCurrent] = useState(1);
   const [activeStep, setActiveStep] = useState(0);
@@ -385,54 +389,16 @@ export default function App() {
                 <a className="text-link" href="#contact">Discuss a creative brief <ArrowUpRight size={16} /></a>
               </div>
             </div>
-            <div className="studio-grid">
-              <article className="studio-card studio-card-brand">
-                <div className="studio-art studio-art-brand" aria-hidden="true">
-                  <span className="studio-art-index">STUDIO STUDY / 01</span>
-                  <span className="studio-brand-word">FORM<span> / </span>FIELD</span>
-                  <span className="studio-brand-rule" />
-                  <span className="studio-brand-note">IDENTITY<br />IN CONTEXT</span>
-                  <span className="studio-brand-disc" />
-                </div>
-                <div className="studio-card-copy">
-                  <span>01 / BRAND WORLDS</span>
-                  <h3>Identity with a point of view.</h3>
-                  <p>Positioning, visual identity, art direction and design systems that give a business a coherent way to show up.</p>
-                </div>
-              </article>
-              <article className="studio-card studio-card-campaign">
-                <div className="studio-art studio-art-campaign" aria-hidden="true">
-                  <span className="studio-art-index">STUDIO STUDY / 02</span>
-                  <span className="studio-campaign-small">A CLEAR IDEA<br />TRAVELS FURTHER.</span>
-                  <span className="studio-campaign-big">MAKE<br /><i>IT</i><br />MATTER.</span>
-                  <span className="studio-campaign-stamp">CAMPAIGN<br />SYSTEMS</span>
-                </div>
-                <div className="studio-card-copy">
-                  <span>02 / CAMPAIGN WORLDS</span>
-                  <h3>Ideas built to travel.</h3>
-                  <p>Campaign concepts, graphic design, content and editorial systems shaped around one memorable message.</p>
-                </div>
-              </article>
-              <article className="studio-card studio-card-experience">
-                <div className="studio-art studio-art-experience" aria-hidden="true">
-                  <span className="studio-art-index">STUDIO STUDY / 03</span>
-                  <div className="studio-interface">
-                    <div className="studio-interface-top"><i /><i /><i /><span>EXPERIENCE / 001</span></div>
-                    <div className="studio-interface-body">
-                      <span>FROM SIGNAL<br />TO <b>MEANING.</b></span>
-                      <div className="studio-interface-orbit"><i /><i /><i /></div>
-                    </div>
-                    <div className="studio-interface-bottom"><span>DISCOVER</span><span>EXPLORE ↗</span></div>
-                  </div>
-                  <span className="studio-experience-index">INTERACTION<br />& MOTION</span>
-                </div>
-                <div className="studio-card-copy">
-                  <span>03 / DIGITAL & MOTION</span>
-                  <h3>Experiences with dimension.</h3>
-                  <p>Web experiences, motion, video and 3D that make complex ideas easier to feel, explore and act on.</p>
-                </div>
-              </article>
-            </div>
+            <ScrollGallery
+              source={portfolioSource}
+              scope="studio"
+              limit={3}
+              className="studio-scroll-gallery"
+              ariaLabel="River Ways creative capability studies"
+              cardClassName="studio-card"
+              copyClassName="studio-card-copy"
+              disclaimerClassName="studio-disclaimer"
+            />
             <p className="studio-disclaimer">Illustrative capability studies — not client case studies or claims of commissioned work.</p>
           </div>
         </section>
