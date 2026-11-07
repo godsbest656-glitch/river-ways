@@ -207,3 +207,23 @@ test('keeps Remotion disabled until license acknowledgement and eligibility are 
     /license acknowledgement/
   );
 });
+
+
+test('rejects renderer output paths that escape the project', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-render-path-'));
+  try {
+    const { project, rendererRoot } = await prepareHyperFramesFixture(root);
+    await assert.rejects(
+      renderHyperframes({
+        projectDirectory: project,
+        rendererRoot,
+        outputPath: '../../outside.mp4',
+        approved: true,
+        spawnImpl: () => { throw new Error('must not start renderer'); }
+      }),
+      /escapes or aliases/
+    );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
