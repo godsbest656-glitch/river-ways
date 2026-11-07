@@ -12,7 +12,8 @@
     "validate": "node bin/creative.mjs validate examples/sample-brief.json",
     "test": "node --test test/*.test.mjs",
     "render": "node bin/render.mjs",
-    "generate": "node bin/generate.mjs"
+    "generate": "node bin/generate.mjs",
+    "qa": "node bin/media-qa.mjs"
   },
   "devDependencies": {
     "hyperframes": "0.9.18"
