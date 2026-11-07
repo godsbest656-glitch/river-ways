@@ -461,3 +461,34 @@ h3 { letter-spacing: -.035em; }
   .studio-interface { width: 82%; }
   .studio-card-copy { padding: 19px 19px 22px; }
 }
+
+
+/* River Ways editorial hero: centred proposition, then the existing interactive field. */
+.hero { padding-top: clamp(66px, 7vw, 104px); }
+.hero-layout { display: flex; min-height: 0; flex-direction: column; align-items: center; gap: clamp(38px, 5vw, 62px); }
+.hero-copy-centered { display: flex; width: 100%; flex-direction: column; align-items: center; padding: 0; text-align: center; }
+.hero-copy-centered .eyebrow { justify-content: center; }
+.hero-copy-centered h1 { max-width: 980px; margin: 22px 0 20px; text-wrap: balance; }
+.hero-copy-centered .hero-lede { max-width: 760px; text-wrap: pretty; }
+.hero-copy-centered .hero-actions { justify-content: center; align-items: center; flex-flow: row wrap; margin-top: 30px; }
+.hero-copy-centered .hero-note { justify-content: center; margin-top: 24px; }
+.hero-visual { width: min(100%, 1120px); }
+.current-stage { min-height: clamp(430px, 48vw, 590px); }
+.hero-bottom { margin-top: clamp(28px, 4vw, 46px); }
+
+@media (max-width: 850px) {
+  .hero { padding-top: 54px; }
+  .hero-layout { display: flex; grid-template-columns: none; gap: 30px; }
+  .hero-copy-centered { align-items: center; padding-bottom: 0; }
+  .hero-copy-centered h1 { max-width: 720px; }
+  .hero-visual { width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding-top: 42px; }
+  .hero-copy-centered h1 { margin-top: 20px; font-size: clamp(49px, 12.8vw, 72px); }
+  .hero-copy-centered .hero-lede { max-width: 36rem; font-size: 15px; }
+  .hero-copy-centered .hero-actions { flex-direction: column; gap: 16px; }
+  .hero-copy-centered .hero-note { margin-top: 22px; }
+  .current-stage { min-height: 430px; }
+}

@@ -8,6 +8,16 @@ description: "Plans and implements conversion-aware River Ways pages, including 
 ## Authority
 Read `AGENTS.md`, `docs/design/RIVER_WAYS_MASTER_DESIGN.md`, the relevant design-system documents and the existing route before making decisions. The master design is binding: River Ways, Creative Demand Engineering, SHAPED CURRENT, Route 2 — Editorial Intelligence, and “We engineer demand.” Do not import upstream sample palettes, fonts, type scales, spacing, radius, icon sets or motion values. The current project tokens and approved creative direction take precedence.
 
+## Approved homepage hero composition
+The user-approved reference calls for a centred editorial proposition, not a split copy/visual hero:
+- Centred, confident headline with deliberate line breaks.
+- Concise supporting explanation with a readable measure.
+- One primary action and one quieter secondary route.
+- A purposeful visual field or interactive gallery beneath the copy.
+- Keep the existing River Ways interactive current/card model; do not replace it with a generic stock image or a decorative video.
+- Preserve the hero's commercial clarity, responsive behavior and reduced-motion support.
+Adapt the composition, not another brand's artwork, assets or exact proprietary design.
+
 ## Strategy before layout
 Establish from available evidence:
 - The audience and context for this page.

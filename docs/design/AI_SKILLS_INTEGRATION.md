@@ -42,10 +42,10 @@ The website work spans design, frontend, backend, content, media, SEO and releas
 
 | Resource | License | Recommended use | Current decision |
 |---|---|---|---|
-| Playwright | Apache-2.0 | Real-browser, responsive and end-to-end testing across Chromium, Firefox and WebKit | Adopt as the preferred browser harness when PR #24's existing E2E configuration is reconciled; do not add a competing setup |
-| axe-core | MPL-2.0 | Automated accessibility checks inside browser tests | Use with Playwright when the harness is restored; automated checks do not replace manual WCAG review |
-| Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Introduce after route inventory and production-like build are stable; establish baselines before enforcing thresholds |
-| Node `node:test` | Node.js built-in | Existing API/unit tests | Keep using the current test runner; no additional test framework is needed for API tests |
+| Playwright | Apache-2.0 | Real-browser, responsive and end-to-end testing across Chromium, Firefox and WebKit | Adopt as the preferred browser harness once PR #24's configuration and stale tests are reconciled |
+| axe-core | MPL-2.0 | Automated accessibility checks inside browser tests | Use with Playwright; automated scans do not replace manual WCAG review |
+| Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Introduce after route inventory and production-like output are stable; establish measured baselines first |
+| Node `node:test` | Node.js built-in | Existing API/unit tests | Keep using the current test runner; no additional API test framework is needed |
 
 Primary sources:
 - https://github.com/microsoft/playwright
@@ -53,11 +53,15 @@ Primary sources:
 - https://github.com/GoogleChrome/lighthouse-ci
 - https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx
 
-### Why the browser tools are not installed in this increment
+## Project CI resource
 
-The current consolidated branch's package manifest contains React 18, Vite 6 and the Node API test runner, but no Playwright configuration. PR #24 contains an existing Playwright configuration and browser suite, but those tests target an older homepage and older selectors. The correct next step is to adapt that harness to the current routes and interactions, not install a competing framework. This increment installs reusable project skills and a validator without changing application dependencies.
+`.github/workflows/topic-build.yml` runs the production build, existing API tests and high-severity dependency audit on non-main topic-branch pushes. It does not deploy. This closes the gap between local topic work and PR-only checks while avoiding the repository's automatic Preview workflow during implementation.
 
-Lighthouse CI is deferred until the intended routes and production-like preview are stable. Public temporary report storage is not enabled by this project; any report upload destination must be reviewed for privacy first.
+## Why the browser tools are not installed yet
+
+PR #24 contains an existing Playwright configuration and browser suite, but those tests target an older homepage and selectors. The correct next step is to adapt that harness to current routes and interactions, not install a competing framework. No new browser-testing npm dependency was added in this increment.
+
+Lighthouse CI is deferred until the intended routes and production-like output are stable. Public temporary report storage is not enabled; any report upload destination must be reviewed for privacy first.
 
 ## How agents must use the skills
 
@@ -69,7 +73,7 @@ Lighthouse CI is deferred until the intended routes and production-like preview 
 6. Inspect the actual files and dependencies before applying instructions.
 7. Validate skills with `python scripts/validate_skills.py .agents/skills` and `python -m unittest discover -s tests -p "test_*.py"`.
 
-## Deployment boundary discovered during implementation
+## Deployment boundary
 
 The current repository's `deploy-preview.yml` workflow runs on pull-request activity and automatically deploys a Cloudflare Pages Preview. Opening PR #46 therefore published a non-production preview at `https://pr-46.riverwayse-website.pages.dev/` and verified the exact source marker. Its final non-persisting contact readiness probe returned HTTP 503. No production deployment, DNS change, production secret change, D1 mutation or real enquiry occurred.
 

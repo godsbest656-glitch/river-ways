@@ -247,12 +247,12 @@ export default function App() {
           <div className="hero-atmosphere" aria-hidden="true" />
           <div className="hero-grain" aria-hidden="true" />
           <div className="container hero-layout">
-            <div className="hero-copy">
+            <div className="hero-copy hero-copy-centered">
               <Eyebrow light>Creative demand engineering</Eyebrow>
-              <h1>We engineer <span>demand.</span></h1>
+              <h1>We engineer<br /><span>demand.</span></h1>
               <p className="hero-lede">River Ways connects strategy, creative, digital experiences and growth systems to turn market attention into meaningful business momentum.</p>
               <div className="hero-actions">
-                <a className="button button-primary" href="#contact">Build your growth system <ArrowUpRight size={17} /></a>
+                <a className="button button-primary" href="#contact">Start a conversation <ArrowUpRight size={17} /></a>
                 <a className="text-link text-link-light" href="#approach">Explore our approach <ArrowDownRight size={17} /></a>
               </div>
               <div className="hero-note"><span className="note-line" /> From attention to action. With intent.</div>
