@@ -13,7 +13,11 @@ module.exports = {
         "http://localhost/contact/"
       ],
       numberOfRuns: 3,
-      chromePath: chromium.executablePath()
+      chromePath: chromium.executablePath(),
+      settings: {
+        // GitHub-hosted Ubuntu disables unprivileged user namespaces; this isolated CI browser visits only the built local site.
+        chromeFlags: "--no-sandbox --disable-dev-shm-usage"
+      }
     },
     assert: {
       assertions: {
