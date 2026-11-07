@@ -30,7 +30,7 @@
 
 - Topic-branch workflow [`42378381365`](https://github.com/godsbest656-glitch/river-ways/actions/runs/42378381365) completed with conclusion **success** on commit `745f24d943a3bbd693436c5ac62d3406e2244fca`.
 - All 18 substantive workflow steps passed: project skill validation, Codex-agent validation, validator regression tests, D1 migration validation, dependency installation, website production build, Chromium installation, Playwright browser journeys and accessibility tests, Lighthouse performance/SEO baseline, private Lighthouse artifact upload, enquiry API tests, portfolio contract tests, public portfolio validation and dependency audit. GitHub reports the job and every listed step as completed/success.
-- The only commit after the tested source SHA is `ddeb463`, which changes this status document only. No application code, agent TOML, validator, test or workflow source changed after the successful run.
+- All commits after the tested source SHA (`ddeb463`, `a8ad174`, `6597c2d`, and the subsequent status refreshes) are documentation-only. No application code, agent TOML, validator, test or workflow source changed after the successful run.
 - The successful workflow therefore validates the current executable/configuration source tree; the documentation-only branch tip itself was not separately re-run.
 
 ## Not verified / owner-side blockers
