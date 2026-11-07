@@ -37,7 +37,7 @@ export function readGpuTelemetry(spawnImpl = spawnSync) {
     '--format=csv,noheader,nounits'
   ], { encoding: 'utf8', timeout: 5000, windowsHide: true, shell: false });
   if (result.error || result.status !== 0) return null;
-  return String(result.stdout ?? '').split(/\\r?\\n/).filter(Boolean).map((line) => {
+  return String(result.stdout ?? '').split(/\r?\n/).filter(Boolean).map((line) => {
     const [name, total, used, utilization, temperature] = line.split(',').map((part) => part.trim());
     return {
       name,
