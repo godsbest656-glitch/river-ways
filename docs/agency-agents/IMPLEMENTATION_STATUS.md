@@ -2,7 +2,7 @@
 
 **Status date:** 2026-11-07  
 **Integration branch:** `build/river-ways-execution-agency-agents`  
-**Current HEAD at report creation:** `8c2d48e72e7b386008d5f472a2733accdd128e2f`  
+**Current branch HEAD at status refresh:** `bbb2ec87cc9de40eee74c563ca345566821d91de`  
 **Selected remote website base:** `build/river-ways-execution` at `7eef0ea9cdb4dcd4c344b3fbe99ebd2aacd2bd2d`
 
 ## Implemented in the integration branch
@@ -18,14 +18,15 @@
 
 ## Verification evidence
 
-- The GitHub compare endpoint reports this integration branch as **2 commits ahead and 0 behind** its selected remote website base; the file comparison reports 23 changed paths.
-- The topic-branch workflow run `42375601137` was triggered for the current HEAD `8c2d48e72e7b386008d5f472a2733accdd128e2f`. Its agent validator, existing skill validator, Python regression suite, and D1 migration validation completed successfully. The website dependency install and remaining checks were still running when this report was written. Run: https://github.com/godsbest656-glitch/river-ways/actions/runs/42375601137
+- The GitHub compare endpoint currently reports this integration branch as **5 commits ahead and 0 behind** `build/river-ways-execution` at `7eef0ea9cdb4dcd4c344b3fbe99ebd2aacd2bd2d`; the comparison reports **24 changed paths**.
+- The topic-branch workflow run `42375601137` ran on `8c2d48e72e7b386008d5f472a2733accdd128e2f` and is now **completed successfully**. Verified completed steps include project-skill validation, Codex-agent validation, Python regression tests, D1 migration validation, dependency installation, production build, Chromium installation, Playwright browser/accessibility tests, Lighthouse performance/SEO checks, enquiry API tests, portfolio tests, portfolio validation, and the high-severity dependency audit. A Lighthouse report artifact was created. Run: https://github.com/godsbest656-glitch/river-ways/actions/runs/42375601137
+- The current branch HEAD `bbb2ec87cc9de40eee74c563ca345566821d91de` is a documentation-only follow-up to the tested `8c2d48e` commit (clarifying how to inspect live Codex subagent activity). The topic workflow ignores documentation-only pushes, so no new run was triggered for `bbb2ec8`; the website source and executable agent definitions were unchanged by that final documentation commit.
 - Full website CI run `42375449587` completed successfully on source snapshot `55cdee3e4b3e5076539514e9e368d6b1dfd396bf`: validators, Python tests, D1 migration validation, dependency install, production build, Playwright browser/accessibility journeys, Lighthouse, enquiry API tests, portfolio tests, portfolio validation, and dependency audit all passed. The final integration tree contains the same application source; subsequent changes were agent guidance, workflow consolidation, and documentation. Run: https://github.com/godsbest656-glitch/river-ways/actions/runs/42375449587
 - An earlier regression-test run failed because a fixture encoded newline escapes incorrectly. The fixture was corrected, and the subsequent validator/regression steps passed. The earlier failed run is retained in Actions history rather than concealed.
 
 ## Not verified / owner-side blockers
 
-1. **Codex runtime activation:** this ChatGPT session cannot inspect the user's local Codex process. Project trust, agent discovery, actual named-agent invocation, and real subagent delegation remain unverified. Follow `CODEX_ACTIVATION_AND_VALIDATION.md`.
+1. **Codex runtime activation:** repository files and CI are verified, but this ChatGPT session cannot inspect the user's local Codex process. Project trust, agent discovery, actual named-agent invocation, and real subagent delegation remain unverified. Follow `CODEX_ACTIVATION_AND_VALIDATION.md`.
 2. **Local visual candidate reconciliation:** the previously reported local `build/shaped-current-homepage` candidate at `fcdcbef` was not found in the remote branch listing. Preserve and compare that local worktree before selecting the final website baseline. This integration branch is based on the remote `build/river-ways-execution` candidate, not a verified merge with the local visual candidate.
 3. **PR / Preview / release:** no PR was opened or updated, no Cloudflare Preview was triggered, and nothing was merged or deployed. These actions require explicit owner approval under repository release rules.
 4. **Production operations:** live D1 bindings/migrations, Resend sender and recipient configuration, email delivery, legal review, and production HTTP behavior remain outside this agent integration's verification scope.
