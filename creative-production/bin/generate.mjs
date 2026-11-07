@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { queueWorkflow, waitForPrompt, saveComfyOutput } from './comfyui-adapter.mjs';
 
@@ -49,8 +50,10 @@ export async function runComfyProduction({
   if (brief.rights?.clientAssetsApprovedForGeneration !== true || brief.rights?.modelLicenseReviewed !== true) {
     throw new Error('Generation requires explicit client-asset permission and model-license review');
   }
-  const workflowFile = path.resolve(workflowPath);
-  const workflow = await readJson(workflowFile);
+  const workflowFile = safeChild(projectRoot, workflowPath);
+  const workflowBytes = await readFile(workflowFile);
+  const workflowSha256 = createHash('sha256').update(workflowBytes).digest('hex');
+  const workflow = JSON.parse(workflowBytes.toString('utf8'));
   if (!workflow || typeof workflow !== 'object' || Array.isArray(workflow) || Object.keys(workflow).length === 0) {
     throw new Error('Workflow must be a non-empty ComfyUI API-format object');
   }
@@ -76,7 +79,7 @@ export async function runComfyProduction({
         const filePath = await saveComfyOutput({
           baseUrl,
           output: item,
-          destinationDirectory: outputDirectory,
+          destinationDirectory: path.join(outputDirectory, 'node-' + String(nodeId)),
           fetchImpl
         });
         saved.push({
@@ -95,14 +98,14 @@ export async function runComfyProduction({
     promptId: queued.promptId,
     createdAt: new Date().toISOString(),
     briefFile: project.briefFile,
-    workflowFile,
+    workflowFile: path.relative(projectRoot, workflowFile).split(path.sep).join('/'),
     outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
     outputs: saved,
     approval: { generationApproved: true, deliveryApproved: false },
     provenance: {
       model: null,
       checkpoint: null,
-      workflowSha256: null,
+      workflowSha256,
       prompt: null,
       seed: null,
       licenseReviewed: true,
