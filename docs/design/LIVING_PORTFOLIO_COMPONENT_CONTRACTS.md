@@ -7,7 +7,7 @@ These contracts are downstream of `LIVING_PORTFOLIO_ARCHITECTURE.md`. Components
 ### ProjectMedia
 **Inputs:** `media`, optional `className`, optional `loading`.
 
-- Renders image or video from a validated media record; interactive media remains on its accessible static fallback until a safe renderer is explicitly approved.
+- Renders image or video from a validated media record; interactive media remains on its accessible static fallback until a safe renderer is explicitly approved. The three existing homepage study artworks use only the controlled local `MEDIA_RENDERERS` keys and retain their SVG source as a static fallback asset.
 - Images use intrinsic width/height, `srcSet`, `sizes`, focal point and lazy loading where appropriate.
 - Video uses poster and controls only when useful; always has a static fallback.
 - Alt text is supplied by the record; never synthesize claims or generic alt text.
@@ -46,8 +46,8 @@ These contracts are downstream of `LIVING_PORTFOLIO_ARCHITECTURE.md`. Components
 
 ## Current implementation state
 
-- **Implemented:** ProjectMedia, ProjectBadge, ProjectDisclaimer, ProjectCard, ScrollGallery, ShuffleGallery and CardFolder.
-- **Integrated:** ScrollGallery powers the existing homepage `#studio` studies from the canonical source.
+- **Implemented:** ProjectMedia, ProjectBadge, ProjectDisclaimer, ProjectCard, ScrollGallery, ShuffleGallery, CardFolder and the controlled StudioArtwork renderer.
+- **Integrated:** ScrollGallery powers the existing homepage `#studio` studies from the canonical source while preserving their original CSS artwork through controlled local renderers.
 - **Not yet integrated:** ShuffleGallery and CardFolder are reusable components awaiting the work index/homepage decisions.
 - **Deferred:** Editorial Case Study route/template and 3D Memory Album.
 - **Visual QA:** the current change is build/test gated on the topic branch; no new preview has been deployed for visual review.

@@ -42,3 +42,7 @@ If another document conflicts with the Master Website Design, the master documen
 ## Portfolio system
 9. [Living Portfolio Architecture](./LIVING_PORTFOLIO_ARCHITECTURE.md) — canonical project schema, data source, evidence rules and integration sequence.
 10. [Living Portfolio Component Contracts](./LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md) — shared media/badge/disclaimer primitives and gallery interaction contracts.
+
+
+## Route architecture
+11. [Route Inventory and Static Page Generation](./ROUTE_INVENTORY_2026-11-07.md) — verified current routes, target route patterns, build-time generation and 404/sitemap controls.

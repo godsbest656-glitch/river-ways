@@ -28,10 +28,10 @@ export const projectRecords = deepFreeze([
     services: ["brand-creative-systems", "creative-demand-engineering"],
     tags: ["identity", "brand systems", "art direction"],
     status: "published", visibility: "public",
-    problem: null, approach: null, outcome: null, client: null,
+    problem: null, approach: "An illustrative system connecting positioning, visual identity and art direction into one coherent brand language.", outcome: null, client: null,
     results: [], testimonials: [],
     media: { cover: originalMedia("/portfolio/studio-study-brand-worlds.svg", "Illustrative brand-system composition with FORM / FIELD typography, a rule and a circular mark.", "studio-brand-worlds"), gallery: [] },
-    featured: ["studio"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
+    featured: ["studio"], disclaimer: null, deliverables: ["Positioning principles","Identity system","Art-direction cues"], evidenceReferences: [], credits: [], seo: null
   },
   {
     id: "studio-campaign-worlds",
@@ -44,10 +44,10 @@ export const projectRecords = deepFreeze([
     services: ["content-campaigns", "brand-creative-systems"],
     tags: ["campaigns", "creative systems", "editorial"],
     status: "published", visibility: "public",
-    problem: null, approach: null, outcome: null, client: null,
+    problem: null, approach: "An illustrative campaign system carrying one central idea through a flexible graphic language and content direction.", outcome: null, client: null,
     results: [], testimonials: [],
     media: { cover: originalMedia("/portfolio/studio-study-campaign-worlds.svg", "Illustrative campaign composition with the message MAKE IT MATTER and a campaign systems label.", "studio-campaign-worlds"), gallery: [] },
-    featured: ["studio"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
+    featured: ["studio"], disclaimer: null, deliverables: ["Campaign concept","Graphic language","Content direction"], evidenceReferences: [], credits: [], seo: null
   },
   {
     id: "studio-digital-experiences",
@@ -60,10 +60,10 @@ export const projectRecords = deepFreeze([
     services: ["websites-digital-experiences"],
     tags: ["digital", "interaction", "motion"],
     status: "published", visibility: "public",
-    problem: null, approach: null, outcome: null, client: null,
+    problem: null, approach: "An illustrative digital experience connecting interface structure, interaction and motion to a clear next action.", outcome: null, client: null,
     results: [], testimonials: [],
     media: { cover: originalMedia("/portfolio/studio-study-digital-experiences.svg", "Illustrative digital interface with orbiting forms and the words FROM SIGNAL TO MEANING.", "studio-digital-experiences"), gallery: [] },
-    featured: ["studio"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
+    featured: ["studio"], disclaimer: null, deliverables: ["Web experience","Interaction patterns","Motion direction"], evidenceReferences: [], credits: [], seo: null
   },
   {
     id: "internal-demo-river-ways-website",
@@ -81,7 +81,7 @@ export const projectRecords = deepFreeze([
     outcome: null, client: null,
     results: [], testimonials: [],
     media: { cover: originalMedia("/portfolio/internal-demo-river-ways.svg", "Original River Ways internal demonstration artwork showing the We engineer demand proposition and a flowing route."), gallery: [] },
-    featured: ["work"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
+    featured: ["work"], disclaimer: null, deliverables: ["Agency positioning narrative","Digital experience","Enquiry pathway"], evidenceReferences: [], credits: [], seo: null
   },
   {
     id: "internal-demo-growth-diagnostic",
@@ -99,6 +99,6 @@ export const projectRecords = deepFreeze([
     outcome: null, client: null,
     results: [], testimonials: [],
     media: { cover: originalMedia("/portfolio/internal-demo-growth-diagnostic.svg", "Original Growth Diagnostic internal demonstration artwork showing five assessment dimensions without fabricated scores."), gallery: [] },
-    featured: ["work"], disclaimer: null, deliverables: [], evidenceReferences: [], credits: [], seo: null
+    featured: ["work"], disclaimer: null, deliverables: ["Five-dimension self-assessment","Answer-grounded recommendations","Next-step guidance"], evidenceReferences: [], credits: [], seo: null
   }
 ]);

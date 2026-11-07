@@ -65,3 +65,7 @@ These skills supplement this file and the canonical design documents. They do no
 
 ## Portfolio implementation rules
 Before changing portfolio data, media or gallery components, read `docs/design/LIVING_PORTFOLIO_ARCHITECTURE.md` and `docs/design/LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md`. All portfolio presentations must consume normalized records through `src/portfolio/index.js`; do not create parallel datasets. Component workstreams must not edit `src/App.jsx` or global styles. Only the designated integration owner wires completed components into the homepage/routes. Run `npm run test:portfolio` and `npm run validate:portfolio`.
+
+
+## Route and page implementation rules
+Treat `scripts/generate-static-pages.mjs` as the source for generated About, Services, Work, project-detail, Contact, Insights and Terms pages. Do not create duplicate hand-maintained copies under `public/`. If route content changes, update the generator, `public/sitemap.xml`, the route inventory and validation checks together. Preserve the existing static Growth Diagnostic, Field Guide and Privacy pages unless a separately verified migration is planned. Unknown routes must remain genuine Cloudflare Pages 404 responses; do not add a catch-all SPA rewrite. Run `npm run build` and confirm `scripts/validate-static-pages.mjs` passes. Never deploy as part of route implementation.
