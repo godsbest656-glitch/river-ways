@@ -128,5 +128,5 @@ production/<client-campaign>/
 - LTX Video (legacy repo; points to LTX-2.5): https://github.com/Lightricks/LTX-Video
 - LTX-2.5: https://github.com/Lightricks/LTX-2
 - HyperFrames: https://github.com/heygen-com/hyperframes
-- Remotion terms: https://www.remotion.dev/docs/terms
+- Remotion terms and pricing: https://www.remotion.dev/docs/license/pricing
 - Remotion licensing: https://www.remotion.pro/license
