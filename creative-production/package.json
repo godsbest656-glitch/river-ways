@@ -1,0 +1,19 @@
+{
+  "name": "@river-ways/creative-production-local",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "doctor": "node bin/creative.mjs doctor",
+    "models": "node bin/creative.mjs models",
+    "validate": "node bin/creative.mjs validate examples/sample-brief.json",
+    "test": "node --test test/*.test.mjs",
+    "render": "node bin/render.mjs"
+  },
+  "devDependencies": {
+    "hyperframes": "0.9.17"
+  }
+}
