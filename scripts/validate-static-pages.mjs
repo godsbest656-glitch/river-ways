@@ -15,6 +15,40 @@ async function exists(file) {
   try { await fs.access(file); return true; } catch { return false; }
 }
 
+async function collectHtmlFiles(directory) {
+  const entries = await fs.readdir(directory, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await collectHtmlFiles(fullPath));
+    else if (entry.isFile() && /\\.html?$/i.test(entry.name)) files.push(fullPath);
+  }
+  return files;
+}
+
+async function validateInternalReferences() {
+  const htmlFiles = await collectHtmlFiles(dist);
+  for (const file of htmlFiles) {
+    const relativeFile = path.relative(dist, file).split(path.sep).join("/");
+    const currentUrl = "https://riverwayse.com/" + relativeFile;
+    const html = await fs.readFile(file, "utf8");
+    for (const match of html.matchAll(/\\b(?:href|src)="([^"]+)"/g)) {
+      const reference = match[1].trim();
+      if (!reference || reference.startsWith("#") || /^(?:data:|blob:|mailto:|tel:|javascript:)/i.test(reference)) continue;
+      let url;
+      try { url = new URL(reference, currentUrl); } catch { failures.push("Invalid local reference in " + relativeFile + ": " + reference); continue; }
+      if (url.origin !== "https://riverwayse.com") continue;
+      let pathname;
+      try { pathname = decodeURIComponent(url.pathname); } catch { failures.push("Invalid URL encoding in " + relativeFile + ": " + reference); continue; }
+      let target;
+      if (pathname === "/") target = path.join(dist, "index.html");
+      else if (path.extname(pathname)) target = path.join(dist, pathname.replace(/^\\/+/, ""));
+      else target = path.join(dist, pathname.replace(/^\\/+|\\/+$/g, ""), "index.html");
+      if (!(await exists(target))) failures.push("Broken internal reference in " + relativeFile + ": " + reference);
+    }
+  }
+}
+
 function routeFile(route) {
   if (route === "/") return path.join(dist, "index.html");
   return path.join(dist, route.replace(/^\/+|\/+$/g, ""), "index.html");
@@ -78,6 +112,8 @@ if (await exists(workIndexPath)) {
   }
 }
 
+await validateInternalReferences();
+
 const notFoundPath = path.join(dist, "404.html");
 if (!(await exists(notFoundPath))) failures.push("Missing Cloudflare Pages 404.html fallback");
 else {
@@ -93,5 +129,5 @@ if (failures.length) {
   failures.forEach((failure) => process.stderr.write("FAIL: " + failure + "\n"));
   process.exitCode = 1;
 } else {
-  process.stdout.write("Validated 12 route patterns, " + fixedRoutes.length + " fixed route outputs, " + projects.length + " project detail pages and required sitemap/404 assets.\n");
+  process.stdout.write("Validated 12 route patterns, " + fixedRoutes.length + " fixed route outputs, " + projects.length + " project detail pages, internal links, sitemap and 404 assets.\n");
 }
