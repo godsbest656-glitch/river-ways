@@ -16,7 +16,7 @@ This module establishes a local-first production workspace for River Ways. It is
 
 ## Local render commands
 
-Install the pinned local HyperFrames CLI from this folder with `npm install`. It is a local dependency; do not use HyperFrames cloud render, publish, or other paid/remote services.
+Install the pinned local HyperFrames CLI (v0.9.18) from this folder with `npm install`. It is a local dependency; do not use HyperFrames cloud render, publish, or other paid/remote services.
 
 HyperFrames (after a human has reviewed and approved the composition):
 
