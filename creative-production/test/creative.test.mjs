@@ -7,6 +7,7 @@ import path from 'node:path';
 import { run, validateBrief, slugify } from '../bin/creative.mjs';
 import { assertLocalComfyUrl, queueWorkflow, waitForPrompt, saveComfyOutput } from '../bin/comfyui-adapter.mjs';
 import { runHyperframesChecks, renderHyperframes, renderRemotion } from '../bin/render-adapter.mjs';
+import { runComfyProduction } from '../bin/generate.mjs';
 
 const validBrief = {
   schemaVersion: '1.0',
@@ -226,6 +227,87 @@ test('rejects renderer output paths that escape the project', async () => {
       }),
       /escapes or aliases/
     );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+
+test('ComfyUI production runner requires approved brief and rights before contacting the backend', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-generation-gate-'));
+  try {
+    await mkdir(path.join(root, 'brief'), { recursive: true });
+    await writeFile(path.join(root, 'project.json'), JSON.stringify({
+      status: 'brief-draft',
+      approvalRequiredBeforeGeneration: true,
+      briefFile: 'brief/draft-brief.json'
+    }));
+    await writeFile(path.join(root, 'brief', 'draft-brief.json'), JSON.stringify(validBrief));
+    let called = false;
+    await assert.rejects(
+      runComfyProduction({
+        projectDirectory: root,
+        workflowPath: 'workflow.json',
+        approved: true,
+        fetchImpl: async () => { called = true; throw new Error('backend must not be called'); }
+      }),
+      /approved brief/
+    );
+    assert.equal(called, false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('ComfyUI production runner saves generated assets and a provenance manifest', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-generation-'));
+  try {
+    await mkdir(path.join(root, 'brief'), { recursive: true });
+    await mkdir(path.join(root, 'workflows'), { recursive: true });
+    const approvedBrief = {
+      ...validBrief,
+      approval: { status: 'approved', approvedBy: 'Creative Director', approvedAt: '2026-11-07T10:00:00Z' },
+      rights: { clientAssetsApprovedForGeneration: true, modelLicenseReviewed: true }
+    };
+    await writeFile(path.join(root, 'brief', 'approved-brief.json'), JSON.stringify(approvedBrief));
+    await writeFile(path.join(root, 'project.json'), JSON.stringify({
+      status: 'brief-approved',
+      approvalRequiredBeforeGeneration: false,
+      briefFile: 'brief/approved-brief.json'
+    }));
+    await writeFile(path.join(root, 'workflows', 'api.json'), JSON.stringify({
+      '1': { class_type: 'SaveVideo', inputs: {} }
+    }));
+    const result = await runComfyProduction({
+      projectDirectory: root,
+      workflowPath: 'workflows/api.json',
+      approved: true,
+      pollIntervalMs: 0,
+      sleepImpl: async () => {},
+      fetchImpl: async (url, options = {}) => {
+        const parsed = new URL(String(url));
+        if (parsed.pathname === '/prompt') {
+          assert.equal(options.method, 'POST');
+          return new Response(JSON.stringify({ prompt_id: 'test_job_1', number: 1 }), { status: 200 });
+        }
+        if (parsed.pathname === '/history/test_job_1') {
+          return new Response(JSON.stringify({
+            test_job_1: { outputs: { '7': { videos: [{ filename: 'final.mp4', subfolder: '', type: 'output' }] } } }
+          }), { status: 200 });
+        }
+        if (parsed.pathname === '/view') {
+          return new Response(new Uint8Array([1, 2, 3, 4]), { status: 200 });
+        }
+        throw new Error('Unexpected ComfyUI request: ' + parsed.pathname);
+      }
+    });
+    assert.equal(result.promptId, 'test_job_1');
+    assert.equal(result.outputs.length, 1);
+    const manifest = JSON.parse(await readFile(result.manifestPath, 'utf8'));
+    assert.equal(manifest.approval.deliveryApproved, false);
+    assert.match(manifest.provenance.workflowSha256, /^[a-f0-9]{64}$/);
+    const saved = path.join(root, 'assets', 'generated', 'test_job_1', 'node-7', 'final.mp4');
+    assert.equal((await readFile(saved)).length, 4);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
