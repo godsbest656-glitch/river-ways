@@ -68,7 +68,7 @@ export async function waitForPrompt({
     if (status === 'error' || status === 'failed') {
       throw new Error('ComfyUI prompt failed: ' + JSON.stringify(result.status).slice(0, 1000));
     }
-    onProgress({ promptId, status: status ?? 'queued' });
+    await onProgress({ promptId, status: status ?? 'queued' });
     await sleepImpl(pollIntervalMs);
   }
   throw new Error('Timed out waiting for ComfyUI prompt ' + promptId);
