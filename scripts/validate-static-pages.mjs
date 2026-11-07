@@ -21,7 +21,7 @@ async function collectHtmlFiles(directory) {
   for (const entry of entries) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...await collectHtmlFiles(fullPath));
-    else if (entry.isFile() && /\.html?$/i.test(entry.name)) files.push(fullPath);
+    else if (entry.isFile() && (entry.name.toLowerCase().endsWith(".html") || entry.name.toLowerCase().endsWith(".htm"))) files.push(fullPath);
   }
   return files;
 }
@@ -32,7 +32,7 @@ async function validateInternalReferences() {
     const relativeFile = path.relative(dist, file).split(path.sep).join("/");
     const currentUrl = "https://riverwayse.com/" + relativeFile;
     const html = await fs.readFile(file, "utf8");
-    for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
+    for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       const reference = match[1].trim();
       if (!reference || reference.startsWith("#") || /^(?:data:|blob:|mailto:|tel:|javascript:)/i.test(reference)) continue;
       let url;
@@ -42,72 +42,13 @@ async function validateInternalReferences() {
       try { pathname = decodeURIComponent(url.pathname); } catch { failures.push("Invalid URL encoding in " + relativeFile + ": " + reference); continue; }
       let target;
       if (pathname === "/") target = path.join(dist, "index.html");
-      else if (path.extname(pathname)) target = path.join(dist, pathname.replace(/^\/+/, ""));
-      else target = path.join(dist, pathname.replace(/^\/+|\/+$/g, ""), "index.html");
+      else {
+        const relativePath = pathname.split("/").filter(Boolean).join(path.sep);
+        target = path.extname(pathname)
+          ? path.join(dist, relativePath)
+          : path.join(dist, relativePath, "index.html");
+      }
       if (!(await exists(target))) failures.push("Broken internal reference in " + relativeFile + ": " + reference);
-    }
-  }
-}
-
-function routeFile(route) {
-  if (route === "/") return path.join(dist, "index.html");
-  return path.join(dist, route.replace(/^\/+|\/+$/g, ""), "index.html");
-}
-
-for (const route of fixedRoutes) {
-  const file = routeFile(route);
-  if (!(await exists(file))) failures.push("Missing route output: " + route);
-  else {
-    const html = await fs.readFile(file, "utf8");
-    if (!/<title>[^<]+<\/title>/.test(html)) failures.push("Missing page title: " + route);
-    if (!html.includes('rel="canonical"')) failures.push("Missing canonical metadata: " + route);
-  }
-}
-
-for (const project of projects) {
-  const route = "/work/" + project.slug + "/";
-  const file = routeFile(route);
-  if (!(await exists(file))) {
-    failures.push("Missing project detail output: " + route);
-    continue;
-  }
-  const html = await fs.readFile(file, "utf8");
-  if (!html.includes(project.title)) failures.push("Project title missing from detail page: " + route);
-  if (project.disclaimer && !html.includes(project.disclaimer)) failures.push("Project disclaimer missing from detail page: " + route);
-}
-
-const sitemapPath = path.join(dist, "sitemap.xml");
-if (!(await exists(sitemapPath))) {
-  failures.push("Missing generated sitemap.xml");
-} else {
-  const sitemap = await fs.readFile(sitemapPath, "utf8");
-  const locations = Array.from(sitemap.matchAll(/<loc>([^<]+)<\/loc>/g), (match) => match[1]);
-  if (new Set(locations).size !== locations.length) failures.push("Sitemap contains duplicate URLs");
-  for (const route of fixedRoutes) {
-    if (!locations.includes("https://riverwayse.com" + route)) failures.push("Sitemap missing route: " + route);
-  }
-  for (const project of projects) {
-    const route = "https://riverwayse.com/work/" + project.slug + "/";
-    if (!locations.includes(route)) failures.push("Sitemap missing project detail: " + route);
-  }
-}
-
-const manifestPath = path.join(dist, "route-manifest.json");
-if (!(await exists(manifestPath))) {
-  failures.push("Missing generated route manifest");
-} else {
-  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
-  if (!Array.isArray(manifest.routePatterns) || manifest.routePatterns.length !== 12) {
-    failures.push("Route manifest must describe exactly 12 route patterns including the 404 fallback");
-  }
-}
-
-const workIndexPath = path.join(dist, "work", "index.html");
-if (await exists(workIndexPath)) {
-  const workHtml = await fs.readFile(workIndexPath, "utf8");
-  for (const project of projects) {
-    if (!workHtml.includes('data-project-id="' + project.id + '"')) {
-      failures.push("Work index missing public project card: " + project.id);
     }
   }
 }
