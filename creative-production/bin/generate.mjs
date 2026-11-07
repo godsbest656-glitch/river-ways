@@ -2,6 +2,10 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
+const DEFAULT_MODEL_REGISTRY = path.join(MODULE_DIR, '..', 'config', 'models.json');
 import { pathToFileURL } from 'node:url';
 import { queueWorkflow, waitForPrompt, saveComfyOutput } from './comfyui-adapter.mjs';
 
@@ -26,6 +30,9 @@ async function readJson(file) {
 export async function runComfyProduction({
   projectDirectory,
   workflowPath,
+  modelId,
+  checkpointFile,
+  modelRegistryPath = DEFAULT_MODEL_REGISTRY,
   approved = false,
   baseUrl = 'http://127.0.0.1:8188',
   timeoutMs = 30 * 60 * 1000,
@@ -54,6 +61,16 @@ export async function runComfyProduction({
   const workflowBytes = await readFile(workflowFile);
   const workflowSha256 = createHash('sha256').update(workflowBytes).digest('hex');
   const workflow = JSON.parse(workflowBytes.toString('utf8'));
+  if (!modelId || !checkpointFile || path.basename(checkpointFile) !== checkpointFile) {
+    throw new Error('A registered model ID and exact checkpoint filename are required');
+  }
+  const registry = await readJson(modelRegistryPath);
+  const model = registry.videoModels?.find((candidate) => candidate.id === modelId);
+  if (!model) throw new Error('Model ID is not present in the approved model registry: ' + modelId);
+  if (model.enabled !== true) throw new Error('Model is disabled pending hardware, licence and inference verification: ' + modelId);
+  if (!workflowBytes.toString('utf8').includes(checkpointFile)) {
+    throw new Error('The selected checkpoint filename was not found in the supplied ComfyUI workflow');
+  }
   if (!workflow || typeof workflow !== 'object' || Array.isArray(workflow) || Object.keys(workflow).length === 0) {
     throw new Error('Workflow must be a non-empty ComfyUI API-format object');
   }
@@ -103,8 +120,8 @@ export async function runComfyProduction({
     outputs: saved,
     approval: { generationApproved: true, deliveryApproved: false },
     provenance: {
-      model: null,
-      checkpoint: null,
+      model: { id: model.id, name: model.name, license: model.license, upstream: model.upstream },
+      checkpoint: checkpointFile,
       workflowSha256,
       prompt: null,
       seed: null,
@@ -120,12 +137,16 @@ export async function runComfyProduction({
 async function main(args) {
   const projectDirectory = flag(args, '--project');
   const workflowPath = flag(args, '--workflow');
-  if (!projectDirectory || !workflowPath) {
-    throw new Error('Usage: node bin/generate.mjs --project <project-dir> --workflow <api-workflow.json> --approved');
+  const modelId = flag(args, '--model-id');
+  const checkpointFile = flag(args, '--checkpoint');
+  if (!projectDirectory || !workflowPath || !modelId || !checkpointFile) {
+    throw new Error('Usage: node bin/generate.mjs --project <project-dir> --workflow <api-workflow.json> --model-id <registered-id> --checkpoint <exact-filename> --approved');
   }
   const result = await runComfyProduction({
     projectDirectory,
     workflowPath,
+    modelId,
+    checkpointFile,
     approved: args.includes('--approved'),
     baseUrl: flag(args, '--comfy-url', 'http://127.0.0.1:8188')
   });
