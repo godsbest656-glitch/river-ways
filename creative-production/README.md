@@ -77,6 +77,7 @@ production/<client-campaign>/
   compositions/
     hyperframes/
     remotion/
+  workflows/ (ComfyUI API-format workflows)
   renders/
   qa/
   delivery/
