@@ -13,7 +13,8 @@
     "test": "node --test test/*.test.mjs",
     "render": "node bin/render.mjs",
     "generate": "node bin/generate.mjs",
-    "qa": "node bin/media-qa.mjs"
+    "qa": "node bin/media-qa.mjs",
+    "benchmark": "node bin/benchmark.mjs"
   },
   "devDependencies": {
     "hyperframes": "0.9.18"
