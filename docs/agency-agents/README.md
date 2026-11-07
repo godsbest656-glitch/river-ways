@@ -10,7 +10,7 @@ These are development-time agents that help inspect, design, implement, optimise
 
 ## Website implementation baseline
 
-The integration branch is based directly on build/river-ways-execution, the remote website implementation candidate identified during branch reconciliation (recorded snapshot c78a796a85dc6b18b5fc2230d0e95f5763815927). That candidate contains the React/Vite site, generated route system, canonical portfolio foundation, hardened enquiry endpoint, D1 operations migrations, browser tests and release controls. Verify the actual branch HEAD and local worktree state before work begins; never assume a status document is the live HEAD. A separately reported local visual candidate may contain newer work and must be preserved and compared before release selection.
+The integration branch is based directly on build/river-ways-execution, the remote website implementation candidate identified during branch reconciliation (recorded base commit 7eef0ea9cdb4dcd4c344b3fbe99ebd2aacd2bd2d). That candidate contains the React/Vite site, generated route system, canonical portfolio foundation, hardened enquiry endpoint, D1 operations migrations, browser tests and release controls. Verify the actual branch HEAD and local worktree state before work begins; never assume a status document is the live HEAD. A separately reported local visual candidate may contain newer work and must be preserved and compared before release selection.
 
 
 ## Installation
@@ -56,7 +56,7 @@ Invoke an agent by name in Codex, for example:
 3. Keep the brand spelling **River Ways**. Preserve approved brand and design decisions; do not re-open settled decisions without evidence.
 4. Do not fabricate case studies, client names, testimonials, awards, metrics, credentials, service guarantees or live capabilities.
 5. No production deployment, merge to `main`, DNS/domain/email changes, external outreach, customer-data access, or secret handling by these agents.
-6. Do not install every upstream agent. The eight selected agents are the initial website team; expand only when a demonstrated website task requires another specialist.
+6. Do not install every upstream agent. The nine selected agents are the initial website team; expand only when a demonstrated website task requires another specialist.
 7. Do not add runtime dependencies to the public website merely to enable development-time agents.
 8. Each agent must report verified facts separately from recommendations, assumptions and untested items.
 
