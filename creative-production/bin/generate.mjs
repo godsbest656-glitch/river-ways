@@ -3,11 +3,10 @@ import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { queueWorkflow, waitForPrompt, saveComfyOutput } from './comfyui-adapter.mjs';
 
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_MODEL_REGISTRY = path.join(MODULE_DIR, '..', 'config', 'models.json');
-import { pathToFileURL } from 'node:url';
-import { queueWorkflow, waitForPrompt, saveComfyOutput } from './comfyui-adapter.mjs';
 
 function flag(args, name, fallback) {
   const index = args.indexOf(name);
@@ -15,16 +14,24 @@ function flag(args, name, fallback) {
 }
 
 function safeChild(root, requested) {
-  if (!requested || path.isAbsolute(requested)) throw new Error('Project-relative paths are required');
+  if (!requested || typeof requested !== 'string' || path.isAbsolute(requested)) {
+    throw new Error('Project-relative paths are required');
+  }
   const base = path.resolve(root);
   const target = path.resolve(base, requested);
   const relative = path.relative(base, target);
-  if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) throw new Error('Path escapes the production project');
+  if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+    throw new Error('Path escapes the production project');
+  }
   return target;
 }
 
 async function readJson(file) {
   return JSON.parse(await readFile(file, 'utf8'));
+}
+
+async function writeJobState(file, state) {
+  await writeFile(file, JSON.stringify({ schemaVersion: '1.0', updatedAt: new Date().toISOString(), ...state }, null, 2) + '\n');
 }
 
 export async function runComfyProduction({
@@ -57,6 +64,7 @@ export async function runComfyProduction({
   if (brief.rights?.clientAssetsApprovedForGeneration !== true || brief.rights?.modelLicenseReviewed !== true) {
     throw new Error('Generation requires explicit client-asset permission and model-license review');
   }
+
   const workflowFile = safeChild(projectRoot, workflowPath);
   const workflowBytes = await readFile(workflowFile);
   const workflowSha256 = createHash('sha256').update(workflowBytes).digest('hex');
@@ -76,63 +84,106 @@ export async function runComfyProduction({
   }
 
   const queued = await queueWorkflow({ baseUrl, workflow, fetchImpl });
-  onProgress({ phase: 'queued', promptId: queued.promptId, queueNumber: queued.number });
-  const completed = await waitForPrompt({
-    baseUrl,
+  if (!/^[a-zA-Z0-9_-]{1,128}$/.test(queued.promptId)) {
+    throw new Error('ComfyUI returned an unsafe prompt identifier');
+  }
+  const jobsDirectory = path.join(projectRoot, 'jobs');
+  await mkdir(jobsDirectory, { recursive: true });
+  const jobStatePath = path.join(jobsDirectory, queued.promptId + '.json');
+  const initialState = {
     promptId: queued.promptId,
-    timeoutMs,
-    pollIntervalMs,
-    fetchImpl,
-    ...(sleepImpl ? { sleepImpl } : {}),
-    onProgress: (progress) => onProgress({ phase: 'generating', ...progress })
-  });
+    queueNumber: queued.number,
+    status: 'queued',
+    phase: 'queued',
+    modelId: model.id,
+    checkpoint: checkpointFile,
+    workflowSha256,
+    progress: null,
+    error: null
+  };
+  await writeJobState(jobStatePath, initialState);
+  await onProgress({ phase: 'queued', promptId: queued.promptId, queueNumber: queued.number });
 
-  const outputDirectory = path.join(projectRoot, 'assets', 'generated', queued.promptId);
-  await mkdir(outputDirectory, { recursive: true });
-  const saved = [];
-  for (const [nodeId, nodeOutput] of Object.entries(completed.outputs)) {
-    if (!/^[a-zA-Z0-9_-]{1,128}$/.test(nodeId)) throw new Error('ComfyUI returned an unsafe output node identifier');
-    for (const outputType of ['videos', 'gifs', 'images']) {
-      for (const item of nodeOutput?.[outputType] ?? []) {
-        const filePath = await saveComfyOutput({
-          baseUrl,
-          output: item,
-          destinationDirectory: path.join(outputDirectory, 'node-' + String(nodeId)),
-          fetchImpl
-        });
-        saved.push({
-          nodeId,
-          mediaType: outputType,
-          filename: path.basename(filePath),
-          source: { filename: item.filename, subfolder: item.subfolder ?? '', type: item.type ?? 'output' }
-        });
+  try {
+    const completed = await waitForPrompt({
+      baseUrl,
+      promptId: queued.promptId,
+      timeoutMs,
+      pollIntervalMs,
+      fetchImpl,
+      ...(sleepImpl ? { sleepImpl } : {}),
+      onProgress: async (progress) => {
+        await writeJobState(jobStatePath, { ...initialState, status: 'running', phase: 'generating', progress });
+        await onProgress({ phase: 'generating', ...progress });
+      }
+    });
+
+    const outputDirectory = path.join(projectRoot, 'assets', 'generated', queued.promptId);
+    await mkdir(outputDirectory, { recursive: true });
+    const saved = [];
+    for (const [nodeId, nodeOutput] of Object.entries(completed.outputs)) {
+      if (!/^[a-zA-Z0-9_-]{1,128}$/.test(nodeId)) {
+        throw new Error('ComfyUI returned an unsafe output node identifier');
+      }
+      for (const outputType of ['videos', 'gifs', 'images']) {
+        for (const item of nodeOutput?.[outputType] ?? []) {
+          const filePath = await saveComfyOutput({
+            baseUrl,
+            output: item,
+            destinationDirectory: path.join(outputDirectory, 'node-' + nodeId),
+            fetchImpl
+          });
+          saved.push({
+            nodeId,
+            mediaType: outputType,
+            filename: path.basename(filePath),
+            source: { filename: item.filename, subfolder: item.subfolder ?? '', type: item.type ?? 'output' }
+          });
+        }
       }
     }
-  }
-  if (saved.length === 0) throw new Error('ComfyUI completed without any supported video, GIF or image outputs');
+    if (saved.length === 0) throw new Error('ComfyUI completed without any supported video, GIF or image outputs');
 
-  const record = {
-    schemaVersion: '1.0',
-    promptId: queued.promptId,
-    createdAt: new Date().toISOString(),
-    briefFile: project.briefFile,
-    workflowFile: path.relative(projectRoot, workflowFile).split(path.sep).join('/'),
-    outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
-    outputs: saved,
-    approval: { generationApproved: true, deliveryApproved: false },
-    provenance: {
-      model: { id: model.id, name: model.name, license: model.license, upstream: model.upstream },
-      checkpoint: checkpointFile,
-      workflowSha256,
-      prompt: null,
-      seed: null,
-      licenseReviewed: true,
-      humanApproved: false
-    }
-  };
-  const manifestPath = path.join(outputDirectory, 'generation-manifest.json');
-  await writeFile(manifestPath, JSON.stringify(record, null, 2) + '\n', { flag: 'wx' });
-  return { promptId: queued.promptId, outputDirectory, manifestPath, outputs: saved };
+    const record = {
+      schemaVersion: '1.0',
+      promptId: queued.promptId,
+      createdAt: new Date().toISOString(),
+      briefFile: project.briefFile,
+      workflowFile: path.relative(projectRoot, workflowFile).split(path.sep).join('/'),
+      outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
+      outputs: saved,
+      approval: { generationApproved: true, deliveryApproved: false },
+      provenance: {
+        model: { id: model.id, name: model.name, license: model.license, upstream: model.upstream },
+        checkpoint: checkpointFile,
+        workflowSha256,
+        prompt: null,
+        seed: null,
+        licenseReviewed: true,
+        humanApproved: false
+      }
+    };
+    const manifestPath = path.join(outputDirectory, 'generation-manifest.json');
+    await writeFile(manifestPath, JSON.stringify(record, null, 2) + '\n', { flag: 'wx' });
+    await writeJobState(jobStatePath, {
+      ...initialState,
+      status: 'completed',
+      phase: 'completed',
+      outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
+      manifestPath: path.relative(projectRoot, manifestPath).split(path.sep).join('/'),
+      outputs: saved,
+      error: null
+    });
+    return { promptId: queued.promptId, outputDirectory, manifestPath, jobStatePath, outputs: saved };
+  } catch (error) {
+    await writeJobState(jobStatePath, {
+      ...initialState,
+      status: 'failed',
+      phase: 'failed',
+      error: String(error?.message ?? error).slice(0, 2000)
+    });
+    throw error;
+  }
 }
 
 async function main(args) {
