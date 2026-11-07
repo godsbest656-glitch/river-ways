@@ -41,3 +41,11 @@ These rules govern AI coding agents and human contributors in this repository. T
 
 ## Definition of done
 Every material change must identify the visitor/business problem, link to its design brief/spec, describe acceptance criteria, pass the available build/tests, and include preview evidence for visual or interaction work. Report what was tested, what was not tested, known limitations, and any decisions that remain open. See the design acceptance gates and existing release gates.
+
+## Project-scoped specialist agents
+
+This repository includes a curated Agency Agents team for website work. Read `docs/agency-agents/README.md` before using them. Codex agent definitions are in `.codex/agents/` and are development-time specialists, not production website features. The River Ways root rules and `docs/design/` remain authoritative.
+
+Use the `website-orchestrator` agent for substantial website tasks. It coordinates the UX Researcher, Brand Guardian, UI Designer, Frontend Developer, SEO Specialist, Growth Hacker, Accessibility Auditor and Code Reviewer as appropriate. Do not invoke every specialist for trivial changes. The default sequence is baseline audit → focused diagnosis → design brief → implementation → independent verification → evidence-based report.
+
+The first assignment is a verified website readiness and experience audit. Do not deploy, merge, alter production configuration, send outreach or modify customer data. Agent availability must be verified in the actual Codex environment; the presence of TOML files alone is not proof that the host loaded them.
