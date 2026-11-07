@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">MAKE IT MATTER — campaign study</title>
+<desc id="desc">An original campaign-system illustration built around a concise editorial message.</desc>
+<rect width="1200" height="900" fill="#09283a"/>
+<path d="M0 690L1200 390V900H0Z" fill="#16475a"/>
+<path d="M780 0H1200V900H1040Z" fill="#0e394d"/>
+<text x="82" y="120" fill="#a9d7dc" font-family="Arial, sans-serif" font-size="22" letter-spacing="8">STUDIO STUDY / 02</text>
+<text x="86" y="255" fill="#d9eef0" font-family="Arial, sans-serif" font-size="28" letter-spacing="6">A CLEAR IDEA</text>
+<text x="86" y="310" fill="#d9eef0" font-family="Arial, sans-serif" font-size="28" letter-spacing="6">TRAVELS FURTHER.</text>
+<text x="78" y="520" fill="#ffffff" font-family="Arial, sans-serif" font-size="160" font-weight="700" letter-spacing="-12">MAKE</text>
+<text x="88" y="680" fill="#8ed1d6" font-family="Georgia, serif" font-size="150" font-style="italic">IT</text>
+<text x="265" y="680" fill="#ffffff" font-family="Arial, sans-serif" font-size="150" font-weight="700" letter-spacing="-10">MATTER.</text>
+<circle cx="1020" cy="170" r="76" fill="none" stroke="#8ed1d6" stroke-width="3"/>
+<text x="940" y="178" fill="#d9eef0" font-family="Arial, sans-serif" font-size="17" letter-spacing="3">CAMPAIGN</text>
+<text x="960" y="205" fill="#d9eef0" font-family="Arial, sans-serif" font-size="17" letter-spacing="3">SYSTEMS</text>
+</svg>

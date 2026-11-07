@@ -37,3 +37,8 @@ Do not begin with another blank-slate redesign. Do not treat a screenshot, proto
 - No production merge, deployment, DNS, secrets, or infrastructure changes without explicit approval.
 
 If another document conflicts with the Master Website Design, the master document governs current creative decisions. The Constitution continues to govern enduring quality, truth, accessibility, privacy, and visitor care.
+
+
+## Portfolio system
+9. [Living Portfolio Architecture](./LIVING_PORTFOLIO_ARCHITECTURE.md) — canonical project schema, data source, evidence rules and integration sequence.
+10. [Living Portfolio Component Contracts](./LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md) — shared media/badge/disclaimer primitives and gallery interaction contracts.

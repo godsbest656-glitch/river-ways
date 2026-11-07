@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">Growth Diagnostic — internal demonstration</title>
+<desc id="desc">An original assessment-interface illustration showing five diagnostic dimensions without fabricated scores.</desc>
+<rect width="1200" height="900" fill="#eaf2f3"/>
+<rect x="80" y="72" width="1040" height="756" rx="26" fill="#fbfdfd" stroke="#bfd4d8" stroke-width="3"/>
+<text x="132" y="145" fill="#477985" font-family="Arial, sans-serif" font-size="22" letter-spacing="7">RIVER WAYS / INTERNAL DEMO</text>
+<text x="130" y="260" fill="#123746" font-family="Arial, sans-serif" font-size="76" font-weight="700">GROWTH</text>
+<text x="130" y="345" fill="#123746" font-family="Arial, sans-serif" font-size="76" font-weight="700">DIAGNOSTIC</text>
+<text x="132" y="405" fill="#527b84" font-family="Arial, sans-serif" font-size="24">Five dimensions. One clearer next move.</text>
+<g fill="#d5e8ea">
+<rect x="132" y="465" width="850" height="42" rx="21"/>
+<rect x="132" y="530" width="850" height="42" rx="21"/>
+<rect x="132" y="595" width="850" height="42" rx="21"/>
+<rect x="132" y="660" width="850" height="42" rx="21"/>
+<rect x="132" y="725" width="850" height="42" rx="21"/>
+</g>
+<g fill="#4d8995">
+<rect x="132" y="465" width="310" height="42" rx="21"/>
+<rect x="132" y="530" width="420" height="42" rx="21"/>
+<rect x="132" y="595" width="250" height="42" rx="21"/>
+<rect x="132" y="660" width="360" height="42" rx="21"/>
+<rect x="132" y="725" width="290" height="42" rx="21"/>
+</g>
+<g fill="#477985" font-family="Arial, sans-serif" font-size="18">
+<text x="1010" y="493">01</text><text x="1010" y="558">02</text><text x="1010" y="623">03</text><text x="1010" y="688">04</text><text x="1010" y="753">05</text>
+</g>
+</svg>

@@ -61,3 +61,7 @@ Read the applicable skill before substantial work:
 - `.agents/skills/website-quality-engineering/SKILL.md` for verification, regression testing and release-candidate checks.
 
 These skills supplement this file and the canonical design documents. They do not override River Ways' approved tokens, architecture, privacy requirements or release controls. Validate project skill metadata with `python scripts/validate_skills.py .agents/skills` and run its regression tests with `python -m unittest discover -s tests -p "test_*.py"`.
+
+
+## Portfolio implementation rules
+Before changing portfolio data, media or gallery components, read `docs/design/LIVING_PORTFOLIO_ARCHITECTURE.md` and `docs/design/LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md`. All portfolio presentations must consume normalized records through `src/portfolio/index.js`; do not create parallel datasets. Component workstreams must not edit `src/App.jsx` or global styles. Only the designated integration owner wires completed components into the homepage/routes. Run `npm run test:portfolio` and `npm run validate:portfolio`.

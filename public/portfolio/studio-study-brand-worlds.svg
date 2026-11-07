@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">FORM / FIELD — brand identity study</title>
+<desc id="desc">An original editorial brand-system illustration with typography, a rule and a circular mark.</desc>
+<rect width="1200" height="900" fill="#dcebed"/>
+<rect x="54" y="54" width="1092" height="792" fill="none" stroke="#183d4c" stroke-opacity=".25" stroke-width="2"/>
+<text x="92" y="130" fill="#315d69" font-family="Arial, sans-serif" font-size="22" letter-spacing="8">STUDIO STUDY / 01</text>
+<text x="92" y="470" fill="#123746" font-family="Arial, sans-serif" font-size="142" font-weight="700" letter-spacing="-9">FORM</text>
+<text x="92" y="620" fill="#123746" font-family="Arial, sans-serif" font-size="142" font-weight="700" letter-spacing="-9">/ FIELD</text>
+<path d="M94 680H760" stroke="#2e7482" stroke-width="5"/>
+<circle cx="940" cy="420" r="124" fill="none" stroke="#2e7482" stroke-width="5"/>
+<circle cx="940" cy="420" r="76" fill="#9fcbd0"/>
+<text x="92" y="760" fill="#315d69" font-family="Arial, sans-serif" font-size="25" letter-spacing="7">IDENTITY IN CONTEXT</text>
+</svg>

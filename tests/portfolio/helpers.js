@@ -1,0 +1,40 @@
+export const image = (overrides = {}) => ({
+  kind: "image",
+  src: "/portfolio/test-cover.svg",
+  alt: "A clear editorial graphic showing a project cover.",
+  width: 1200,
+  height: 900,
+  decorative: false,
+  license: { kind: "original", source: "River Ways test artwork", attributionRequired: false },
+  ...overrides
+});
+
+export const project = (overrides = {}) => ({
+  id: "test-project",
+  slug: "test-project",
+  title: "A verified project record",
+  summary: "A concise summary of the work and its purpose.",
+  order: 1,
+  publishedAt: null,
+  updatedAt: null,
+  type: "capability-study",
+  categories: ["brand-identity"],
+  services: ["brand-creative-systems"],
+  tags: ["brand"],
+  status: "published",
+  visibility: "public",
+  problem: null,
+  approach: null,
+  outcome: null,
+  client: null,
+  results: [],
+  testimonials: [],
+  media: { cover: image(), gallery: [] },
+  featured: [],
+  disclaimer: null,
+  deliverables: [],
+  evidenceReferences: [],
+  credits: [],
+  seo: null,
+  ...overrides
+});

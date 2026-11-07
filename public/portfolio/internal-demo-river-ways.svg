@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">River Ways website — internal demonstration</title>
+<desc id="desc">An original illustration of the River Ways proposition with a flowing route and connected points.</desc>
+<rect width="1200" height="900" fill="#082a3d"/>
+<path d="M-40 710C180 560 320 830 520 650S850 430 1240 590" fill="none" stroke="#4d9aa8" stroke-width="34" stroke-linecap="round"/>
+<path d="M-40 710C180 560 320 830 520 650S850 430 1240 590" fill="none" stroke="#b4e0e2" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 20"/>
+<text x="88" y="140" fill="#9acbd1" font-family="Arial, sans-serif" font-size="22" letter-spacing="8">RIVER WAYS / INTERNAL DEMO</text>
+<text x="82" y="390" fill="#ffffff" font-family="Arial, sans-serif" font-size="104" font-weight="700" letter-spacing="-7">WE ENGINEER</text>
+<text x="82" y="510" fill="#9acbd1" font-family="Arial, sans-serif" font-size="104" font-weight="700" letter-spacing="-7">DEMAND.</text>
+<circle cx="520" cy="650" r="20" fill="#ffffff"/>
+<circle cx="850" cy="510" r="20" fill="#ffffff"/>
+<circle cx="1040" cy="555" r="20" fill="#ffffff"/>
+</svg>

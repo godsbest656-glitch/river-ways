@@ -24,5 +24,9 @@ jobs:
         run: npm run build
       - name: Test enquiry API
         run: npm run test:api
+      - name: Test portfolio contracts
+        run: npm run test:portfolio
+      - name: Validate public portfolio data
+        run: npm run validate:portfolio
       - name: Audit dependencies
         run: npm audit --audit-level=high
