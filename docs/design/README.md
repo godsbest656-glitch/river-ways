@@ -50,10 +50,10 @@ If another document conflicts with the Master Website Design, the master documen
 
 
 ## Creative production
-14. [Local Creative Production Engine](../../creative-production/README.md) — local-first brief validation, project setup, ComfyUI adapter boundaries, model/renderer registry and approval gates. This is an internal production foundation, not a public model-serving endpoint.
+13. [Local Creative Production Engine](../../creative-production/README.md) — local-first brief validation, project setup, ComfyUI adapter boundaries, model/renderer registry and approval gates. This is an internal production foundation, not a public model-serving endpoint.
 
 ## Operations
-13. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
+14. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
 
 
 ## Browser and accessibility regression
