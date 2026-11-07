@@ -19,7 +19,8 @@
     "creative:doctor": "node creative-production/bin/creative.mjs doctor",
     "creative:models": "node creative-production/bin/creative.mjs models",
     "creative:validate": "node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json",
-    "test:creative": "node --test creative-production/test/*.test.mjs"
+    "test:creative": "node --test creative-production/test/*.test.mjs",
+    "creative:generate": "node creative-production/bin/generate.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
