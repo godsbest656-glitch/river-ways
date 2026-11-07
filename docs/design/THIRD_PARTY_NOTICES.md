@@ -52,3 +52,8 @@ Retain the package-provided license files when installing dependencies. These to
 - Lighthouse CI `@lhci/cli@0.16.0` — Apache-2.0. https://github.com/GoogleChrome/lighthouse-ci
 
 Lighthouse reports are generated against the built static site. The project uses the filesystem output target; no temporary public report storage or external Lighthouse CI server is configured.
+
+
+## Lighthouse CI transitive security override
+
+- `basic-ftp@6.2.6` — MIT. This is pinned through the root npm `overrides` field to remediate GHSA-c475-qrg2-pj4r in Lighthouse CI's transitive proxy stack. The fixed version is 6.2.1 or later; 6.2.6 is selected. The website does not use FTP.

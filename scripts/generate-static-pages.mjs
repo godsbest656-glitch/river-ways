@@ -131,6 +131,7 @@ function shell({ title, description, route, activeNav, content, robots = "index,
     '<meta property="og:description" content="' + safeDescription + '"><meta property="og:url" content="' + canonical + '"><meta property="og:site_name" content="River Ways">' +
     '<meta name="twitter:card" content="summary"><meta name="twitter:title" content="' + safeTitle + '"><meta name="twitter:description" content="' + safeDescription + '">' +
     structuredData(title, description, route) + '<title>' + safeTitle + "</title>" +
+    '<link rel="icon" type="image/svg+xml" href="/favicon.svg">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">' +
     '<link rel="stylesheet" href="/site-pages.css"><script src="/site-pages.js" defer></script></head>' +

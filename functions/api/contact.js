@@ -81,11 +81,13 @@ async function sendNotification(env, lead) {
       method: "POST",
       headers: {
         authorization: "Bearer " + env.RESEND_API_KEY,
-        "content-type": "application/json"
+        "content-type": "application/json",
+        "Idempotency-Key": "river-ways-enquiry-" + lead.id
       },
       body: JSON.stringify({
         from: env.RESEND_FROM_EMAIL,
         to: [env.LEAD_NOTIFICATION_EMAIL],
+        reply_to: lead.email,
         subject: "New River Ways enquiry — " + lead.companyOrName,
         text: [
           "A new project enquiry was submitted through riverwayse.com.",
@@ -96,9 +98,7 @@ async function sendNotification(env, lead) {
           "Goal: " + lead.goal,
           "Journey: " + (lead.journeyId || "Not specified"),
           "Engagement: " + (lead.engagementType || "Not specified"),
-          "Source: " + (lead.utmSource || lead.source || "Direct / unknown"),
-          "Campaign: " + (lead.utmCampaign || "Not tagged"),
-          "Landing page: " + (lead.landingPage || "/"),
+          "Attribution: stored with the lead record in the River Ways database.",
           "",
           "Context:",
           lead.details || "Not provided",

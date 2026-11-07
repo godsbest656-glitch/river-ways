@@ -85,6 +85,7 @@ test("all public content routes return their own documents", async ({ page }) =>
     expect(response?.status(), route).toBe(200);
     await expect(page.locator("main h1").first(), route).toBeVisible();
     await expect(page.locator('link[rel="canonical"]'), route).toHaveAttribute("href", "https://riverwayse.com" + route);
+    await expect(page.locator('link[rel="icon"]'), route).toHaveAttribute("href", "/favicon.svg");
   }
 });
 
@@ -195,4 +196,12 @@ test("the viewport has no horizontal overflow", async ({ page }) => {
     content: document.documentElement.scrollWidth
   }));
   expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
+});
+
+
+test("custom 404 document stays noindex and uses the branded favicon", async ({ page }) => {
+  await page.goto("/404.html");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("This route has run its course");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex,follow");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/favicon.svg");
 });

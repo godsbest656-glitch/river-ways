@@ -43,6 +43,9 @@ async function validateStructuredData() {
     if (!canonicalMatch || canonicalMatch[1] !== canonical) {
       failures.push("Missing or incorrect canonical URL for " + route);
     }
+    if (!/<link\s+rel="icon"[^>]*href="\/favicon\.svg"/i.test(html)) {
+      failures.push("Missing SVG favicon link for " + route);
+    }
 
     const schemaMatch = html.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/i);
     if (!schemaMatch) {

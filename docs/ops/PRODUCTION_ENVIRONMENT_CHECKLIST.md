@@ -11,7 +11,7 @@
 - Browser form posts JSON to same-origin `/api/contact`.
 - API validates origin when supplied, content type, body size, required fields, email, control characters, honeypot, duplicate submissions and rate limits.
 - Raw client IP is not stored; the endpoint stores a salted SHA-256 hash for rate limiting.
-- Notification is sent through Resend when configured. A lead is saved even if the email notification cannot be confirmed; the response clearly reports that state.
+- Notification is sent through Resend when configured, with a per-lead idempotency key and the lead email as `reply_to`. A lead is saved even if the email notification cannot be confirmed; the response clearly reports that state.
 - Unit tests cover valid submissions, cross-origin rejection, attribution, duplicate handling, rate limits, honeypot, invalid payloads, provider failure and missing configuration.
 
 ## Required Cloudflare Pages configuration

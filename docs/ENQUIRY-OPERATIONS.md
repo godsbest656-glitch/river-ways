@@ -1,6 +1,6 @@
 # Enquiry flow operations
 
-The website posts project briefs to `/api/contact`. The endpoint validates and bounds input, applies a salted IP-based rate limit, stores the lead in D1, prevents identical briefs from creating duplicate rows for two minutes, records basic source/referrer/UTM attribution, assigns new leads to the `new` pipeline stage, and attempts a Resend notification.
+The website posts project briefs to `/api/contact`. The endpoint validates and bounds input, applies a salted IP-based rate limit, stores the lead in D1, prevents identical briefs from creating duplicate rows for two minutes, records basic source/referrer/UTM attribution, assigns new leads to the `new` pipeline stage, and attempts a Resend notification. Notification requests use a stable per-lead Resend idempotency key and set the reply-to address to the submitted contact email; attribution remains in D1 rather than being copied into the email body.
 
 ## Required Cloudflare Pages configuration
 

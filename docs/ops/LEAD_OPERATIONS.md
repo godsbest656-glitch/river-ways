@@ -23,7 +23,7 @@ Every open lead should have an owner and next-action date. Do not leave a lead u
 
 ## Enquiry handoff and notification truth
 
-The public enquiry endpoint stores the lead in D1 before attempting the Resend notification.
+The public enquiry endpoint stores the lead in D1 before attempting the Resend notification. Resend requests use a stable idempotency key derived from the lead ID and set `reply_to` to the validated lead email. The notification body remains stable across attribution-only retries; source and campaign data remain in D1.
 
 - A successful API response with `notification: "sent"` means the Resend API accepted the notification request (HTTP success). It does **not** prove that the message reached the destination inbox or was read.
 - A saved enquiry whose notification is not confirmed returns an accepted response with a reference. The visitor is told that the enquiry was saved but the team notification could not be confirmed; the visitor is given the approved direct email fallback.

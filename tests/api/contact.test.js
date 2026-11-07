@@ -331,3 +331,57 @@ test("stores only the landing path and referrer origin plus path", async () => {
   assert.equal(db.leads[0].landing_page, "/work/identity-with-a-point-of-view/");
   assert.equal(db.leads[0].referrer, "https://example.org/article");
 });
+
+
+test("retries a failed notification with a stable Resend idempotency key and reply-to", async () => {
+  const db = makeDb();
+  const requests = [];
+  globalThis.fetch = async (url, options) => {
+    requests.push({ url, options });
+    return new Response(JSON.stringify({ id: "email_test_" + requests.length }), {
+      status: requests.length === 1 ? 503 : 200
+    });
+  };
+
+  const core = {
+    name: "Ada Example",
+    email: "ada@example.com",
+    goal: "Generate demand",
+    details: "We need a clearer acquisition plan."
+  };
+  const first = await onRequestPost({
+    request: request({
+      ...core,
+      source: "campaign",
+      landingPage: "/growth-diagnostic/",
+      utmSource: "google",
+      utmCampaign: "campaign-one"
+    }),
+    env: envFor(db)
+  });
+  const second = await onRequestPost({
+    request: request({
+      ...core,
+      source: "referral",
+      landingPage: "/contact/",
+      utmSource: "newsletter",
+      utmCampaign: "campaign-two"
+    }),
+    env: envFor(db)
+  });
+
+  assert.equal(first.status, 202);
+  assert.equal(second.status, 200);
+  assert.equal(db.leads.length, 1);
+  assert.equal(requests.length, 2);
+  assert.equal(requests[0].url, "https://api.resend.com/emails");
+  assert.equal(requests[0].options.headers["Idempotency-Key"], "river-ways-enquiry-" + db.leads[0].id);
+  assert.equal(requests[1].options.headers["Idempotency-Key"], requests[0].options.headers["Idempotency-Key"]);
+
+  const firstPayload = JSON.parse(requests[0].options.body);
+  const secondPayload = JSON.parse(requests[1].options.body);
+  assert.deepEqual(secondPayload, firstPayload);
+  assert.equal(firstPayload.reply_to, "ada@example.com");
+  assert.match(firstPayload.text, /Attribution: stored with the lead record/);
+  assert.doesNotMatch(firstPayload.text, /google|newsletter|campaign-one|campaign-two/);
+});
