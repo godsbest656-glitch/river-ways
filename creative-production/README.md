@@ -9,7 +9,7 @@ This module establishes a local-first production workspace for River Ways. It is
 - A dependency-free Node.js CLI to validate a campaign brief and initialise a structured production project, including a SHAPED CURRENT motion starter composition.
 - Explicit draft/approved/rejected brief state. Initialising a project never implies client approval.
 - Separate generated, approved and rejected asset folders; separate HyperFrames and Remotion composition folders.
-- A doctor command to detect local Node, Python, FFmpeg, ffprobe and NVIDIA tooling.
+- A doctor command that reports OS, CPU, total/free RAM, free disk, NVIDIA GPU model/VRAM/driver, CUDA compiler, Python, FFmpeg and ffprobe.
 - A machine-readable registry of the named model and renderer candidates with license and hardware gates.
 - A human approval boundary before a project is considered ready for client delivery.
 - A loopback-only ComfyUI adapter and approval-gated generation runner: validate approved brief/rights, queue API workflows, poll completion, save generated media and write provenance manifests. Covered by mocked API tests.
