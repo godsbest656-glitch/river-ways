@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile, mkdir } from 'node:fs/promises';
+import { writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { run, validateBrief, slugify } from '../bin/creative.mjs';
 import { assertLocalComfyUrl, queueWorkflow, waitForPrompt, saveComfyOutput } from '../bin/comfyui-adapter.mjs';
+import { runHyperframesChecks, renderHyperframes, renderRemotion } from '../bin/render-adapter.mjs';
 
 const validBrief = {
   schemaVersion: '1.0',
@@ -128,4 +130,80 @@ test('saves ComfyUI output using a safe filename and refuses path traversal', as
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+
+async function prepareHyperFramesFixture(root) {
+  const project = path.join(root, 'video-project');
+  const rendererRoot = path.join(root, 'renderer');
+  await mkdir(project, { recursive: true });
+  await mkdir(path.join(rendererRoot, 'node_modules', 'hyperframes'), { recursive: true });
+  await writeFile(path.join(project, 'index.html'), '<html><body>Test composition</body></html>');
+  const packagePath = path.join(rendererRoot, 'node_modules', 'hyperframes', 'package.json');
+  const cliPath = path.join(rendererRoot, 'node_modules', 'hyperframes', 'cli.mjs');
+  await writeFile(packagePath, JSON.stringify({ bin: { hyperframes: 'cli.mjs' } }));
+  await writeFile(cliPath, '');
+  return { project, rendererRoot };
+}
+
+test('runs HyperFrames lint and browser checks without rendering', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-render-check-'));
+  try {
+    const { project, rendererRoot } = await prepareHyperFramesFixture(root);
+    const commands = [];
+    const result = await runHyperframesChecks({
+      projectDirectory: project,
+      rendererRoot,
+      spawnImpl: (_command, args) => {
+        commands.push(args[1]);
+        return { status: 0, stdout: 'ok', stderr: '' };
+      }
+    });
+    assert.deepEqual(commands, ['lint', 'check']);
+    assert.equal(result.check.status, 0);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('requires explicit approval before HyperFrames render and verifies output', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-render-'));
+  try {
+    const { project, rendererRoot } = await prepareHyperFramesFixture(root);
+    await assert.rejects(renderHyperframes({ projectDirectory: project, rendererRoot }), /explicit human approval/);
+    const commands = [];
+    const result = await renderHyperframes({
+      projectDirectory: project,
+      rendererRoot,
+      approved: true,
+      spawnImpl: (_command, args, options) => {
+        const command = args[1];
+        commands.push(command);
+        if (command === 'render') {
+          const outputIndex = args.indexOf('--output');
+          const destination = path.join(options.cwd, args[outputIndex + 1]);
+          const directory = path.dirname(destination);
+          require('node:fs').mkdirSync(directory, { recursive: true });
+          writeFileSync(destination, Buffer.from('mock-render'));
+        }
+        return { status: 0, stdout: 'ok', stderr: '' };
+      }
+    });
+    assert.deepEqual(commands, ['lint', 'check', 'render']);
+    assert.equal(result.bytes, 11);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('keeps Remotion disabled until license acknowledgement and eligibility are explicit', async () => {
+  await assert.rejects(
+    renderRemotion({
+      projectDirectory: process.cwd(),
+      entryPoint: 'src/index.ts',
+      compositionId: 'Main',
+      approved: true
+    }),
+    /license acknowledgement/
+  );
 });
