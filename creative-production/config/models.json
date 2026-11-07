@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0",
+  "policy": {
+    "defaultMode": "local-first",
+    "paidProvidersAllowed": false,
+    "remoteInferenceAllowed": false,
+    "clientDeliveryRequiresHumanApproval": true,
+    "weightsMayBeCommitted": false,
+    "clientAssetsMayTrainModelsWithoutWrittenPermission": false
+  },
+  "videoModels": [
+    {
+      "id": "wan-2.2-ti2v-5b",
+      "name": "Wan 2.2 TI2V-5B",
+      "upstream": "https://github.com/Wan-Video/Wan2.2",
+      "tasks": ["text-to-video", "image-to-video"],
+      "license": "Apache-2.0",
+      "licenseGate": "verify exact checkpoint card and model files before use",
+      "hardwareNotes": "Upstream documents 720p at 24fps and recommends at least 24GB VRAM for TI2V-5B single-GPU inference.",
+      "role": "first-benchmark-candidate",
+      "enabled": false
+    },
+    {
+      "id": "hunyuan-video-1.5",
+      "name": "HunyuanVideo 1.5",
+      "upstream": "https://github.com/Tencent-Hunyuan/HunyuanVideo-1.5",
+      "tasks": ["text-to-video", "image-to-video"],
+      "license": "Tencent Hunyuan Community License",
+      "licenseGate": "blocked-for-global-client-deliverables-until-legal-review",
+      "territoryExclusions": ["European Union", "United Kingdom", "South Korea"],
+      "hardwareNotes": "Upstream states minimum 14GB NVIDIA GPU memory with model offloading; Linux and Python 3.10+.",
+      "role": "conditional-benchmark-candidate",
+      "enabled": false
+    },
+    {
+      "id": "ltx-2.5",
+      "name": "LTX-2.5",
+      "upstream": "https://github.com/Lightricks/LTX-2",
+      "tasks": ["text-to-video", "image-to-video", "multi-shot", "audio-video"],
+      "license": "LTX-2.x Community License for weights; code license is separate",
+      "licenseGate": "verify current model-weight license and commercial eligibility before use",
+      "hardwareNotes": "Determine exact VRAM/RAM requirements from the selected checkpoint and current official documentation.",
+      "role": "first-benchmark-candidate",
+      "enabled": false
+    }
+  ],
+  "renderers": [
+    {
+      "id": "hyperframes",
+      "name": "HyperFrames",
+      "upstream": "https://github.com/heygen-com/hyperframes",
+      "license": "Apache-2.0",
+      "role": "preferred-default-for-new-html-css-gsap-compositions",
+      "enabled": false,
+      "notes": "Deterministic HTML/CSS/seekable animation to video. Validate current CLI, FFmpeg requirements and exact render flags before wiring automation."
+    },
+    {
+      "id": "remotion",
+      "name": "Remotion",
+      "upstream": "https://www.remotion.dev",
+      "license": "Proprietary Remotion License",
+      "role": "optional-react-composition-renderer",
+      "enabled": false,
+      "notes": "Not OSI open source. Free-use eligibility is conditional; companies with more than three people require a Company License under published terms. Obtain eligibility confirmation before production use."
+    }
+  ]
+}
