@@ -29,7 +29,7 @@ export function validateBenchmark(dataset) {
       if (typeof run?.[field] !== 'string' || !run[field].trim()) errors.push(prefix + '.' + field + ' is required');
     }
     if (!/^[a-f0-9]{64}$/i.test(run?.workflowSha256 ?? '')) errors.push(prefix + '.workflowSha256 must be a SHA-256 hex digest');
-    if (!run?.hardware?.gpuName || !Number.isFinite(run?.hardware?.vramGb) || !Number.isFinite(run?.hardware?.ramGb)) {
+    if (!run?.hardware?.gpuName || !Number.isFinite(run?.hardware?.vramGb) || run.hardware.vramGb <= 0 || !Number.isFinite(run?.hardware?.ramGb) || run.hardware.ramGb <= 0) {
       errors.push(prefix + '.hardware must include GPU name, VRAM and RAM');
     }
     for (const field of ['generationSeconds', 'peakVramGb', 'peakRamGb', 'outputBytes']) {
