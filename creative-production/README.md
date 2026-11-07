@@ -55,6 +55,7 @@ From the repository root:
 node creative-production/bin/creative.mjs help
 node creative-production/bin/creative.mjs doctor
 node creative-production/bin/media-qa.mjs --project ./production/<campaign> --media renders/final.mp4 --width 1920 --height 1080 --duration 8
+node creative-production/bin/benchmark.mjs validate ./benchmark-results.json
 node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json
 node creative-production/bin/creative.mjs init --brief creative-production/examples/sample-brief.json --out ./production
 node creative-production/bin/generate.mjs --project ./production/<approved-project> --workflow workflows/comfy-api.json --model-id wan-2.2-ti2v-5b --checkpoint <exact-checkpoint-filename> --approved
@@ -63,7 +64,9 @@ cd creative-production && npm install
 npm run render -- hyperframes --project ../production/<client-campaign>/compositions/hyperframes --output renders/final.mp4 --approved
 ```
 
-Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. It also requires a model enabled in the local registry after hardware/licence validation, and the exact checkpoint filename must appear in the ComfyUI API workflow. The manifest records model ID, licence, checkpoint and workflow SHA-256. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each job writes queued/running/completed/failed state under `jobs/`; completed jobs also write a manifest with model, checkpoint, workflow SHA-256 and output provenance. A generation job never approves delivery. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
+Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. It also requires a model enabled in the local registry after hardware/licence validation, and the exact checkpoint filename must appear in the ComfyUI API workflow. Disabled models can only be run in explicit `--benchmark-only` mode after hardware compatibility is recorded in the approved brief; these outputs remain ineligible for client delivery. The manifest records model ID, licence, checkpoint and workflow SHA-256. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each job writes queued/running/completed/failed state under `jobs/`; completed jobs also write a manifest with model, checkpoint, workflow SHA-256 and output provenance. A generation job never approves delivery.
+
+Benchmark result files are validated and scored with fixed weights (visual quality 25%, motion coherence 25%, prompt fidelity 15%, temporal stability 15%, artifact cleanliness 10%, reliability 10%). The comparison requires at least three runs per model before marking a model eligible for ranking. Scores are human-entered evidence, not automatic AI judgments. Use identical prompt, seed, aspect ratio, duration, FPS and evaluation criteria for each model. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
 
 ## Project structure created by `init`
 
