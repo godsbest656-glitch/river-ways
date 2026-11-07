@@ -96,7 +96,7 @@ test("unlicensed media is rejected", () => {
 
 test("licences requiring attribution must include attribution", () => {
   const issues = validateMedia(image({ license: { kind: "cc-by", source: "Source record", attributionRequired: true } }));
-  assert.ok(issues.some((issue) => issue.includes("attribution is required")));
+  assert.ok(issues.some((issue) => issue.includes("required by this licence")));
 });
 
 test("video requires a poster and static fallback", () => {
