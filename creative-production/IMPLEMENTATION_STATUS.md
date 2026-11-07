@@ -12,7 +12,8 @@
 - Draft/approved/rejected brief state, client-asset rights gates, model-license review gate and no-overwrite project creation.
 - Project scaffold with separate generated/approved/rejected assets, HyperFrames/Remotion compositions, renders, QA and delivery folders.
 - SHAPED CURRENT 8-second HyperFrames starter composition copied into each new project.
-- Loopback-only ComfyUI adapter for queueing API-format workflows, polling job history and saving outputs.
+- Approval-gated ComfyUI production runner validates approved brief, asset rights and model licence review; queues API-format workflows, polls job history, saves outputs into isolated per-node folders and records workflow SHA-256 provenance.
+- Loopback-only ComfyUI adapter rejects remote inference endpoints and unsafe filenames/paths.
 - Local renderer adapters for HyperFrames and optional Remotion. Both require explicit human approval, refuse overwrites, constrain output paths and verify a non-empty render output.
 - HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
 - Remotion remains optional and gated by explicit license acknowledgement and confirmed free-license eligibility.
@@ -22,9 +23,9 @@
 
 ## Local test evidence
 
-Node.js v22.16.0 isolated harness: **13/13 tests passed** across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
+Node.js v22.16.0 isolated harness: **15/15 tests passed in the prior isolated harness**; two additional ComfyUI end-to-end mocked-flow tests are now committed and awaiting GitHub Actions verification. across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
 
-**Important qualification:** the test harness ran from an isolated local copy of the module logic because this execution environment could not clone the GitHub repository. It is not a checkout-based run of the exact GitHub branch. GitHub Actions has not yet been run for this feature branch, and no live renderer or model inference test has been performed.
+**Important qualification:** the test harness ran from an isolated local copy of the module logic because this execution environment could not clone the GitHub repository. It is not a checkout-based run of the exact GitHub branch. GitHub Actions has been triggered for the branch; the current runs are still in progress. No live renderer or model inference test has been performed.
 
 ## Licensing and architecture decisions
 
@@ -41,7 +42,7 @@ Node.js v22.16.0 isolated harness: **13/13 tests passed** across brief validatio
 3. No HyperFrames or Remotion real render has been performed; renderer tests use mocked CLI processes.
 4. No GPU, VRAM, RAM, CUDA/driver, storage or OS compatibility assessment has been captured.
 5. The nested HyperFrames package is version-pinned, but its package lock has not been generated because package installation/network access was unavailable; run `npm install` in `creative-production/` and commit the resulting lockfile before relying on reproducible installs.
-5. No internal Creative Studio UI, job database, authentication, multi-user permissions, client portal, publishing integration or automated batch approval workflow exists yet.
+6. No internal Creative Studio UI, job database, authentication, multi-user permissions, client portal, publishing integration or automated batch approval workflow exists yet.
 6. No client assets may be submitted to a model or used for fine-tuning without explicit written permission.
 7. The public website has not been changed to claim this is an operational, production-proven service.
 8. No Preview, production deployment, merge or PR has been initiated.
