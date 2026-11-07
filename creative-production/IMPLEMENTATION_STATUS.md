@@ -23,7 +23,7 @@
 
 ## Local test evidence
 
-Current committed test suite: **16 tests**. This exact revision has not yet completed GitHub Actions.
+Current committed test suite: **17 tests**. This exact revision has not yet completed GitHub Actions.
 
 Node.js v22.16.0 isolated harness: **15 tests passed in the prior isolated harness**; three additional ComfyUI end-to-end/model-gate tests are now committed and awaiting GitHub Actions verification. across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
 
