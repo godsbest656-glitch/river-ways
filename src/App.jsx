@@ -199,7 +199,7 @@ export default function App() {
       const hasCampaignTags = ['utm_source', 'utm_medium', 'utm_campaign'].some((key) => params.has(key));
       const attribution = {
         source: hasCampaignTags ? 'campaign' : (document.referrer ? 'referral' : 'website'),
-        landingPage: window.location.pathname,
+        landingPage: params.get('landing_page') || window.location.pathname,
         referrer: document.referrer || '',
         utmSource: params.get('utm_source') || '',
         utmMedium: params.get('utm_medium') || '',

@@ -1,6 +1,6 @@
-# Riverwayse Website
+# River Ways website
 
-A responsive, conversion-focused agency website built with React and Vite. It introduces Riverwayse's demand-led growth approach, services, Demand Intelligence workflow, operating method, FAQs and consultation brief.
+The public River Ways website is a React 18 + Vite 6 experience for the Creative Demand Engineering agency. It follows the approved SHAPED CURRENT / Route 2 — Editorial Intelligence direction and uses the positioning **We engineer demand.**
 
 ## Run locally
 
@@ -9,39 +9,42 @@ npm install
 npm run dev
 ```
 
-Build and preview:
+## Build and verify
 
 ```bash
 npm run build
-npm run preview
+npm run test:api
+npm run test:portfolio
+npm run validate:portfolio
+python scripts/validate_migrations.py
 ```
 
-## Project structure
+Browser and accessibility checks require the Playwright Chromium browser:
 
-- `src/App.jsx` — page sections and interactive components.
-- `src/styles.css` — responsive design system, animation and reduced-motion handling.
-- `index.html` — metadata, social sharing tags and Organization JSON-LD.
-- `public/robots.txt` and `public/sitemap.xml` — crawler files.
-- `functions/api/contact.js` — validated enquiry endpoint for Cloudflare Pages.
-- `migrations/0001_leads.sql` — lead storage and rate-limit tables.
-- `migrations/0002_lead_pipeline_attribution.sql` — pipeline stage and source attribution fields.
-- `tests/api/contact.test.js` — API validation, duplicate-submission, rate-limit and attribution tests.
-- `docs/ENQUIRY-OPERATIONS.md` — D1, Resend and controlled-verification runbook.
-- `netlify.toml` — SPA fallback and baseline response security headers.
-- `docs/ARCHITECTURE.md` — architecture and future integration plan.
-- `docs/SHAPED-CURRENT-EXPERIENCE-CONSTITUTION.md` — approved website direction, interaction rules and release acceptance gates.
-- `docs/OUTSTANDING-BLOCKERS.md` — evidence-based preview and production release gates.
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
 
-## Before production launch
+The browser suite tests desktop and mobile Chromium journeys against the generated static output and runs axe accessibility scans on key routes. Automated scans do not replace manual WCAG 2.2 AA review. CI installs Chromium and runs the full suite on topic-branch pushes.
 
-1. Confirm the canonical production domain and update metadata, sitemap and robots directives if needed.
-2. Confirm the public contact email. The enquiry form posts to a Cloudflare Pages Function at `/api/contact`. Before production use, configure the D1 binding and Resend variables documented in `docs/ENQUIRY-OPERATIONS.md` and verify a controlled submission.
-3. Review the privacy notice against actual data handling and applicable privacy obligations. No analytics or ad pixels are included in this implementation slice.
-4. Configure the server-side enquiry endpoint, D1 migration and Resend notification; follow `docs/ENQUIRY-OPERATIONS.md`.
-5. Test CSP and security headers on the actual hosting provider.
-6. Review all claims, service descriptions, imagery and brand details with River Ways.
-7. Run `npm run build` and `npm run test:api`, then run browser accessibility/performance checks on the deployment preview.
+## Architecture
 
-## Current scope
+- `src/App.jsx` and `src/styles.css` — React homepage, interactions and visual system.
+- `src/portfolio/` — canonical project records, validation, selectors and reusable portfolio components.
+- `scripts/generate-static-pages.mjs` — build-time generation of About, Services, Work, project detail, Contact, Insights and Terms pages.
+- `scripts/validate-static-pages.mjs` — route output, metadata, sitemap, 404 and internal-link checks.
+- `public/growth-diagnostic/`, `public/field-guide/`, `public/privacy/` — maintained static experiences and notice.
+- `functions/api/contact.js` — validated same-origin enquiry endpoint.
+- `migrations/0001_leads.sql` through `0003_lead_operations.sql` — UUID lead storage, attribution and operational follow-up schema.
+- `docs/design/` — master design, architecture, project skills and acceptance gates.
+- `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` — Cloudflare D1, Resend and release-readiness requirements.
 
-The Demand Intelligence section explains the workflow and user experience. Real-time global social listening, lead qualification, notifications and CRM follow-up require selected data sources, a backend, credentials and compliance review; these integrations are not represented as already connected.
+## Important operational boundaries
+
+- The portfolio currently contains illustrative capability studies and River Ways-owned demonstrations; do not imply they are commissioned client case studies or verified client outcomes.
+- The Growth Diagnostic keeps answers and scores in the browser. Only the approved journey/engagement identifiers and source attribution may accompany the enquiry handoff.
+- D1 migrations are validated locally in CI, but this does not mean they have been applied to Cloudflare Preview or Production.
+- Resend provider acceptance does not prove inbox delivery.
+- No production deployment, DNS change, production D1 migration or secret change is authorised by a passing build or test run.
+- Open a pull request only when the owner authorises a Preview review, because PR activity triggers automatic Cloudflare Preview deployment.

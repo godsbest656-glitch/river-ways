@@ -50,3 +50,7 @@ If another document conflicts with the Master Website Design, the master documen
 
 ## Operations
 12. [Production Environment Readiness Checklist](../ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md) — D1 migration sequence, Cloudflare bindings, Resend configuration, end-to-end acceptance and release blockers.
+
+
+## Browser and accessibility regression
+The adapted Playwright harness runs desktop and mobile Chromium journeys against the generated static output. Automated axe checks cover key routes. See `tests/e2e/website.spec.js` and `playwright.config.js`. Browser checks do not replace Cloudflare Preview verification or manual WCAG 2.2 AA review.

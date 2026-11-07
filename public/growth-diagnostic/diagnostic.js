@@ -32,8 +32,17 @@ const form = document.getElementById('assessment');
       const report='River Ways Growth Diagnostic\nOverall self-assessment: '+pct+'/100\n'+title+'\n\n'+scores.map(c=>c.label+': '+c.score+'/6').join('\n')+'\n\nRecommended next moves:\n'+ranked.slice(0,3).map(c=>'- '+c.label+': '+c.advice).join('\n')+'\n\nThis is a directional self-assessment based on my answers, not an automated audit.';
       document.getElementById('copy-result').onclick=async()=>{const button=document.getElementById('copy-result');try{await navigator.clipboard.writeText(report);button.textContent='Copied';}catch{const area=document.createElement('textarea');area.value=report;area.setAttribute('readonly','');area.style.position='absolute';area.style.left='-9999px';document.body.appendChild(area);area.select();const copied=document.execCommand('copy');area.remove();button.textContent=copied?'Copied':'Select and copy manually';}setTimeout(()=>button.textContent='Copy summary',2200)};
       const link=document.getElementById('brief-link');
-      const params=new URLSearchParams({journey:'growth-diagnostic'});
-      link.href='/?'+params.toString()+'#contact';
+      const sourceParams = new URLSearchParams(window.location.search);
+      const handoffParams = new URLSearchParams({
+        journey: 'growth-diagnostic',
+        engagement: 'diagnostic',
+        landing_page: '/growth-diagnostic/'
+      });
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach((key) => {
+        const value = sourceParams.get(key);
+        if (value) handoffParams.set(key, value);
+      });
+      link.href = '/?' + handoffParams.toString() + '#contact';
       link.setAttribute('aria-label','Discuss my growth diagnostic with River Ways');
     }
     form.addEventListener('submit',event=>{event.preventDefault();const answers=currentAnswers();if(Object.keys(answers).length!==allNames.length){error.classList.add('visible');const firstMissing=allNames.find(n=>!answers[n]);form.querySelector('input[name="'+firstMissing+'"]')?.focus();return}error.classList.remove('visible');buildResult(answers)});

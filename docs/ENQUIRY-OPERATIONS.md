@@ -12,14 +12,14 @@ Configure the following in both Preview and Production; never paste secrets into
 - Variable `RESEND_FROM_EMAIL`: a sender verified with Resend.
 - Variable `LEAD_NOTIFICATION_EMAIL`: `akinsify0511@gmail.com` (the currently accessible enquiry inbox).
 
-Apply `migrations/0001_leads.sql` first, then `migrations/0002_lead_pipeline_attribution.sql`, to the correct D1 database before enabling the latest endpoint. Migration 0002 adds lead stage and attribution fields. For a partial/recovered migration, inspect `PRAGMA table_info(leads)` and apply only missing columns/indexes; SQLite does not support `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` in the same way as some other databases. Run each migration once per environment.
+Apply `migrations/0001_leads.sql`, `migrations/0002_lead_pipeline_attribution.sql`, then `migrations/0003_lead_operations.sql` to the correct D1 database before enabling the latest endpoint. Migration 0002 adds the lead stage and attribution fields; migration 0003 adds assignment/follow-up fields, indexes, update triggers and the `ops_open_leads` view. For a partial/recovered migration, inspect `PRAGMA table_info(leads)`, indexes, triggers and views; apply only missing schema changes. SQLite does not support `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`. Never blindly rerun migrations 0002 or 0003.
 
 ## What is captured
 
 - Lead contact details and selected service goal.
 - A validated journey identifier and engagement preference when the same-origin handoff URL supplies them. These minimal values are appended to the existing details field; diagnostic answers, scores and response payloads are never captured.
 - Initial pipeline stage (`new`) and notification status.
-- Landing path, document referrer, and UTM source, medium, campaign, content and term when present.
+- Initial landing path (including the original `/growth-diagnostic/` entry when the diagnostic hands off to the homepage), referring page origin/path, and UTM source, medium, campaign, content and term when present. Query strings and fragments are not retained in page references.
 - A salted hash of the client IP for rate limiting; the raw IP is not written to the lead record.
 
 UTM values and referrers are bounded and treated as attribution hints, not verified proof of identity or campaign performance. No ad pixels or analytics trackers are introduced by this change.
@@ -31,10 +31,12 @@ UTM values and referrers are bounded and treated as attribution hints, not verif
 3. Submit a clearly labelled test enquiry from the deployed site, including a test URL with UTM parameters.
 4. Confirm exactly one row exists in D1 and that the stage, landing page and UTM fields are correct.
 5. Confirm the notification arrived in `akinsify0511@gmail.com`.
-6. Submit the exact same brief again within two minutes and confirm the row count does not increase.
-7. Change the brief and confirm a new row is created.
-8. Verify invalid input, rate limiting and missing-configuration responses.
-9. Repeat separately in Preview and Production.
+6. Confirm the record stores the original landing path and approved UTM/journey/engagement metadata; diagnostic answers and scores remain in the browser.
+7. Confirm the `ops_open_leads` view and follow-up fields are available.
+8. Submit the exact same brief again within two minutes and confirm the row count does not increase.
+9. Change the brief and confirm a new row is created.
+10. Verify invalid input, rate limiting and missing-configuration responses.
+11. Repeat separately in Preview and Production.
 
 A successful build or HTTP response does not prove D1 and email delivery are configured. A successful Resend API response means the provider accepted the notification request; it does not prove delivery to or receipt in the destination inbox. Verify the Resend event and actual inbox arrival separately.
 
