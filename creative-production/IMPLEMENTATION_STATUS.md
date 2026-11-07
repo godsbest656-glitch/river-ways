@@ -16,7 +16,7 @@
 - Loopback-only ComfyUI adapter rejects remote inference endpoints and unsafe filenames/paths.
 - Local renderer adapters for HyperFrames and optional Remotion. Both require explicit human approval, refuse overwrites, constrain output paths and verify a non-empty render output.
 - HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
-- Remotion remains optional and gated by explicit license acknowledgement and confirmed free-license eligibility.
+- Remotion remains optional and gated by license acknowledgement. Its Automators tier costs $0.01/render with a $100/month minimum, so it is excluded from the no-added-cost automated production path.
 - Model registry for Wan 2.2 TI2V-5B, HunyuanVideo 1.5 and LTX-2.5 with license/hardware notes and all model adapters disabled by default.
 - Tests included in the repository test script and GitHub Actions CI workflow.
 - Updated `AGENTS.md` and design index with local creative-production boundaries and documentation.
