@@ -12,6 +12,7 @@ This module establishes a local-first production workspace for River Ways. It is
 - A doctor command to detect local Node, Python, FFmpeg, ffprobe and NVIDIA tooling.
 - A machine-readable registry of the named model and renderer candidates with license and hardware gates.
 - A human approval boundary before a project is considered ready for client delivery.
+- A loopback-only ComfyUI adapter for queueing API-format workflows, polling job history and saving validated outputs; covered by mocked API tests.
 
 ## What is not yet implemented
 
