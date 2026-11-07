@@ -46,8 +46,17 @@ For any public River Ways website, UX, visual design, content hierarchy, or fron
 
 The master design document supersedes outdated exploratory instructions in older briefs where they conflict. The Design Constitution remains binding for truth, accessibility, privacy, performance, visitor comprehension, and conversion dignity. Refine the existing integrated React/Vite implementation; do not replace it with a static prototype or duplicate site. Preserve routes, SEO, analytics, enquiry API, D1 persistence, and notification behavior. Never claim validation without evidence from the exact candidate commit.
 
-
 ## Release-candidate and branch preservation
 Do not assume the current SHAPED CURRENT branch is the most complete release candidate. A separate local candidate was reported on `build/shaped-current-homepage` at `4fd62fc` with route registry/prerendering; it is not yet present in the accessible GitHub branches. Preserve it and reconcile it before choosing the final release base. Its reported 12 sitemap URLs versus 10 built route documents plus 404 is unresolved.
 
-Before removing or replacing functionality, compare the PR #24 release foundation (D1 migrations 0001–0004, idempotent enquiry handling, lead operations, Playwright E2E, privacy, Growth Diagnostic, field guide) and PR #30 gated Demand Intelligence feature. The visual redesign must not silently drop working operational capabilities. Keep PR #30's AI feature disabled until explicit cost approval and Preview verification. PR #29's internal agency platform is separate from the public website.
+Before removing or replacing functionality, compare the PR #24 release foundation (D1 migrations 0001–0004, idempotent enquiry handling, lead operations, Playwright E2E, privacy, Growth Diagnostic, field guide) and PR #30 gated Demand Intelligence feature. The visual redesign must not silently drop working operational capabilities. Keep PR #30's AI feature disabled until explicit cost approval and Preview verification. PR #29's internal agency platform is separate from public website scope.
+
+## Project-level AI skills
+Read the applicable skill before substantial work:
+- `.agents/skills/codebase-audit/SKILL.md` when continuing prior work, reconciling branches/PRs, auditing architecture or tracing integrations.
+- `.agents/skills/landing-page-design/SKILL.md` when creating or substantially changing a marketing page.
+- `.agents/skills/redesign-existing-projects/SKILL.md` when improving existing pages or components.
+- `.agents/skills/figma-designer/SKILL.md` only for an actual Figma task; load the installed `figma-use` prerequisite first and the relevant Figma design/library skills when required.
+- `.agents/skills/website-quality-engineering/SKILL.md` for verification, regression testing and release-candidate checks.
+
+These skills supplement this file and the canonical design documents. They do not override River Ways' approved tokens, architecture, privacy requirements or release controls. Validate project skill metadata with `python scripts/validate_skills.py .agents/skills` and run its regression tests with `python -m unittest discover -s tests -p "test_*.py"`.
