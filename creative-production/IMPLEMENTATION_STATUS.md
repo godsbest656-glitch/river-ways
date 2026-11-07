@@ -2,7 +2,7 @@
 
 **Snapshot:** 7 November 2026  
 **Working branch:** `feat/creative-production-engine-integration`  
-**Base snapshot:** `build/river-ways-execution-agency-agents` at `ddeb463c2d6bc4a21a2f651a6d45497548002bcf` (GitHub compare: 18 commits ahead, 0 behind)  
+**Base snapshot:** `build/river-ways-execution-agency-agents` at `ddeb463c2d6bc4a21a2f651a6d45497548002bcf` (GitHub compare showed 0 commits behind; later status-only commits may increase the ahead count)  
 **Production / Preview:** not deployed; no PR opened
 
 ## Implemented in the repository
@@ -64,4 +64,4 @@ The next hardware-dependent step cannot be selected responsibly without the GPU 
 
 ## Branch reconciliation
 
-This working branch was created directly from the latest observed agency-agent integration branch. GitHub compare reports **18 commits ahead and 0 behind**; the agency-agent baseline is retained without ancestry divergence. No PR, Preview, merge or deployment has been initiated.
+This working branch was created directly from the latest observed agency-agent integration branch. GitHub compare reports **0 commits behind**; the agency-agent baseline is retained without ancestry divergence. No PR, Preview, merge or deployment has been initiated.
