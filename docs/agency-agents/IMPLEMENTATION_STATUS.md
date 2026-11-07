@@ -54,4 +54,4 @@ The local-first creative-production foundation is being developed separately on 
 
 ## Creative production specialist extension
 
-The current feature branch adds four original project-scoped agents: `creative-producer`, `video-model-specialist`, `motion-designer` and `media-qa-reviewer`. The required roster and website-orchestrator delegation guidance now include these specialists. The current feature-branch CI passed in run `42405199419` on commit `9c631402aba77fd54279ba72e359441e07f7b5cb`, including the 13-agent validator and Python regression suite. Local Codex discovery and actual delegation remain owner-side verification.
+The current feature branch adds four original project-scoped agents: `creative-producer`, `video-model-specialist`, `motion-designer` and `media-qa-reviewer`. The required roster and website-orchestrator delegation guidance now include these specialists. The current feature-branch CI passed in run `42405629891` on implementation commit `09434592a68017ddb90765b1998341733f55061e`, including the 13-agent validator and Python regression suite. Local Codex discovery and actual delegation remain owner-side verification.

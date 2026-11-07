@@ -34,11 +34,11 @@
 
 ## Local test evidence
 
-Current committed test suite: **27 tests**. The 27-test creative suite and full repository CI passed in run `42405199419` on commit `9c631402aba77fd54279ba72e359441e07f7b5cb`. This run also validated all 13 Codex agent definitions, the Python validator suite, HyperFrames CLI lint/browser check, creative doctor/model/brief smoke commands, website build, browser journeys/accessibility, Lighthouse, API, portfolio and dependency audit.
+The current committed creative production suite contains **27 tests**, all passing in full GitHub Actions run **42405629891** on implementation commit **09434592a68017ddb90765b1998341733f55061e**.
 
-Earlier Node.js v22 isolated harness: **13/13 tests passed** for the initial foundation. The current committed suite contains **24 tests**; the subsequent tests are awaiting exact-branch GitHub Actions completion. Coverage includes brief validation, safe project initialisation, HyperFrames project scaffolding, mocked ComfyUI queue/history/output operations, model/territory gates, job persistence, renderer approval, media QA, benchmark scoring and hardware telemetry.
+The same run passed the complete repository checks: all 13 Codex agent definitions and Python validator tests, D1 migration validation, locked HyperFrames 0.9.19 installation, real HyperFrames lint/browser/check, creative doctor/model/brief CLI smoke tests, website build, browser journeys/accessibility, Lighthouse performance/SEO, API and portfolio tests, and npm audit (**0 vulnerabilities**).
 
-**Important qualification:** the test harness ran from an isolated local copy of the module logic because this execution environment could not clone the GitHub repository. It is not a checkout-based run of the exact GitHub branch. GitHub Actions has been triggered for the branch. HyperFrames 0.9.19 installation, lint, browser setup and `check` passed in run `42403510977`; the full website/browser/creative test job is still in progress. No live renderer or model inference test has been performed.
+**Important qualification:** GitHub Actions ran on a hosted Linux runner. It verifies software integration and the HyperFrames starter, not the owner's production GPU. No actual model inference or final MP4 render has been performed on the target workstation.
 
 ## Licensing and architecture decisions
 
@@ -52,13 +52,12 @@ Earlier Node.js v22 isolated harness: **13/13 tests passed** for the initial fou
 
 1. No model weights downloaded, installed or run.
 2. No live ComfyUI server or model-specific workflow has been tested.
-3. No HyperFrames or Remotion real MP4 render has been performed; renderer adapter tests use mocked render subprocesses. HyperFrames lint and browser check have passed in CI.
-4. No GPU, VRAM, RAM, CUDA/driver, storage or OS compatibility assessment has been captured.
-5. HyperFrames 0.9.19 and all transitive npm dependencies are locked in `creative-production/package-lock.json`; CI installs with `npm ci`.
-6. No internal Creative Studio UI, database-backed job store, authentication, multi-user permissions, client portal, publishing integration or automated batch approval workflow exists yet. Local one-at-a-time human delivery approval is implemented in the CLI.
-7. No client assets may be submitted to a model or used for fine-tuning without explicit written permission.
-8. The public website has not been changed to claim this is an operational, production-proven service.
-9. No Preview, production deployment, merge or PR has been initiated.
+3. No real HyperFrames or Remotion MP4 render has been performed; renderer adapter tests use mocked render subprocesses.
+4. No GPU, VRAM, RAM, CUDA/driver, storage or OS compatibility assessment has been captured for the owner's production workstation.
+5. No internal Creative Studio UI, database-backed job store, authentication, multi-user permissions, client portal, publishing integration or automated batch approval workflow exists yet. Local JSON job persistence, progress, provenance and one-at-a-time human delivery approval are implemented.
+6. No client assets may be submitted to a model or used for fine-tuning without explicit written permission.
+7. The public website has not been changed to claim this is an operational, production-proven service.
+8. No PR, Preview, production deployment or merge has been initiated.
 
 ## Next execution gates
 
@@ -69,7 +68,7 @@ Earlier Node.js v22 isolated harness: **13/13 tests passed** for the initial fou
 5. Record generation time, peak VRAM, peak RAM, output size, failure rate, temporal consistency, text fidelity, image quality and commercial license status.
 6. Select the first model backend based on actual hardware and measured quality; keep other model adapters disabled until they pass.
 7. Add cancellation, retries, access control, multi-user permissions and a client approval portal before building an internal Creative Studio UI. Basic local JSON job persistence, progress, provenance and one-at-a-time human delivery approval are already implemented.
-8. Run the exact branch CI and review the complete diff. Keep the branch unmerged and do not open a PR until the owner authorises Preview, because PR activity triggers Cloudflare Preview.
+7. Review the consolidated branch diff. Keep the branch unmerged and do not open a PR until the owner authorises Preview, because PR activity triggers Cloudflare Preview.
 
 ## Current owner input needed
 
@@ -78,4 +77,4 @@ The next hardware-dependent step cannot be selected responsibly without the GPU 
 
 ## Branch reconciliation
 
-This working branch was created directly from the latest observed agency-agent integration branch. GitHub compare reports **0 commits behind**; the agency-agent baseline is retained without ancestry divergence. No PR, Preview, merge or deployment has been initiated.
+This working branch was created directly from the latest observed agency-agent integration branch. GitHub compare reports **0 commits behind**. The feature branch has one consolidated implementation commit plus a status-only evidence update; the agency-agent baseline is retained without ancestry divergence. No PR, Preview, merge or deployment has been initiated.
