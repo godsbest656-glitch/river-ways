@@ -21,6 +21,7 @@
 - FFprobe-based media QA validates non-empty media files, video stream, codec/container, duration, dimensions, frame rate and optional audio/spec requirements.
 - Repeatable model benchmark validator/scorer with fixed weighted rubric and minimum three runs before ranking.
 - Disabled model candidates can only run in explicit benchmark-only mode after hardware compatibility review; benchmark outputs cannot be approved for client delivery.
+- HunyuanVideo 1.5 territory exclusions are enforced by the generation runner using the approved brief's target territories.
 - HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
 - Remotion remains optional and gated by license acknowledgement. Its Automators tier costs $0.01/render with a $100/month minimum, so it is excluded from the no-added-cost automated production path.
 - Model registry for Wan 2.2 TI2V-5B, HunyuanVideo 1.5 and LTX-2.5 with current hardware/licence gates, benchmark-only eligibility and production disabled by default.
@@ -30,7 +31,7 @@
 
 ## Local test evidence
 
-Current committed test suite: **23 tests**. This exact revision has not yet completed GitHub Actions.
+Current committed test suite: **24 tests**. This exact revision has not yet completed GitHub Actions.
 
 Node.js v22.16.0 isolated harness: **15 tests passed in the prior isolated harness**; three additional ComfyUI end-to-end/model-gate tests are now committed and awaiting GitHub Actions verification. across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
 
