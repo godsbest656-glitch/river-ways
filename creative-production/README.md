@@ -61,7 +61,7 @@ cd creative-production && npm install
 npm run render -- hyperframes --project ../production/<client-campaign>/compositions/hyperframes --output renders/final.mp4 --approved
 ```
 
-Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. It also requires a model enabled in the local registry after hardware/licence validation, and the exact checkpoint filename must appear in the ComfyUI API workflow. The manifest records model ID, licence, checkpoint and workflow SHA-256. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each completed job writes a manifest with workflow SHA-256 and output provenance; it never approves delivery. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
+Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. It also requires a model enabled in the local registry after hardware/licence validation, and the exact checkpoint filename must appear in the ComfyUI API workflow. The manifest records model ID, licence, checkpoint and workflow SHA-256. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each job writes queued/running/completed/failed state under `jobs/`; completed jobs also write a manifest with model, checkpoint, workflow SHA-256 and output provenance. A generation job never approves delivery. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
 
 ## Project structure created by `init`
 
@@ -78,6 +78,7 @@ production/<client-campaign>/
     hyperframes/
     remotion/
   workflows/ (ComfyUI API-format workflows)
+  jobs/ (persistent generation job state)
   renders/
   qa/
   delivery/
