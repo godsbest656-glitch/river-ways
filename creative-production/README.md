@@ -11,6 +11,7 @@ This module establishes a local-first production workspace for River Ways. It is
 - Separate generated, approved and rejected asset folders; separate HyperFrames and Remotion composition folders.
 - A doctor command that reports OS, CPU, total/free RAM, free disk, NVIDIA GPU model/VRAM/driver, CUDA compiler, Python, FFmpeg and ffprobe.
 - A machine-readable registry of the named model and renderer candidates with license and hardware gates.
+- FFprobe-based media QA for container, duration, video/audio streams, codecs, dimensions and frame rate, with optional campaign-spec checks.
 - A human approval boundary before a project is considered ready for client delivery.
 - A loopback-only ComfyUI adapter and approval-gated generation runner: validate approved brief/rights, queue API workflows, poll completion, save generated media and write provenance manifests. Covered by mocked API tests.
 
@@ -53,6 +54,7 @@ From the repository root:
 ```bash
 node creative-production/bin/creative.mjs help
 node creative-production/bin/creative.mjs doctor
+node creative-production/bin/media-qa.mjs --project ./production/<campaign> --media renders/final.mp4 --width 1920 --height 1080 --duration 8
 node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json
 node creative-production/bin/creative.mjs init --brief creative-production/examples/sample-brief.json --out ./production
 node creative-production/bin/generate.mjs --project ./production/<approved-project> --workflow workflows/comfy-api.json --model-id wan-2.2-ti2v-5b --checkpoint <exact-checkpoint-filename> --approved
@@ -80,7 +82,7 @@ production/<client-campaign>/
   workflows/ (ComfyUI API-format workflows)
   jobs/ (persistent generation job state)
   renders/
-  qa/
+  qa/ (media validation reports)
   delivery/
 ```
 
