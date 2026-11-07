@@ -21,7 +21,8 @@
       "licenseGate": "verify exact checkpoint card and model files before use",
       "hardwareNotes": "Wan 2.2 TI2V-5B: upstream documents 720p at 24fps and at least 24GB VRAM for single-GPU inference with offload; 80GB-class GPUs can run without the memory-saving offload flags. Wan 2.2 T2V-A14B/I2V-A14B are separate heavier candidates and require a separate benchmark.",
       "role": "first-benchmark-candidate",
-      "enabled": false
+      "enabled": false,
+      "benchmarkAllowed": true
     },
     {
       "id": "hunyuan-video-1.5",
@@ -40,7 +41,8 @@
       ],
       "hardwareNotes": "Upstream documents minimum 14GB NVIDIA GPU memory with model offloading enabled; Linux, Python 3.10+ and compatible CUDA/PyTorch. Actual speed/quality varies by 480p/720p checkpoint and distillation variant.",
       "role": "conditional-benchmark-candidate",
-      "enabled": false
+      "enabled": false,
+      "benchmarkAllowed": true
     },
     {
       "id": "ltx-2.5",
@@ -57,7 +59,8 @@
       "hardwareNotes": "LTX-2.5 official minimum: NVIDIA GPU with 32GB+ VRAM, 32GB system RAM, 100GB free storage, CUDA 12.7+ and Python 3.12+. Recommended: A100 80GB or H100, 64GB+ RAM and 200GB SSD.",
       "role": "first-benchmark-candidate",
       "enabled": false,
-      "notes": "Repository code is Apache-2.0; model weights are separately licensed. Check the exact checkpoint and any bundled text encoder/third-party model licenses."
+      "notes": "Repository code is Apache-2.0; model weights are separately licensed. Check the exact checkpoint and any bundled text encoder/third-party model licenses.",
+      "benchmarkAllowed": true
     }
   ],
   "renderers": [
