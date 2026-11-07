@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm, writeFile, mkdir } from 'node:fs/promises';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { run, validateBrief, slugify } from '../bin/creative.mjs';
+import { run, validateBrief, slugify, collectEnvironment } from '../bin/creative.mjs';
 import { assertLocalComfyUrl, queueWorkflow, waitForPrompt, saveComfyOutput } from '../bin/comfyui-adapter.mjs';
 import { runHyperframesChecks, renderHyperframes, renderRemotion } from '../bin/render-adapter.mjs';
 import { runComfyProduction } from '../bin/generate.mjs';
@@ -356,4 +356,27 @@ test('refuses ComfyUI generation for models disabled in the model registry', asy
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+
+test('doctor captures GPU model, VRAM, driver, system RAM and disk without enabling models', async () => {
+  const report = await collectEnvironment({
+    spawnImpl: (command) => {
+      const output = command === 'nvidia-smi'
+        ? 'NVIDIA GeForce RTX 4090, 24564 MiB, 555.42'
+        : command === 'python3' ? 'Python 3.12.4'
+        : command === 'nvcc' ? 'Cuda compilation tools, release 12.8'
+        : command === 'ffmpeg' ? 'ffmpeg version 7.0'
+        : command === 'ffprobe' ? 'ffprobe version 7.0'
+        : '';
+      return { status: output ? 0 : 1, stdout: output, stderr: '', error: null };
+    },
+    statfsImpl: async () => ({ bavail: 100, bsize: 1024 })
+  });
+  assert.equal(report.gpu.detected, true);
+  assert.equal(report.gpu.devices[0].name, 'NVIDIA GeForce RTX 4090');
+  assert.equal(report.gpu.devices[0].memory, '24564 MiB');
+  assert.equal(report.gpu.devices[0].driver, '555.42');
+  assert.equal(report.disk.freeBytes, 102400);
+  assert.equal(report.python.available, true);
 });
