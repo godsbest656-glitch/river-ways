@@ -8,6 +8,7 @@ import { run, validateBrief, slugify, collectEnvironment } from '../bin/creative
 import { assertLocalComfyUrl, queueWorkflow, waitForPrompt, saveComfyOutput } from '../bin/comfyui-adapter.mjs';
 import { runHyperframesChecks, renderHyperframes, renderRemotion } from '../bin/render-adapter.mjs';
 import { probeMedia, validateMediaSpec } from '../bin/media-qa.mjs';
+import { validateBenchmark, scoreRun, summarizeBenchmarks } from '../bin/benchmark.mjs';
 import { runComfyProduction } from '../bin/generate.mjs';
 
 const validBrief = {
@@ -491,4 +492,62 @@ test('persists failed ComfyUI generation jobs for diagnosis', async () => {
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+
+test('benchmark scoring compares repeatable model runs and requires three runs to rank', () => {
+  const makeRun = (modelId, seconds, passed = true) => ({
+    modelId,
+    checkpoint: 'model.safetensors',
+    workflowSha256: 'a'.repeat(64),
+    hardware: { gpuName: 'RTX 4090', vramGb: 24, ramGb: 64 },
+    metrics: { generationSeconds: seconds, peakVramGb: 22, peakRamGb: 40, outputBytes: 1000000 },
+    scores: {
+      visualQuality: 5,
+      motionCoherence: 5,
+      promptFidelity: 4,
+      temporalStability: 5,
+      artifactCleanliness: 5
+    },
+    passed,
+    ...(passed ? {} : { failureReason: 'OOM during final decode' })
+  });
+  const dataset = {
+    schemaVersion: '1.0',
+    benchmarkId: 'river-ways-internal-video-benchmark-001',
+    testProfile: { prompt: 'A blue current flows through a sculptural glass landscape', seed: 42 },
+    runs: [
+      makeRun('wan-2.2-ti2v-5b', 120),
+      makeRun('wan-2.2-ti2v-5b', 125),
+      makeRun('wan-2.2-ti2v-5b', 118),
+      makeRun('ltx-2.5', 90)
+    ]
+  };
+  assert.equal(validateBenchmark(dataset).valid, true);
+  const comparisons = summarizeBenchmarks(dataset);
+  assert.equal(comparisons[0].modelId, 'wan-2.2-ti2v-5b');
+  assert.equal(comparisons[0].eligibleForRanking, true);
+  assert.equal(comparisons[0].medianGenerationSeconds, 120);
+  assert.equal(comparisons[1].eligibleForRanking, false);
+  assert.equal(scoreRun(dataset.runs[0]) > 0, true);
+});
+
+test('benchmark validation rejects fabricated or incomplete evidence fields', () => {
+  const result = validateBenchmark({
+    schemaVersion: '1.0',
+    benchmarkId: 'bad',
+    testProfile: { prompt: 'test' },
+    runs: [{
+      modelId: 'wan-2.2-ti2v-5b',
+      checkpoint: 'model.safetensors',
+      workflowSha256: 'not-a-hash',
+      hardware: { gpuName: 'GPU' },
+      metrics: {},
+      scores: {},
+      passed: false
+    }]
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((item) => item.includes('workflowSha256')));
+  assert.ok(result.errors.some((item) => item.includes('failureReason')));
 });
