@@ -6,7 +6,7 @@ This module establishes a local-first production workspace for River Ways. It is
 
 ## What is implemented
 
-- A dependency-free Node.js CLI to validate a campaign brief and initialise a structured production project.
+- A dependency-free Node.js CLI to validate a campaign brief and initialise a structured production project, including a SHAPED CURRENT motion starter composition.
 - Explicit draft/approved/rejected brief state. Initialising a project never implies client approval.
 - Separate generated, approved and rejected asset folders; separate HyperFrames and Remotion composition folders.
 - A doctor command to detect local Node, Python, FFmpeg, ffprobe and NVIDIA tooling.
