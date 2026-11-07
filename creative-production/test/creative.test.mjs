@@ -7,6 +7,7 @@ import path from 'node:path';
 import { run, validateBrief, slugify, collectEnvironment } from '../bin/creative.mjs';
 import { assertLocalComfyUrl, queueWorkflow, waitForPrompt, saveComfyOutput } from '../bin/comfyui-adapter.mjs';
 import { runHyperframesChecks, renderHyperframes, renderRemotion } from '../bin/render-adapter.mjs';
+import { probeMedia, validateMediaSpec } from '../bin/media-qa.mjs';
 import { runComfyProduction } from '../bin/generate.mjs';
 
 const validBrief = {
@@ -379,4 +380,64 @@ test('doctor captures GPU model, VRAM, driver, system RAM and disk without enabl
   assert.equal(report.gpu.devices[0].driver, '555.42');
   assert.equal(report.disk.freeBytes, 102400);
   assert.equal(report.python.available, true);
+});
+
+
+test('ffprobe media QA captures stream metadata and validates campaign specs', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-media-qa-'));
+  try {
+    await mkdir(path.join(root, 'renders'), { recursive: true });
+    await writeFile(path.join(root, 'renders', 'hero.mp4'), Buffer.from('mock-video'));
+    const metadata = await probeMedia({
+      projectDirectory: root,
+      mediaPath: 'renders/hero.mp4',
+      spawnImpl: (_command, args) => {
+        assert.ok(args.includes('renders/hero.mp4') || args.some((item) => item.endsWith('hero.mp4')));
+        return {
+          status: 0,
+          stdout: JSON.stringify({
+            format: { duration: '8.000', format_name: 'mov,mp4,m4a,3gp,3g2,mj2' },
+            streams: [
+              { codec_type: 'video', codec_name: 'h264', width: 1920, height: 1080, r_frame_rate: '30/1' },
+              { codec_type: 'audio', codec_name: 'aac', sample_rate: '48000', channels: 2 }
+            ]
+          }),
+          stderr: ''
+        };
+      }
+    });
+    assert.equal(metadata.video.codec, 'h264');
+    assert.equal(metadata.audio.codec, 'aac');
+    assert.equal(validateMediaSpec(metadata, {
+      expectedWidth: 1920,
+      expectedHeight: 1080,
+      expectedDurationSeconds: 8,
+      requireAudio: true
+    }).valid, true);
+    assert.equal(validateMediaSpec(metadata, { expectedWidth: 1080 }).valid, false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('media QA rejects project path traversal and missing video streams', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-media-qa-safe-'));
+  try {
+    await assert.rejects(probeMedia({ projectDirectory: root, mediaPath: '../outside.mp4' }), /escapes/);
+    await writeFile(path.join(root, 'audio-only.mp4'), Buffer.from('mock'));
+    await assert.rejects(
+      probeMedia({
+        projectDirectory: root,
+        mediaPath: 'audio-only.mp4',
+        spawnImpl: () => ({
+          status: 0,
+          stdout: JSON.stringify({ format: { duration: '3' }, streams: [{ codec_type: 'audio' }] }),
+          stderr: ''
+        })
+      }),
+      /valid video stream/
+    );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });
