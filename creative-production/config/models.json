@@ -19,7 +19,7 @@
       ],
       "license": "Apache-2.0",
       "licenseGate": "verify exact checkpoint card and model files before use",
-      "hardwareNotes": "Upstream documents 720p at 24fps and recommends at least 24GB VRAM for TI2V-5B single-GPU inference.",
+      "hardwareNotes": "Wan 2.2 TI2V-5B: upstream documents 720p at 24fps and at least 24GB VRAM for single-GPU inference with offload; 80GB-class GPUs can run without the memory-saving offload flags. Wan 2.2 T2V-A14B/I2V-A14B are separate heavier candidates and require a separate benchmark.",
       "role": "first-benchmark-candidate",
       "enabled": false
     },
@@ -38,7 +38,7 @@
         "United Kingdom",
         "South Korea"
       ],
-      "hardwareNotes": "Upstream states minimum 14GB NVIDIA GPU memory with model offloading; Linux and Python 3.10+.",
+      "hardwareNotes": "Upstream documents minimum 14GB NVIDIA GPU memory with model offloading enabled; Linux, Python 3.10+ and compatible CUDA/PyTorch. Actual speed/quality varies by 480p/720p checkpoint and distillation variant.",
       "role": "conditional-benchmark-candidate",
       "enabled": false
     },
@@ -54,7 +54,7 @@
       ],
       "license": "LTX-2.x Community License for weights; code license is separate",
       "licenseGate": "LTX-2.x Community License: commercial use without paid license is limited to entities with annual revenue below USD 10 million; at or above USD 10 million a paid commercial agreement is required. Verify current license, revenue threshold and restrictions.",
-      "hardwareNotes": "Determine exact VRAM/RAM requirements from the selected checkpoint and current official documentation.",
+      "hardwareNotes": "LTX-2.5 official minimum: NVIDIA GPU with 32GB+ VRAM, 32GB system RAM, 100GB free storage, CUDA 12.7+ and Python 3.12+. Recommended: A100 80GB or H100, 64GB+ RAM and 200GB SSD.",
       "role": "first-benchmark-candidate",
       "enabled": false,
       "notes": "Repository code is Apache-2.0; model weights are separately licensed. Check the exact checkpoint and any bundled text encoder/third-party model licenses."
@@ -77,7 +77,7 @@
       "license": "Proprietary Remotion License",
       "role": "optional-react-composition-renderer",
       "enabled": false,
-      "notes": "Not OSI open source. Free-use eligibility is conditional; companies with more than three people require a Company License under published terms. Obtain eligibility confirmation before production use."
+      "notes": "Source-available under proprietary terms. Individual/small-company free license covers up to 3 people; companies of 4+ require Company License. Remotion for Automators is priced at $0.01 per render with a $100/month minimum, so it is not suitable for the no-added-cost automated production default."
     }
   ]
 }
