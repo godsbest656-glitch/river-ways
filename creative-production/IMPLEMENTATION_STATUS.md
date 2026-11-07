@@ -12,7 +12,7 @@
 - Draft/approved/rejected brief state, client-asset rights gates, model-license review gate and no-overwrite project creation.
 - Project scaffold with separate generated/approved/rejected assets, HyperFrames/Remotion compositions, renders, QA and delivery folders.
 - SHAPED CURRENT 8-second HyperFrames starter composition copied into each new project.
-- Approval-gated ComfyUI production runner validates approved brief, asset rights, model licence review, an explicitly enabled registry model and exact checkpoint presence in the workflow; queues API-format workflows, polls job history, saves outputs into isolated per-node folders and records model/checkpoint/workflow SHA-256 provenance.
+- Approval-gated ComfyUI production runner validates approved brief, asset rights, model licence review, an explicitly enabled registry model and exact checkpoint presence in the workflow; queues API-format workflows, persists queued/running/completed/failed job state, polls job history, saves outputs into isolated per-node folders and records model/checkpoint/workflow SHA-256 provenance.
 - Loopback-only ComfyUI adapter rejects remote inference endpoints and unsafe filenames/paths.
 - Local renderer adapters for HyperFrames and optional Remotion. Both require explicit human approval, refuse overwrites, constrain output paths and verify a non-empty render output.
 - HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
