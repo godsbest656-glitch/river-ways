@@ -41,6 +41,7 @@ export async function runComfyProduction({
   checkpointFile,
   modelRegistryPath = DEFAULT_MODEL_REGISTRY,
   approved = false,
+  benchmarkOnly = false,
   baseUrl = 'http://127.0.0.1:8188',
   timeoutMs = 30 * 60 * 1000,
   pollIntervalMs = 2000,
@@ -75,7 +76,12 @@ export async function runComfyProduction({
   const registry = await readJson(modelRegistryPath);
   const model = registry.videoModels?.find((candidate) => candidate.id === modelId);
   if (!model) throw new Error('Model ID is not present in the approved model registry: ' + modelId);
-  if (model.enabled !== true) throw new Error('Model is disabled pending hardware, licence and inference verification: ' + modelId);
+  if (model.enabled !== true && !(benchmarkOnly === true && model.benchmarkAllowed === true)) {
+    throw new Error('Model is disabled for production; only an explicitly approved, hardware-cleared benchmark is permitted: ' + modelId);
+  }
+  if (benchmarkOnly === true && brief.rights?.hardwareCompatibilityReviewed !== true) {
+    throw new Error('Benchmark-only generation requires explicit hardware compatibility review');
+  }
   if (!workflowBytes.toString('utf8').includes(checkpointFile)) {
     throw new Error('The selected checkpoint filename was not found in the supplied ComfyUI workflow');
   }
@@ -97,6 +103,7 @@ export async function runComfyProduction({
     phase: 'queued',
     modelId: model.id,
     checkpoint: checkpointFile,
+    mode: benchmarkOnly ? 'benchmark-only' : 'production',
     workflowSha256,
     progress: null,
     error: null
@@ -152,7 +159,7 @@ export async function runComfyProduction({
       workflowFile: path.relative(projectRoot, workflowFile).split(path.sep).join('/'),
       outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
       outputs: saved,
-      approval: { generationApproved: true, deliveryApproved: false },
+      approval: { generationApproved: true, benchmarkOnly, deliveryApproved: false },
       provenance: {
         model: { id: model.id, name: model.name, license: model.license, upstream: model.upstream },
         checkpoint: checkpointFile,
@@ -200,6 +207,7 @@ async function main(args) {
     modelId,
     checkpointFile,
     approved: args.includes('--approved'),
+    benchmarkOnly: args.includes('--benchmark-only'),
     baseUrl: flag(args, '--comfy-url', 'http://127.0.0.1:8188')
   });
   process.stdout.write(JSON.stringify(result, null, 2) + '\n');
