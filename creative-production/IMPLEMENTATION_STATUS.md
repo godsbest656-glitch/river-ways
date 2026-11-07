@@ -26,6 +26,7 @@
 - Remotion remains optional and gated by license acknowledgement. Its Automators tier costs $0.01/render with a $100/month minimum, so it is excluded from the no-added-cost automated production path.
 - Model registry for Wan 2.2 TI2V-5B, HunyuanVideo 1.5 and LTX-2.5 with current hardware/licence gates, benchmark-only eligibility and production disabled by default.
 - Per-model installation, ComfyUI workflow handoff, benchmark and activation runbook.
+- Agency agent workflow with role contracts, stage gates, parallel execution rules and evidence-based reporting.
 - Tests included in the repository test script and GitHub Actions CI workflow.
 - Updated `AGENTS.md` and design index with local creative-production boundaries and documentation.
 
