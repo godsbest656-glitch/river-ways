@@ -2,7 +2,7 @@
 
 **Status date:** 2026-11-07  
 **Integration branch:** `build/river-ways-execution-agency-agents`  
-**Current branch tip:** `ddeb463c2d6bc4a21a2f651a6d45497548002bcf`  
+**Branch tip before this status refresh:** `6597c2d9913402ef027cad81c2d4298d426e65c4`  
 **CI-tested source commit:** `745f24d943a3bbd693436c5ac62d3406e2244fca`  
 **Selected remote website base:** `build/river-ways-execution` at `7eef0ea9cdb4dcd4c344b3fbe99ebd2aacd2bd2d`
 
@@ -20,9 +20,9 @@
 
 ## Branch and PR reconciliation
 
-- The integration branch is **3 commits ahead and 0 behind** `build/river-ways-execution`, with **24 changed paths**.
+- Immediately before this status refresh, the integration branch was **6 commits ahead and 0 behind** `build/river-ways-execution`, with **24 changed paths**. This status refresh adds one documentation-only commit.
 - The branch changes agent definitions, Codex config, Agency Agents docs/licence, validator/tests, root guidance and CI workflow. It does not change website application source, portfolio data, contact handler, route generator, migrations or deployment configuration.
-- Current branch tip `ddeb463` is a documentation-only status refresh on top of CI-tested source commit `745f24d`; the CI workflow ran successfully on `745f24d`. The subsequent commit changes only `docs/agency-agents/IMPLEMENTATION_STATUS.md`.
+- The three commits after CI-tested source commit `745f24d` (`ddeb463`, `a8ad174`, `6597c2d`) are documentation-only updates to the status report, README and first audit task. The CI workflow ran successfully on `745f24d`; none of the later commits changes application code, agent TOML, validator, tests or workflow source.
 - Existing draft PR [#47](https://github.com/godsbest656-glitch/river-ways/pull/47) is an earlier agent-only branch (`feat/river-ways-agency-agents`) against the older `feat/river-ways-ai-design-skills` base. It is not this integration branch and has been left untouched.
 - No PR has been opened or updated for this integration branch; no Preview, merge or deployment has been initiated.
 
