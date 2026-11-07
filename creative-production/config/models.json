@@ -37,7 +37,10 @@
       "territoryExclusions": [
         "European Union",
         "United Kingdom",
-        "South Korea"
+        "South Korea",
+        "EU",
+        "UK",
+        "Korea, Republic of"
       ],
       "hardwareNotes": "Upstream documents minimum 14GB NVIDIA GPU memory with model offloading enabled; Linux, Python 3.10+ and compatible CUDA/PyTorch. Actual speed/quality varies by 480p/720p checkpoint and distillation variant.",
       "role": "conditional-benchmark-candidate",
