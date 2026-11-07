@@ -13,7 +13,10 @@
       "id": "wan-2.2-ti2v-5b",
       "name": "Wan 2.2 TI2V-5B",
       "upstream": "https://github.com/Wan-Video/Wan2.2",
-      "tasks": ["text-to-video", "image-to-video"],
+      "tasks": [
+        "text-to-video",
+        "image-to-video"
+      ],
       "license": "Apache-2.0",
       "licenseGate": "verify exact checkpoint card and model files before use",
       "hardwareNotes": "Upstream documents 720p at 24fps and recommends at least 24GB VRAM for TI2V-5B single-GPU inference.",
@@ -24,10 +27,17 @@
       "id": "hunyuan-video-1.5",
       "name": "HunyuanVideo 1.5",
       "upstream": "https://github.com/Tencent-Hunyuan/HunyuanVideo-1.5",
-      "tasks": ["text-to-video", "image-to-video"],
+      "tasks": [
+        "text-to-video",
+        "image-to-video"
+      ],
       "license": "Tencent Hunyuan Community License",
       "licenseGate": "blocked-for-global-client-deliverables-until-legal-review",
-      "territoryExclusions": ["European Union", "United Kingdom", "South Korea"],
+      "territoryExclusions": [
+        "European Union",
+        "United Kingdom",
+        "South Korea"
+      ],
       "hardwareNotes": "Upstream states minimum 14GB NVIDIA GPU memory with model offloading; Linux and Python 3.10+.",
       "role": "conditional-benchmark-candidate",
       "enabled": false
@@ -36,12 +46,18 @@
       "id": "ltx-2.5",
       "name": "LTX-2.5",
       "upstream": "https://github.com/Lightricks/LTX-2",
-      "tasks": ["text-to-video", "image-to-video", "multi-shot", "audio-video"],
+      "tasks": [
+        "text-to-video",
+        "image-to-video",
+        "multi-shot",
+        "audio-video"
+      ],
       "license": "LTX-2.x Community License for weights; code license is separate",
-      "licenseGate": "verify current model-weight license and commercial eligibility before use",
+      "licenseGate": "LTX-2.x Community License: commercial use without paid license is limited to entities with annual revenue below USD 10 million; at or above USD 10 million a paid commercial agreement is required. Verify current license, revenue threshold and restrictions.",
       "hardwareNotes": "Determine exact VRAM/RAM requirements from the selected checkpoint and current official documentation.",
       "role": "first-benchmark-candidate",
-      "enabled": false
+      "enabled": false,
+      "notes": "Repository code is Apache-2.0; model weights are separately licensed. Check the exact checkpoint and any bundled text encoder/third-party model licenses."
     }
   ],
   "renderers": [
