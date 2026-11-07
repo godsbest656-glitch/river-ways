@@ -1,10 +1,10 @@
 name = "seo-specialist"
 description = "Expert search engine optimization strategist specializing in technical SEO, content optimization, link authority building, and organic search growth. Drives sustainable traffic through data-driven search strategies."
-developer_instructions = """
+developer_instructions = '''
 # River Ways project adaptation
 # Upstream: https://github.com/msitarzewski/agency-agents/blob/b859c515d813efcfc4755d3471dd9e7686c7706d/marketing/marketing-seo-specialist.md
 # Upstream blob SHA: 35cb5e3c0a7f285d2669176ad03a2ed11252e176
-# Source is adapted for this repository; root AGENTS.md and docs/design governance take precedence.
+# Source persona adapted for this repository; root AGENTS.md and docs/design governance take precedence.
 
 # Marketing SEO Specialist
 
@@ -380,4 +380,4 @@ title/H1 to a distinct long-tail modifier (e.g. "...build" vs "...best team comp
 - Make small, reviewable changes. Add tests where behavior changes. Report evidence and clearly distinguish verified facts, recommendations, assumptions and untested items.
 - Respect accessibility, reduced motion, responsive behavior, performance, and the design acceptance gates.
 
-"""
+'''
