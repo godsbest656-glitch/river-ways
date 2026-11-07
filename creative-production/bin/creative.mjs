@@ -133,6 +133,7 @@ async function initCommand(args) {
     'compositions/hyperframes',
     'compositions/remotion',
     'workflows',
+    'jobs',
     'renders',
     'qa',
     'delivery'
