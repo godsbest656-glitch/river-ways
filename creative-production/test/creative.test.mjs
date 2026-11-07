@@ -281,7 +281,8 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
     }));
     await writeFile(path.join(root, 'workflows', 'api.json'), JSON.stringify({
       '1': { class_type: 'UNETLoader', inputs: { unet_name: 'wan2.2_ti2v_5B_fp16.safetensors' } },
-      '2': { class_type: 'SaveVideo', inputs: {} }
+      '2': { class_type: 'CLIPTextEncode', inputs: { text: 'A cinematic blue river current', seed: 42 } },
+      '3': { class_type: 'SaveVideo', inputs: {} }
     }));
     const result = await runComfyProduction({
       projectDirectory: root,
@@ -319,6 +320,10 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
     assert.match(manifest.provenance.workflowSha256, /^[a-f0-9]{64}$/);
     assert.equal(manifest.provenance.model.id, 'wan-2.2-ti2v-5b');
     assert.equal(manifest.provenance.checkpoint, 'wan2.2_ti2v_5B_fp16.safetensors');
+    assert.deepEqual(manifest.provenance.prompt, ['A cinematic blue river current']);
+    assert.deepEqual(manifest.provenance.seed, [42]);
+    assert.equal(manifest.metrics.totalOutputBytes, 4);
+    assert.equal(manifest.metrics.outputCount, 1);
     const saved = path.join(root, 'assets', 'generated', 'test_job_1', 'node-7', 'final.mp4');
     assert.equal((await readFile(saved)).length, 4);
   } finally {
