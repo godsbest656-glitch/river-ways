@@ -17,7 +17,7 @@ This module establishes a local-first production workspace for River Ways. It is
 
 - No model weights are downloaded or bundled.
 - No model inference is invoked by this CLI.
-- No ComfyUI, Diffusers, Wan, Hunyuan or LTX adapter is yet enabled.
+- A loopback-only ComfyUI API adapter is implemented and unit-tested against mocked API responses; no live ComfyUI server or model inference has been verified. No model-specific workflow adapter is enabled.
 - No HyperFrames or Remotion render is claimed as tested.
 - No remote GPU service, public upload endpoint, client portal, automated publishing or unattended client delivery is enabled.
 - No generated media is automatically published or sent to a client.
@@ -43,7 +43,7 @@ node creative-production/bin/creative.mjs init --brief creative-production/examp
 node --test creative-production/test/*.test.mjs
 ```
 
-The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
+The ComfyUI adapter only permits loopback URLs and rejects unsafe output paths. It does not expose a public inference endpoint. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
 
 ## Project structure created by `init`
 
@@ -77,7 +77,7 @@ production/<client-campaign>/
 
 - **Wan 2.2:** Apache-2.0 repository/model license per upstream repository; the TI2V-5B checkpoint is the practical first candidate for a 24GB-class NVIDIA GPU. Verify the exact checkpoint card and its license before use.
 - **HunyuanVideo 1.5:** Tencent Hunyuan Community License, not a generic OSI open-source license. Its published territory excludes the EU, UK and South Korea and has additional third-party service disclosure and acceptable-use conditions. Do not use it for globally distributed client deliverables until counsel has reviewed the territory and distribution obligations.
-- **LTX:** do not treat the legacy LTX-Video repository as the current model. LTX-2.5 is the upstream recommended model for new work, but the code license and model-weight license are separate; verify the exact LTX-2.5 checkpoint's Community License and intended commercial use before activation.
+- **LTX-2.5:** the LTX-2 repository code is Apache-2.0, but model weights are under the separate LTX-2.x Community License. The current license permits commercial production without a paid license only for entities below USD 10 million annual revenue; entities at or above that threshold need a paid commercial agreement. Verify the current license, revenue threshold, restrictions and any separate text-encoder license before activation.
 - **HyperFrames:** Apache-2.0; preferred default renderer for new HTML/CSS/GSAP compositions. Confirm FFmpeg and bundled third-party license obligations in the deployed build.
 - **Remotion:** source-available under a proprietary license, not OSI open source. Free use is conditional; companies with more than three people require a Company License under the published licensing terms. Keep it optional until River Ways' eligibility is confirmed.
 
