@@ -4,7 +4,7 @@
 
 See [`IMPLEMENTATION_STATUS.md`](./IMPLEMENTATION_STATUS.md) for the current evidence record and outstanding owner-side gates.
 
-This integration brings a curated subset of the MIT-licensed `msitarzewski/agency-agents` specialist roster into the River Ways website repository as **project-scoped Codex custom agents**.
+This integration brings nine adapted specialists from the MIT-licensed `msitarzewski/agency-agents` roster plus four original River Ways creative-production specialists into the repository as **project-scoped Codex custom agents**.
 
 These are development-time agents that help inspect, design, implement, optimise and review the River Ways website. They are not a production chatbot, website visitor-facing agent runtime, autonomous deployment system, or replacement for Harvey, Rebuilder or Revenue OS.
 
@@ -26,6 +26,10 @@ Invoke an agent by name in Codex, for example:
 - `Use the Frontend Developer agent to implement the approved change.`
 - `Use the Accessibility Auditor agent to test the changed experience against WCAG 2.2 AA.`
 - `Use the Code Reviewer agent to review the resulting diff for regressions.`
+- `Use the Creative Producer agent to plan a motion-led website hero from an approved brief.`
+- `Use the Video Model Specialist agent to compare locally runnable video models and their licence gates.`
+- `Use the Motion Designer agent to build a seekable HyperFrames composition.`
+- `Use the Media QA Reviewer agent to verify a render and prepare the delivery approval evidence.`
 
 ## Initial website roster
 
@@ -39,6 +43,10 @@ Invoke an agent by name in Codex, for example:
 | `growth-hacker` | Conversion path, experiment hypotheses and measurable growth opportunities |
 | `accessibility-auditor` | WCAG, keyboard, semantics, focus, reduced motion and assistive-technology risks |
 | `code-reviewer` | Correctness, maintainability, security and regression review |
+| `creative-producer` | Campaign/website motion task graph, brief and approval gates |
+| `video-model-specialist` | Local ComfyUI, model hardware/licensing and benchmark evidence |
+| `motion-designer` | HyperFrames/GSAP compositions and approved local rendering |
+| `media-qa-reviewer` | Independent media, rights, brand and delivery QA |
 
 ## Recommended coordinated workflow
 
@@ -56,7 +64,7 @@ Invoke an agent by name in Codex, for example:
 3. Keep the brand spelling **River Ways**. Preserve approved brand and design decisions; do not re-open settled decisions without evidence.
 4. Do not fabricate case studies, client names, testimonials, awards, metrics, credentials, service guarantees or live capabilities.
 5. No production deployment, merge to `main`, DNS/domain/email changes, external outreach, customer-data access, or secret handling by these agents.
-6. Do not install every upstream agent. The nine selected agents are the initial website team; expand only when a demonstrated website task requires another specialist.
+6. Do not install every upstream agent. The initial website team now includes nine core website agents plus four creative-production specialists. Use the four creative specialists only for work that requires campaign/website motion, local video models, rendering or media QA.
 7. Do not add runtime dependencies to the public website merely to enable development-time agents.
 8. Each agent must report verified facts separately from recommendations, assumptions and untested items.
 
@@ -65,7 +73,7 @@ Invoke an agent by name in Codex, for example:
 - Upstream repository: https://github.com/msitarzewski/agency-agents
 - Upstream commit: `b859c515d813efcfc4755d3471dd9e7686c7706d`
 - Licence: MIT; see `third_party/agency-agents/LICENSE`.
-- Original source paths and blob SHAs are recorded in the header comments of each generated TOML file.
+- Original source paths and blob SHAs are recorded in the header comments of the nine upstream-derived TOML files. The four creative-production specialists are original River Ways agent prompts.
 - These files are project-specific adaptations. Keep the upstream source and River Ways overrides distinguishable.
 
 ## What this integration does not do

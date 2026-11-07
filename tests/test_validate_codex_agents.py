@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.validate_codex_agents import validate_agent, validate_root
+from scripts.validate_codex_agents import EXPECTED_AGENT_NAMES, validate_agent, validate_root
 
 
 class CodexAgentValidatorTests(unittest.TestCase):
@@ -22,6 +22,9 @@ class CodexAgentValidatorTests(unittest.TestCase):
             encoding="utf-8",
         )
         return path
+
+    def test_required_roster_includes_creative_production_specialists(self):
+        self.assertTrue({"creative-producer", "video-model-specialist", "motion-designer", "media-qa-reviewer"}.issubset(EXPECTED_AGENT_NAMES))
 
     def test_valid_agent(self):
         self.assertEqual(validate_agent(self.write_agent()), [])

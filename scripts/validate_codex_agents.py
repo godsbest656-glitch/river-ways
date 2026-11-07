@@ -23,6 +23,10 @@ EXPECTED_AGENT_NAMES = frozenset(
         "growth-hacker",
         "accessibility-auditor",
         "code-reviewer",
+        "creative-producer",
+        "video-model-specialist",
+        "motion-designer",
+        "media-qa-reviewer",
     }
 )
 

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <meta name="color-scheme" content="dark">
+  <title>River Ways — Creative Motion Starter</title>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main
+    id="stage"
+    data-composition-id="river-ways-starter"
+    data-start="0"
+    data-duration="8"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div class="field field--one" aria-hidden="true" data-start="0" data-duration="8"></div>
+    <div class="field field--two" aria-hidden="true" data-start="0" data-duration="8"></div>
+    <div class="current current--back" aria-hidden="true" data-start="0" data-duration="8"></div>
+    <div class="current current--front" aria-hidden="true" data-start="0" data-duration="8"></div>
+    <header class="masthead" data-start="0" data-duration="8">
+      <span class="brand">RIVER WAYS</span>
+      <span class="descriptor">CREATIVE DEMAND ENGINEERING</span>
+    </header>
+    <section class="message" data-start="0" data-duration="8">
+      <p class="eyebrow">STRATEGY · CREATIVE · GROWTH</p>
+      <h1>We engineer<br><span>demand.</span></h1>
+      <p class="subline">Find the current. Shape what follows.</p>
+    </section>
+    <footer class="foot" data-start="0" data-duration="8">
+      <span>SHAPED CURRENT</span>
+      <span>01 / 01</span>
+    </footer>
+  </main>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(".field--one", { opacity: 0.12, scale: 0.94 }, { opacity: 0.44, scale: 1.04, duration: 8, ease: "sine.inOut" }, 0);
+    tl.fromTo(".field--two", { opacity: 0.05, x: "-3%", y: "2%" }, { opacity: 0.24, x: "2%", y: "-1%", duration: 8, ease: "sine.inOut" }, 0);
+    tl.fromTo(".current--back", { x: "7%", y: "5%", rotation: -18, opacity: 0.08 }, { x: "-2%", y: "-1%", rotation: -18, opacity: 1, duration: 8, ease: "power2.out" }, 0);
+    tl.fromTo(".current--front", { x: "9%", y: "-2%", rotation: -18, opacity: 0.04 }, { x: "-2%", y: "1%", rotation: -18, opacity: 0.9, duration: 8, ease: "power2.out" }, 0);
+    tl.fromTo(".eyebrow", { opacity: 0, y: 38 }, { opacity: 1, y: 0, duration: 1.1, ease: "power3.out" }, 0.25);
+    tl.fromTo("h1", { opacity: 0, y: 52 }, { opacity: 1, y: 0, duration: 1.35, ease: "power3.out" }, 0.55);
+    tl.fromTo(".subline", { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 1.1, ease: "power3.out" }, 1.05);
+    window.__timelines["river-ways-starter"] = tl;
+    tl.seek(0);
+  </script>
+</body>
+</html>

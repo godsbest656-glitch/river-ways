@@ -1,0 +1,20 @@
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; background: #04172b; }
+body { overflow: hidden; font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; isolation: isolate; color: #f2f8ff; background: radial-gradient(ellipse at 74% 44%, #164e78 0%, #0b2b49 34%, #061d34 68%, #04172b 100%); }
+.field { position: absolute; inset: -20%; pointer-events: none; }
+.field--one { opacity: .12; background: radial-gradient(ellipse at 74% 42%, rgba(58, 178, 238, .38), transparent 34%); }
+.field--two { opacity: .05; background: radial-gradient(ellipse at 22% 88%, rgba(30, 113, 180, .55), transparent 42%); }
+.current { position: absolute; width: 1500px; height: 390px; border: 1px solid rgba(130, 211, 255, .18); border-radius: 50%; filter: blur(.2px); pointer-events: none; }
+.current--back { top: 230px; left: 760px; transform: rotate(-18deg); box-shadow: 0 0 90px rgba(53, 165, 225, .10), inset 0 0 60px rgba(53, 165, 225, .08); }
+.current--front { top: 360px; left: 900px; width: 1320px; height: 250px; transform: rotate(-18deg); border-color: rgba(166, 226, 255, .28); box-shadow: 0 0 110px rgba(69, 176, 232, .12); }
+.masthead, .foot { position: absolute; left: 112px; right: 112px; display: flex; justify-content: space-between; align-items: center; letter-spacing: .18em; }
+.masthead { top: 78px; font-size: 17px; }
+.brand { font-weight: 750; letter-spacing: .22em; }
+.descriptor, .foot { color: rgba(214, 237, 251, .62); font-size: 12px; font-weight: 600; }
+.message { position: absolute; left: 112px; top: 300px; width: 950px; }
+.eyebrow { margin: 0 0 38px; color: #83c9f0; font-size: 15px; font-weight: 700; letter-spacing: .28em; opacity: 0; }
+h1 { margin: 0; font-size: 142px; line-height: .98; letter-spacing: -.075em; font-weight: 650; opacity: 0; }
+h1 span { color: #8dd7ff; }
+.subline { margin: 42px 0 0; color: rgba(229, 244, 255, .76); font-size: 25px; letter-spacing: .015em; opacity: 0; }
+.foot { bottom: 72px; }

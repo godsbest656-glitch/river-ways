@@ -23,6 +23,10 @@ Use the project-scoped agents where available:
 - Growth Hacker: conversion path and measurable experiment hypotheses.
 - Accessibility Auditor: WCAG, keyboard, focus, semantics and reduced motion.
 - Code Reviewer: independent diff review, correctness and regressions.
+- Creative Producer: campaign/website motion production task graph and stage gates.
+- Video Model Specialist: local ComfyUI workflows, model hardware/licence and benchmark evidence.
+- Motion Designer: seekable HyperFrames/GSAP compositions and approved local rendering.
+- Media QA Reviewer: independent FFprobe, rights, brand and delivery-gate review.
 
 Do not invoke every specialist for every task. Delegate only relevant work. Give each specialist a bounded task, repository context, required output and no-go constraints. Consolidate conflicting recommendations and identify the evidence behind decisions. If the runtime cannot spawn a specialist, state that limitation and perform the task yourself without pretending delegation occurred.
 

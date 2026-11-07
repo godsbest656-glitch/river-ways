@@ -1,21 +1,21 @@
 # River Ways Agency Agents — Implementation Status
 
 **Status date:** 2026-11-07  
-**Integration branch:** `build/river-ways-execution-agency-agents`  
-**Branch tip before this status refresh:** `6597c2d9913402ef027cad81c2d4298d426e65c4`  
-**CI-tested source commit:** `745f24d943a3bbd693436c5ac62d3406e2244fca`  
+**Integration branch:** `feat/creative-production-engine-final` (13-agent extension)  
+**Historical nine-agent baseline tip:** `6597c2d9913402ef027cad81c2d4298d426e65c4`  
+**Historical nine-agent CI-tested source commit:** `745f24d943a3bbd693436c5ac62d3406e2244fca`  
 **Selected remote website base:** `build/river-ways-execution` at `7eef0ea9cdb4dcd4c344b3fbe99ebd2aacd2bd2d`
 
 ## Implemented
 
-- Nine project-scoped Codex agents: website orchestrator, UX researcher, brand guardian, UI designer, frontend developer, SEO specialist, growth hacker, accessibility auditor, and code reviewer.
-- All nine agents have River Ways-specific task-selection descriptions and appended project operating constraints.
+- Thirteen project-scoped Codex agents: website orchestrator, UX researcher, brand guardian, UI designer, frontend developer, SEO specialist, growth hacker, accessibility auditor, and code reviewer.
+- All thirteen agents have River Ways-specific task-selection descriptions and appended project operating constraints. Four creative-production specialists cover creative producing, video-model operations, motion design and media QA.
 - The orchestrator and first audit mission explicitly require the canonical Master Website Design, design constitution, route inventory, portfolio contracts, current operating checklist and evidence classification. Dated/historical audits must not be treated as current source evidence.
 - `.codex/config.toml` enables project agents and caps concurrent spawned-agent threads at six. Spawned agents inherit parent-session permissions; this is documented in config and activation guidance.
 - Root `AGENTS.md` integrates the agents into repository operating rules.
 - Upstream MIT license and attribution records.
 - Activation/runtime validation guide, first mission, website readiness audit, ranked implementation backlog and implementation status report.
-- Dependency-free TOML validator enforces required metadata, duplicate-name rejection, and the complete nine-agent roster; regression tests cover missing and complete expected rosters.
+- Dependency-free TOML validator enforces required metadata, duplicate-name rejection, and the complete thirteen-agent roster; regression tests cover missing and complete expected rosters.
 - Topic-branch CI runs the agent validator alongside the existing website build and regression pipeline.
 
 ## Branch and PR reconciliation
@@ -31,11 +31,11 @@
 - Topic-branch workflow [`42378381365`](https://github.com/godsbest656-glitch/river-ways/actions/runs/42378381365) completed with conclusion **success** on commit `745f24d943a3bbd693436c5ac62d3406e2244fca`.
 - All 18 substantive workflow steps passed: project skill validation, Codex-agent validation, validator regression tests, D1 migration validation, dependency installation, website production build, Chromium installation, Playwright browser journeys and accessibility tests, Lighthouse performance/SEO baseline, private Lighthouse artifact upload, enquiry API tests, portfolio contract tests, public portfolio validation and dependency audit. GitHub reports the job and every listed step as completed/success.
 - All commits after the tested source SHA (`ddeb463`, `a8ad174`, `6597c2d`, and the subsequent status refreshes) are documentation-only. No application code, agent TOML, validator, test or workflow source changed after the successful run.
-- The successful workflow therefore validates the current executable/configuration source tree; the documentation-only branch tip itself was not separately re-run.
+- The successful historical workflow validates the original nine-agent baseline. The four creative-production agent files, expanded required roster and new delegation entries on `feat/creative-production-engine-final` are a separate extension and require the current branch CI run before claiming validation.
 
 ## Not verified / owner-side blockers
 
-1. **Local Codex runtime activation:** repository files and CI are verified, but this environment cannot inspect the user's local Codex process. Project trust, discovery of all nine agents, invocation of named custom agents and real subagent delegation remain unverified. Follow `CODEX_ACTIVATION_AND_VALIDATION.md`.
+1. **Local Codex runtime activation:** repository files and CI are verified, but this environment cannot inspect the user's local Codex process. Project trust, discovery of all thirteen agents, invocation of named custom agents and real subagent delegation remain unverified. Follow `CODEX_ACTIVATION_AND_VALIDATION.md`.
 2. **Newest local website worktree reconciliation:** the previously reported local `build/shaped-current-homepage` candidate at `fcdcbef` was not found in the remote branch listing. Preserve and compare that local worktree before selecting the final website baseline. This integration is based on remote `build/river-ways-execution`, not a verified merge with that local candidate.
 3. **First orchestrated audit and implementation:** CI does not prove that the orchestrator has audited the newest reconciled local website worktree or implemented any additional findings.
 4. **Release:** no PR/Preview, merge or deployment has been initiated for this integration branch. Explicit owner approval is required.
@@ -43,6 +43,15 @@
 
 ## Completion definition
 
-The repository integration and its CI validation are complete. The full Agency Agents rollout is not complete until the owner verifies all nine agents in the local Codex runtime and demonstrates real delegation; the newest local website worktree is preserved and reconciled; the orchestrator audits that worktree; critical findings are implemented and independently reviewed; and the owner authorises any PR/Preview and later release steps.
+The original nine-agent repository integration passed its CI baseline. The thirteen-agent extension is being verified on `feat/creative-production-engine-final`. The full Agency Agents rollout is not complete until the owner verifies all thirteen agents in the local Codex runtime and demonstrates real delegation; the newest local website worktree is preserved and reconciled; the orchestrator audits that worktree; critical findings are implemented and independently reviewed; and the owner authorises any PR/Preview and later release steps.
 
 Passing CI validates repository artifacts and website regression checks. It does not prove local runtime activation, reconciliation with unpushed local work, or production readiness.
+
+
+## Creative production workstream
+The local-first creative-production foundation is being developed separately on `feat/creative-production-engine-final`. It is not merged, deployed, or represented as a verified production capability. See `creative-production/IMPLEMENTATION_STATUS.md` for evidence and remaining gates.
+
+
+## Creative production specialist extension
+
+The current feature branch adds four original project-scoped agents: `creative-producer`, `video-model-specialist`, `motion-designer` and `media-qa-reviewer`. The required roster and website-orchestrator delegation guidance now include these specialists. The current feature-branch CI passed in run `42405199419` on commit `9c631402aba77fd54279ba72e359441e07f7b5cb`, including the 13-agent validator and Python regression suite. Local Codex discovery and actual delegation remain owner-side verification.

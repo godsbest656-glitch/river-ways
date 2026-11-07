@@ -4,7 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, feat/creative-production-engine-final]
 
 permissions:
   contents: read
@@ -32,8 +32,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install local HyperFrames CLI
+        run: npm ci --prefix creative-production
+      - name: Validate HyperFrames starter composition
+        working-directory: creative-production/templates/hyperframes
+        run: |
+          ../../node_modules/.bin/hyperframes lint
+          ../../node_modules/.bin/hyperframes browser ensure
+          ../../node_modules/.bin/hyperframes check --json
       - name: Install dependencies
         run: npm install
+      - name: Smoke-test creative production commands
+        run: |
+          npm run creative:doctor
+          npm run creative:models
+          npm run creative:validate
       - name: Build website
         run: npm run build
       - name: Install Chromium for browser tests
@@ -55,7 +68,10 @@ jobs:
         run: npm run test:api
       - name: Test portfolio contracts
         run: npm run test:portfolio
+      - name: Test creative production foundation
+        run: npm run test:creative
       - name: Validate public portfolio data
         run: npm run validate:portfolio
       - name: Audit dependencies
         run: npm audit --audit-level=high
+
