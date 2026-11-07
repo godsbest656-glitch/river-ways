@@ -26,6 +26,55 @@ async function collectHtmlFiles(directory) {
   return files;
 }
 
+
+async function validateStructuredData() {
+  const routes = [...fixedRoutes, ...projects.map((project) => "/work/" + project.slug + "/")];
+  for (const route of routes) {
+    const relativePath = route === "/" ? "index.html" : path.join(route.replace(/^\/+|\/+$/g, ""), "index.html");
+    const file = path.join(dist, relativePath);
+    if (!(await exists(file))) {
+      failures.push("Missing indexable route document for structured data: " + route);
+      continue;
+    }
+
+    const html = await fs.readFile(file, "utf8");
+    const canonical = "https://riverwayse.com" + route;
+    const canonicalMatch = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i);
+    if (!canonicalMatch || canonicalMatch[1] !== canonical) {
+      failures.push("Missing or incorrect canonical URL for " + route);
+    }
+
+    const schemaMatch = html.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/i);
+    if (!schemaMatch) {
+      failures.push("Missing JSON-LD structured data for " + route);
+      continue;
+    }
+
+    let structured;
+    try {
+      structured = JSON.parse(schemaMatch[1]);
+    } catch {
+      failures.push("Invalid JSON-LD syntax for " + route);
+      continue;
+    }
+
+    const graph = Array.isArray(structured["@graph"]) ? structured["@graph"] : [];
+    const types = new Set(graph.map((item) => item && item["@type"]));
+    for (const requiredType of ["Organization", "WebSite", "WebPage", "BreadcrumbList"]) {
+      if (!types.has(requiredType)) failures.push("Missing " + requiredType + " schema node for " + route);
+    }
+
+    const webpage = graph.find((item) => item && item["@type"] === "WebPage");
+    if (!webpage || webpage.url !== canonical) failures.push("WebPage schema URL does not match canonical for " + route);
+
+    const breadcrumb = graph.find((item) => item && item["@type"] === "BreadcrumbList");
+    const items = breadcrumb && Array.isArray(breadcrumb.itemListElement) ? breadcrumb.itemListElement : [];
+    if (!items.length || items[items.length - 1].item !== canonical) {
+      failures.push("Breadcrumb schema does not terminate at the canonical route for " + route);
+    }
+  }
+}
+
 async function validateInternalReferences() {
   const htmlFiles = await collectHtmlFiles(dist);
   for (const file of htmlFiles) {
@@ -54,6 +103,7 @@ async function validateInternalReferences() {
 }
 
 await validateInternalReferences();
+await validateStructuredData();
 
 const notFoundPath = path.join(dist, "404.html");
 if (!(await exists(notFoundPath))) failures.push("Missing Cloudflare Pages 404.html fallback");

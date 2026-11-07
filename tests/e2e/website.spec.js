@@ -47,6 +47,28 @@ test("a Creative Studio study opens its canonical work detail route", async ({ p
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://riverwayse.com/work/identity-with-a-point-of-view/");
 });
 
+test("indexable routes publish connected Organization, WebSite, WebPage and Breadcrumb schema", async ({ page }) => {
+  for (const route of [
+    "/", "/about/", "/services/", "/work/",
+    "/work/identity-with-a-point-of-view/",
+    "/work/ideas-built-to-travel/",
+    "/work/experiences-with-dimension/",
+    "/work/river-ways-website/",
+    "/work/growth-diagnostic/",
+    "/contact/", "/growth-diagnostic/", "/field-guide/",
+    "/insights/", "/privacy/", "/terms/"
+  ]) {
+    await page.goto(route);
+    const graph = await page.locator('script[type="application/ld+json"]').evaluate((script) => JSON.parse(script.textContent));
+    expect(graph["@context"]).toBe("https://schema.org");
+    expect(graph["@graph"].map((item) => item["@type"])).toEqual(expect.arrayContaining(["Organization", "WebSite", "WebPage", "BreadcrumbList"]));
+    const webpage = graph["@graph"].find((item) => item["@type"] === "WebPage");
+    expect(webpage.url).toBe("https://riverwayse.com" + route);
+    const breadcrumb = graph["@graph"].find((item) => item["@type"] === "BreadcrumbList");
+    expect(breadcrumb.itemListElement.at(-1).item).toBe("https://riverwayse.com" + route);
+  }
+});
+
 test("all public content routes return their own documents", async ({ page }) => {
   const routes = [
     "/about/", "/services/", "/work/",

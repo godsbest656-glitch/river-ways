@@ -14,6 +14,74 @@ const escapeHtml = (value) => String(value ?? "")
   .replace(/"/g, "&quot;")
   .replace(/'/g, "&#39;");
 
+
+const organizationDescription = "River Ways connects commercial strategy, creative direction, digital experiences and demand systems to help businesses move from market attention to meaningful action.";
+const organizationId = baseUrl + "/#organization";
+const websiteId = baseUrl + "/#website";
+
+function structuredData(title, description, route) {
+  const canonical = baseUrl + route;
+  const segments = route.split("/").filter(Boolean);
+  const breadcrumbs = [{ name: "Home", item: baseUrl + "/" }];
+  if (segments[0] === "work" && segments.length > 1) {
+    breadcrumbs.push({ name: "Work", item: baseUrl + "/work/" });
+  }
+  if (route !== "/") breadcrumbs.push({ name: title, item: canonical });
+
+  const graph = [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: "River Ways",
+      url: baseUrl + "/",
+      email: "akinsify0511@gmail.com",
+      description: organizationDescription,
+      knowsAbout: [
+        "Creative Demand Engineering",
+        "Demand generation",
+        "Brand strategy and creative direction",
+        "Search engine optimization",
+        "AI search visibility",
+        "Website design and conversion optimization",
+        "Performance marketing",
+        "Content systems",
+        "Demand intelligence"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      name: "River Ways",
+      url: baseUrl + "/",
+      publisher: { "@id": organizationId }
+    },
+    {
+      "@type": "WebPage",
+      "@id": canonical + "#webpage",
+      name: title,
+      description,
+      url: canonical,
+      isPartOf: { "@id": websiteId },
+      publisher: { "@id": organizationId },
+      breadcrumb: { "@id": canonical + "#breadcrumb" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": canonical + "#breadcrumb",
+      itemListElement: breadcrumbs.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        item: item.item
+      }))
+    }
+  ];
+
+  return '<script type="application/ld+json">' +
+    JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c") +
+    "</script>";
+}
+
 const navItems = [
   { key: "about", label: "About", href: "/about/" },
   { key: "services", label: "Services", href: "/services/" },
@@ -60,8 +128,9 @@ function shell({ title, description, route, activeNav, content, robots = "index,
     '<meta name="robots" content="' + robots + '">' +
     '<link rel="canonical" href="' + canonical + '">' +
     '<meta property="og:type" content="website"><meta property="og:title" content="' + safeTitle + '">' +
-    '<meta property="og:description" content="' + safeDescription + '"><meta property="og:url" content="' + canonical + '">' +
-    '<meta name="twitter:card" content="summary"><title>' + safeTitle + "</title>" +
+    '<meta property="og:description" content="' + safeDescription + '"><meta property="og:url" content="' + canonical + '"><meta property="og:site_name" content="River Ways">' +
+    '<meta name="twitter:card" content="summary"><meta name="twitter:title" content="' + safeTitle + '"><meta name="twitter:description" content="' + safeDescription + '">' +
+    structuredData(title, description, route) + '<title>' + safeTitle + "</title>" +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">' +
     '<link rel="stylesheet" href="/site-pages.css"><script src="/site-pages.js" defer></script></head>' +
