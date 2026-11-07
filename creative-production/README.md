@@ -14,6 +14,20 @@ This module establishes a local-first production workspace for River Ways. It is
 - A human approval boundary before a project is considered ready for client delivery.
 - A loopback-only ComfyUI adapter for queueing API-format workflows, polling job history and saving validated outputs; covered by mocked API tests.
 
+## Local render commands
+
+Install the pinned local HyperFrames CLI from this folder with `npm install`. It is a local dependency; do not use HyperFrames cloud render, publish, or other paid/remote services.
+
+HyperFrames (after a human has reviewed and approved the composition):
+
+```bash
+npm run render -- hyperframes --project ../production/<client-campaign>/compositions/hyperframes --output renders/final.mp4 --approved
+```
+
+Remotion is deliberately not installed by default. Only install and use its CLI after confirming the current Remotion free-license eligibility and accepting its terms. Its render command requires all three explicit flags: `--approved --license-acknowledged --free-license-eligible`.
+
+The render adapters run local CLIs without a shell, require explicit approval, refuse to overwrite existing outputs, and verify that a non-empty file was produced. Renderer tests use mocked CLI processes; a real render has not yet been performed.
+
 ## What is not yet implemented
 
 - No model weights are downloaded or bundled.
@@ -27,7 +41,7 @@ These are intentional gates, not hidden capabilities.
 
 ## Requirements
 
-- Node.js 20+ (built-in modules only for this foundation).
+- Node.js 22+ (required by the pinned HyperFrames CLI; the brief/ComfyUI modules use built-in Node APIs).
 - FFmpeg and ffprobe are recommended for subsequent media validation.
 - Python and NVIDIA tooling are optional at this stage.
 - GPU/model requirements vary by checkpoint. See `config/models.json` and the upstream model documentation before downloading weights.
@@ -42,6 +56,8 @@ node creative-production/bin/creative.mjs doctor
 node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json
 node creative-production/bin/creative.mjs init --brief creative-production/examples/sample-brief.json --out ./production
 node --test creative-production/test/*.test.mjs
+cd creative-production && npm install
+npm run render -- hyperframes --project ../production/<client-campaign>/compositions/hyperframes --output renders/final.mp4 --approved
 ```
 
 The ComfyUI adapter only permits loopback URLs and rejects unsafe output paths. It does not expose a public inference endpoint. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
