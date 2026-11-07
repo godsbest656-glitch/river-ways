@@ -132,6 +132,7 @@ async function initCommand(args) {
     'assets/rejected',
     'compositions/hyperframes',
     'compositions/remotion',
+    'workflows',
     'renders',
     'qa',
     'delivery'
