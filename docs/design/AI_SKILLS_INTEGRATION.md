@@ -1,6 +1,6 @@
 # River Ways — AI development resource integration
 
-**Status:** Project-level resources implemented on a topic branch; integration into the consolidated website branch is awaiting review and CI.
+**Status:** Five project-level skills, the validator and the browser-quality workflow are integrated on `build/river-ways-execution`. The skill and migration validators pass. The latest browser/accessibility run is being rechecked after fixing the last reported contrast issue; see `IMPLEMENTATION_STATUS_2026-11-07.md`.
 
 ## Why this exists
 
@@ -42,8 +42,8 @@ The website work spans design, frontend, backend, content, media, SEO and releas
 
 | Resource | License | Recommended use | Current decision |
 |---|---|---|---|
-| Playwright | Apache-2.0 | Real-browser, responsive and end-to-end testing across Chromium, Firefox and WebKit | Adopt as the preferred browser harness once PR #24's configuration and stale tests are reconciled |
-| axe-core | MPL-2.0 | Automated accessibility checks inside browser tests | Use with Playwright; automated scans do not replace manual WCAG review |
+| Playwright | Apache-2.0 | Real-browser, responsive and end-to-end testing across Chromium, Firefox and WebKit | Adopted as the single desktop/mobile Chromium E2E harness; adapted to current routes and interactions |
+| axe-core | MPL-2.0 | Automated accessibility checks inside browser tests | Adopted through `@axe-core/playwright`; scans cover key routes, with manual WCAG review still required |
 | Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Introduce after route inventory and production-like output are stable; establish measured baselines first |
 | Node `node:test` | Node.js built-in | Existing API/unit tests | Keep using the current test runner; no additional API test framework is needed |
 
@@ -55,13 +55,15 @@ Primary sources:
 
 ## Project CI resource
 
-`.github/workflows/topic-build.yml` runs the Agent Skills validator and its regression tests, the production build, existing API tests and high-severity dependency audit on non-main topic-branch pushes. It does not deploy. This closes the gap between local topic work and PR-only checks while avoiding the repository's automatic Preview workflow during implementation.
+`.github/workflows/topic-build.yml` and `.github/workflows/ci.yml` run skill validation, migration validation, the production build, Playwright/axe browser checks, API tests, portfolio tests, public-data validation and the high-severity dependency audit. These workflows do not deploy. The topic workflow runs on non-main branch pushes and avoids the repository's automatic Preview workflow.
 
-## Why the browser tools are not installed yet
+## Browser harness adaptation
 
-PR #24 contains an existing Playwright configuration and browser suite, but those tests target an older homepage and selectors. The correct next step is to adapt that harness to current routes and interactions, not install a competing framework. No new browser-testing npm dependency was added in this increment.
+PR #24 contained a Playwright configuration and older tests tied to an earlier homepage. The existing harness was reconciled rather than replaced. The current tests cover desktop and mobile Chromium, primary navigation, generated routes, portfolio filtering and project detail links, Demand Intelligence controls, enquiry validation and saved-but-unnotified responses, Growth Diagnostic attribution handoff, horizontal overflow, and axe scans on key routes.
 
-Lighthouse CI is deferred until the intended routes and production-like output are stable. Public temporary report storage is not enabled; any report upload destination must be reviewed for privacy first.
+The Growth Diagnostic handoff now preserves only approved UTM fields plus a fixed journey, engagement and original landing-path context. It does not send diagnostic answers or scores. Browser tests mock the endpoint; they do not contact Resend or write to D1.
+
+Lighthouse CI remains deferred until the browser baseline is stable and a performance budget can be measured. Public temporary report storage is not enabled; any report destination must be reviewed for privacy first.
 
 ## How agents must use the skills
 
@@ -81,7 +83,7 @@ When the owner says deployment is deferred, continue committing to a topic branc
 
 ## Boundaries
 
-- No npm dependency was added in the resource increment.
+- Browser and accessibility tooling is installed as development-only dependencies; no production runtime dependency was added.
 - No production workflow, DNS, secret, database or production setting was changed.
 - The repository automatically deployed a non-production PR preview when PR #46 was opened; this was an existing workflow side effect, not a production release.
-- Skills are procedural aids, not proof that any website task has been completed.
+- Skills are procedural aids, not proof that any website task has been completed. Current execution status and remaining release blockers are tracked in `IMPLEMENTATION_STATUS_2026-11-07.md`.

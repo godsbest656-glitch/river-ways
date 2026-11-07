@@ -1,5 +1,7 @@
 # River Ways — Implementation Refinement Audit
 
+> **Historical baseline:** this audit predates `build/river-ways-execution` and describes earlier PR #31/#32 states. The Creative Studio, static route generation, enquiry hardening, skills integration and browser test harness have since been implemented on the execution branch. For current facts, read [Implementation Status](./IMPLEMENTATION_STATUS_2026-11-07.md). Do not treat the old “remaining refinement priorities” below as uncompleted without checking the current branch.
+
 **Audit basis:** source inspection of `design/we-engineer-demand-homepage` and rendered text/metadata extracted from the existing PR #31 Cloudflare preview.  
 **Important:** the inspected public preview was PR #31 at commit `4228f76493f922e4a3233b60d73304639e773730`, not the newer PR #32 branch. It still displayed the older headline “Make demand move.” The PR #32 candidate must be inspected separately before approval.
 

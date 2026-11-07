@@ -4,14 +4,15 @@
 
 ## Read and follow in this order
 
-1. [Master Website Design](./RIVER_WAYS_MASTER_DESIGN.md) — **binding current decision** for brand, experience, narrative, routes, evidence, implementation boundaries, and consolidation.
-2. [Design Constitution](./DESIGN_CONSTITUTION.md) — enduring quality principles and decision hierarchy.
-3. [Creative Direction Brief](./CREATIVE_DIRECTION_BRIEF.md) — audience, positioning, art direction, and experience intent.
-4. [Design System Architecture](./DESIGN_SYSTEM_ARCHITECTURE.md) — how the approved system is expressed in code.
-5. [Design Agent Protocol](./DESIGN_AGENT_PROTOCOL.md) — required audit, implementation, and review process.
-6. [Design Acceptance Gates](./DESIGN_ACCEPTANCE_GATES.md) — evidence required before approval or release.
-7. [AI Developer Kickoff](./AI_DEVELOPER_KICKOFF.md) — current consolidation and refinement assignment.
-8. [Implementation Refinement Audit](./IMPLEMENTATION_REFINEMENT_AUDIT.md) — observed gaps, completed changes, and evidence still required.
+1. [Implementation Status](./IMPLEMENTATION_STATUS_2026-11-07.md) — current branch, verified implementation, CI evidence and release blockers.
+2. [Master Website Design](./RIVER_WAYS_MASTER_DESIGN.md) — **binding current decision** for brand, experience, narrative, routes, evidence, implementation boundaries, and consolidation.
+3. [Design Constitution](./DESIGN_CONSTITUTION.md) — enduring quality principles and decision hierarchy.
+4. [Creative Direction Brief](./CREATIVE_DIRECTION_BRIEF.md) — audience, positioning, art direction, and experience intent.
+5. [Design System Architecture](./DESIGN_SYSTEM_ARCHITECTURE.md) — how the approved system is expressed in code.
+6. [Design Agent Protocol](./DESIGN_AGENT_PROTOCOL.md) — required audit, implementation, and review process.
+7. [Design Acceptance Gates](./DESIGN_ACCEPTANCE_GATES.md) — evidence required before approval or release.
+8. [AI Developer Kickoff](./AI_DEVELOPER_KICKOFF.md) — current consolidation and refinement assignment.
+9. [Implementation Refinement Audit](./IMPLEMENTATION_REFINEMENT_AUDIT.md) — observed gaps, completed changes, and evidence still required.
 
 ## Decision status
 

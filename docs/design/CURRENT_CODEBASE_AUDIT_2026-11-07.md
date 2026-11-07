@@ -7,7 +7,9 @@
 **Audit type:** source, branch, route, integration, operational and release evidence review  
 **Production changes:** none made by this audit
 
-This report supersedes older status snapshots only for the facts explicitly rechecked below. Historical reports remain useful evidence but do not prove that local-only artifacts are present in the current GitHub repository.
+> **Historical baseline:** this audit records the repository state at `653334925d2f8ce2dce793d4db82775b9703a6ac`, before the current `build/river-ways-execution` work. Its gap list and PR topology are not the current implementation status. See [Implementation Status](./IMPLEMENTATION_STATUS_2026-11-07.md) for the current branch, verified changes, CI state and release blockers.
+
+This report remains useful as a baseline and historical evidence record; do not use its initial gap list as a current-state checklist without reconciling it against the implementation status.
 
 ## 1. Executive finding
 

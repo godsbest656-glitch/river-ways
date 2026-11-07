@@ -60,3 +60,20 @@ The dynamic project route generates one concrete page for every public, publishe
 ## Release boundary
 
 The generator and route validation are part of the topic-branch build. This work does not configure Cloudflare, alter DNS, deploy a preview or publish production. HTTP status behaviour for the unknown-route fallback still requires a later preview/production-host verification.
+
+
+## Current implementation on `build/river-ways-execution`
+
+The baseline above describes the repository before route implementation. The current execution branch now contains:
+
+- 11 generated HTML documents: About, Services, Work index, five project details, Contact, Insights and Terms.
+- The homepage plus maintained Growth Diagnostic, Field Guide and Privacy documents.
+- A 15-URL sitemap generated from the canonical public project records.
+- Shared static-page header/footer, responsive CSS and navigation behavior.
+- Work filters and deterministic shuffle powered by the canonical portfolio data.
+- A route validator that checks generated outputs, canonical metadata, sitemap uniqueness, local asset references, internal links and the 404 document.
+- Playwright desktop/mobile route checks against the generated output.
+
+The 404 document is present and marked `noindex`. Its real unknown-route HTTP status still requires a Cloudflare Pages Preview check; Vite preview is not proof of Cloudflare routing behavior.
+
+See [Implementation Status](./IMPLEMENTATION_STATUS_2026-11-07.md) for exact commit and CI evidence.
