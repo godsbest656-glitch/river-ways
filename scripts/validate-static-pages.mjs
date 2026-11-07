@@ -21,7 +21,7 @@ async function collectHtmlFiles(directory) {
   for (const entry of entries) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...await collectHtmlFiles(fullPath));
-    else if (entry.isFile() && /\\.html?$/i.test(entry.name)) files.push(fullPath);
+    else if (entry.isFile() && /\.html?$/i.test(entry.name)) files.push(fullPath);
   }
   return files;
 }
@@ -32,7 +32,7 @@ async function validateInternalReferences() {
     const relativeFile = path.relative(dist, file).split(path.sep).join("/");
     const currentUrl = "https://riverwayse.com/" + relativeFile;
     const html = await fs.readFile(file, "utf8");
-    for (const match of html.matchAll(/\\b(?:href|src)="([^"]+)"/g)) {
+    for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
       const reference = match[1].trim();
       if (!reference || reference.startsWith("#") || /^(?:data:|blob:|mailto:|tel:|javascript:)/i.test(reference)) continue;
       let url;
@@ -42,8 +42,8 @@ async function validateInternalReferences() {
       try { pathname = decodeURIComponent(url.pathname); } catch { failures.push("Invalid URL encoding in " + relativeFile + ": " + reference); continue; }
       let target;
       if (pathname === "/") target = path.join(dist, "index.html");
-      else if (path.extname(pathname)) target = path.join(dist, pathname.replace(/^\\/+/, ""));
-      else target = path.join(dist, pathname.replace(/^\\/+|\\/+$/g, ""), "index.html");
+      else if (path.extname(pathname)) target = path.join(dist, pathname.replace(/^\/+/, ""));
+      else target = path.join(dist, pathname.replace(/^\/+|\/+$/g, ""), "index.html");
       if (!(await exists(target))) failures.push("Broken internal reference in " + relativeFile + ": " + reference);
     }
   }
