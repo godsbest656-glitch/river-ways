@@ -31,7 +31,7 @@ export function ProjectCard({
           <button
             className="rw-project-action"
             type="button"
-            aria-label={"Explore " + project.title}
+            aria-label={"Explore project: " + project.title}
             onClick={() => onProjectSelect({ projectId: project.id, slug: project.slug, surface })}
           >
             Explore project

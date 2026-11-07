@@ -18,8 +18,8 @@ test("homepage explains the proposition and exposes clear routes", async ({ page
     await expect(page.getByRole("button", { name: "Open navigation" })).toHaveAttribute("aria-expanded", "false");
   } else {
     await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Work", exact: true })).toHaveAttribute("href", "/work/");
-    await expect(page.getByRole("link", { name: "Insights", exact: true })).toHaveAttribute("href", "/insights/");
+    await expect(page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "Work", exact: true })).toHaveAttribute("href", "/work/");
+    await expect(page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "Insights", exact: true })).toHaveAttribute("href", "/insights/");
   }
 });
 
@@ -33,7 +33,7 @@ test("all seven core capabilities and the creative studies are represented", asy
 
 test("Demand Intelligence workflow controls update the selected step", async ({ page }) => {
   await page.goto("/");
-  const learn = page.getByRole("button", { name: /Learn/i });
+  const learn = page.locator(".step-tabs").getByRole("button", { name: /Learn/i });
   await learn.click();
   await expect(learn).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("region", { name: "Selected Demand Intelligence workflow step" })).toContainText("Improve the system.");
@@ -41,7 +41,7 @@ test("Demand Intelligence workflow controls update the selected step", async ({ 
 
 test("a Creative Studio study opens its canonical work detail route", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: /Explore Identity with a point of view/i }).click();
+  await page.getByRole("button", { name: /Explore project: Identity with a point of view/i }).click();
   await expect(page).toHaveURL(/\/work\/identity-with-a-point-of-view\/$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Identity with a point of view");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://riverwayse.com/work/identity-with-a-point-of-view/");
@@ -68,11 +68,11 @@ test("all public content routes return their own documents", async ({ page }) =>
 
 test("work filters narrow the visible portfolio without hiding the whole collection", async ({ page }) => {
   await page.goto("/work/");
-  const cards = page.locator("[data-project-card]");
+  const cards = page.locator("[data-project-card]:visible");
   await expect(cards).toHaveCount(5);
   await page.locator("[data-filter-category]").selectOption("brand-identity");
   await expect(cards).toHaveCount(1);
-  await expect(page.locator("[data-work-status]")).toContainText("1 projects shown");
+  await expect(page.locator("[data-work-status]")).toContainText("1 project shown");
   await page.locator("[data-clear-filters]").click();
   await expect(cards).toHaveCount(5);
 });
