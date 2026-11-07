@@ -4,7 +4,7 @@ Run this task against the **latest actual River Ways website worktree**, not aut
 
 ## Worktree alignment — mandatory
 
-The agent definitions have been ported to `build/river-ways-execution-agency-agents`, a topic branch created from the remote website implementation candidate `build/river-ways-execution`. The latest recorded status snapshot for that candidate is `c78a796a85dc6b18b5fc2230d0e95f5763815927`; verify the actual branch HEAD locally rather than trusting this recorded value.
+The agent definitions have been ported to `build/river-ways-execution-agency-agents`, a topic branch created from the remote website implementation candidate `build/river-ways-execution`. The selected remote base commit for this integration is `7eef0ea9cdb4dcd4c344b3fbe99ebd2aacd2bd2d`; verify the actual branch HEAD locally rather than trusting this recorded value.
 
 A separately reported local visual candidate (`build/shaped-current-homepage` at `fcdcbef` in the most recent report, previously `059b084`) was not found in the remote branch listing. It may still exist in the user's local workspace and may contain newer visual work. Preserve and compare it before choosing a release candidate.
 
