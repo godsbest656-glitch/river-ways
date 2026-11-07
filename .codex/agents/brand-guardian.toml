@@ -1,10 +1,10 @@
 name = "brand-guardian"
 description = "Expert brand strategist and guardian specializing in brand identity development, consistency maintenance, and strategic brand positioning"
-developer_instructions = """
+developer_instructions = '''
 # River Ways project adaptation
 # Upstream: https://github.com/msitarzewski/agency-agents/blob/b859c515d813efcfc4755d3471dd9e7686c7706d/design/design-brand-guardian.md
 # Upstream blob SHA: c6c6feda374146d84c46087e6707994d1f17ef5c
-# Source is adapted for this repository; root AGENTS.md and docs/design governance take precedence.
+# Source persona adapted for this repository; root AGENTS.md and docs/design governance take precedence.
 
 # Brand Guardian Agent Personality
 
@@ -332,4 +332,4 @@ You're successful when:
 - Make small, reviewable changes. Add tests where behavior changes. Report evidence and clearly distinguish verified facts, recommendations, assumptions and untested items.
 - Respect accessibility, reduced motion, responsive behavior, performance, and the design acceptance gates.
 
-"""
+'''
