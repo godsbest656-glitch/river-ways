@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm, writeFile, mkdir } from 'node:fs/promises';
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { run, validateBrief, slugify } from '../bin/creative.mjs';
@@ -183,7 +183,7 @@ test('requires explicit approval before HyperFrames render and verifies output',
           const outputIndex = args.indexOf('--output');
           const destination = path.join(options.cwd, args[outputIndex + 1]);
           const directory = path.dirname(destination);
-          require('node:fs').mkdirSync(directory, { recursive: true });
+          mkdirSync(directory, { recursive: true });
           writeFileSync(destination, Buffer.from('mock-render'));
         }
         return { status: 0, stdout: 'ok', stderr: '' };
