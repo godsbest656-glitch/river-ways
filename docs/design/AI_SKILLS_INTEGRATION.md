@@ -55,7 +55,7 @@ Primary sources:
 
 ## Project CI resource
 
-`.github/workflows/topic-build.yml` runs the production build, existing API tests and high-severity dependency audit on non-main topic-branch pushes. It does not deploy. This closes the gap between local topic work and PR-only checks while avoiding the repository's automatic Preview workflow during implementation.
+`.github/workflows/topic-build.yml` runs the Agent Skills validator and its regression tests, the production build, existing API tests and high-severity dependency audit on non-main topic-branch pushes. It does not deploy. This closes the gap between local topic work and PR-only checks while avoiding the repository's automatic Preview workflow during implementation.
 
 ## Why the browser tools are not installed yet
 
