@@ -113,9 +113,17 @@ test('saves ComfyUI output using a safe filename and refuses path traversal', as
       saveComfyOutput({
         output: { filename: '../escape.mp4' },
         destinationDirectory: root,
-        fetchImpl: async () => new Response(new Uint8Array([1]), { status: 200 })
+        fetchImpl: async () => { throw new Error('must not fetch an unsafe filename'); }
       }),
       /safe basename/
+    );
+    await assert.rejects(
+      saveComfyOutput({
+        output: { filename: 'clip.mp4', subfolder: '../escape' },
+        destinationDirectory: root,
+        fetchImpl: async () => { throw new Error('must not fetch an unsafe subfolder'); }
+      }),
+      /safe relative path/
     );
   } finally {
     await rm(root, { recursive: true, force: true });
