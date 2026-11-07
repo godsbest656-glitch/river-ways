@@ -11,6 +11,7 @@ from typing import Any
 
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REQUIRED_FIELDS = ("name", "description", "developer_instructions")
+# Keep this required roster aligned with the project agents documented in docs/agency-agents/README.md.
 EXPECTED_AGENT_NAMES = frozenset(
     {
         "website-orchestrator",
