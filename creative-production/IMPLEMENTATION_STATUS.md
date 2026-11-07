@@ -40,6 +40,7 @@ Node.js v22.16.0 isolated harness: **13/13 tests passed** across brief validatio
 2. No live ComfyUI server or model-specific workflow has been tested.
 3. No HyperFrames or Remotion real render has been performed; renderer tests use mocked CLI processes.
 4. No GPU, VRAM, RAM, CUDA/driver, storage or OS compatibility assessment has been captured.
+5. The nested HyperFrames package is version-pinned, but its package lock has not been generated because package installation/network access was unavailable; run `npm install` in `creative-production/` and commit the resulting lockfile before relying on reproducible installs.
 5. No internal Creative Studio UI, job database, authentication, multi-user permissions, client portal, publishing integration or automated batch approval workflow exists yet.
 6. No client assets may be submitted to a model or used for fine-tuning without explicit written permission.
 7. The public website has not been changed to claim this is an operational, production-proven service.
