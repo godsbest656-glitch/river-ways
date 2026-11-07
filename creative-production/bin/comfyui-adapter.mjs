@@ -84,11 +84,11 @@ export async function saveComfyOutput({
     throw new Error('ComfyUI output must include a filename');
   }
   const safeName = path.basename(output.filename);
-  if (safeName !== output.filename || /[\\\\/]/.test(output.filename) || safeName === '.' || safeName === '..') {
+  if (safeName !== output.filename || /[\\/]/.test(output.filename) || safeName === '.' || safeName === '..') {
     throw new Error('ComfyUI output filename is not a safe basename');
   }
   const subfolder = output.subfolder ?? '';
-  if (path.isAbsolute(subfolder) || subfolder.split(/[\\/]+/).some((part) => part === '..')) {
+  if (path.isAbsolute(subfolder) || /^[\\/]|^[A-Za-z]:/.test(subfolder) || subfolder.split(/[\\/]+/).some((part) => part === '..')) {
     throw new Error('ComfyUI output subfolder is not a safe relative path');
   }
   const outputType = output.type ?? 'output';
