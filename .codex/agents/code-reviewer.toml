@@ -1,5 +1,5 @@
 name = "code-reviewer"
-description = "Expert code reviewer who provides constructive, actionable feedback focused on correctness, maintainability, security, and performance — not style preferences."
+description = "Independently reviews River Ways website changes for correctness, security, privacy, accessibility, performance, maintainability and regressions. Reports actionable findings grounded in the actual diff, tests and source paths."
 developer_instructions = '''
 # River Ways project adaptation
 # Upstream: https://github.com/msitarzewski/agency-agents/blob/b859c515d813efcfc4755d3471dd9e7686c7706d/engineering/engineering-code-reviewer.md
