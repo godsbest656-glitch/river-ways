@@ -68,7 +68,7 @@ The same run passed the complete repository checks: all 13 Codex agent definitio
 5. Record generation time, peak VRAM, peak RAM, output size, failure rate, temporal consistency, text fidelity, image quality and commercial license status.
 6. Select the first model backend based on actual hardware and measured quality; keep other model adapters disabled until they pass.
 7. Add cancellation, retries, access control, multi-user permissions and a client approval portal before building an internal Creative Studio UI. Basic local JSON job persistence, progress, provenance and one-at-a-time human delivery approval are already implemented.
-7. Review the consolidated branch diff. Keep the branch unmerged and do not open a PR until the owner authorises Preview, because PR activity triggers Cloudflare Preview.
+8. Review the consolidated branch diff. Keep the branch unmerged and do not open a PR until the owner authorises Preview, because PR activity triggers Cloudflare Preview.
 
 ## Current owner input needed
 
@@ -77,4 +77,4 @@ The next hardware-dependent step cannot be selected responsibly without the GPU 
 
 ## Branch reconciliation
 
-This working branch was created directly from the latest observed agency-agent integration branch. GitHub compare reports **0 commits behind**. The feature branch has one consolidated implementation commit plus a status-only evidence update; the agency-agent baseline is retained without ancestry divergence. No PR, Preview, merge or deployment has been initiated.
+This working branch was created directly from the latest observed agency-agent integration branch. GitHub compare reports **0 commits behind**. The feature branch has one consolidated implementation commit plus status-only evidence updates; the agency-agent baseline is retained without ancestry divergence. No PR, Preview, merge or deployment has been initiated.
