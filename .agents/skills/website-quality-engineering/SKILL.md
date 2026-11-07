@@ -14,6 +14,7 @@ Read `AGENTS.md`, `docs/design/RIVER_WAYS_MASTER_DESIGN.md`, `docs/design/DESIGN
 3. Reuse the current test framework and existing E2E coverage before adding tools.
 4. Identify which checks can run locally, in CI, against a preview, or only with owner-controlled configuration.
 5. Never assume a route, secret, binding, browser, test runner or deployment exists.
+6. Inspect pull-request workflow triggers before opening or updating a PR. This repository currently deploys a Cloudflare Pages Preview automatically on PR activity. If the owner has deferred preview/deployment, do not create or update a PR until authorised.
 
 ## Verification layers
 Run and report each layer independently:

@@ -55,9 +55,9 @@ Primary sources:
 
 ### Why the browser tools are not installed in this increment
 
-The current consolidated branch's package manifest contains React 18, Vite 6 and the Node API test runner, but no Playwright configuration. The master design explicitly requires reconciliation of the PR #24 Playwright E2E foundation. Installing a second browser harness before locating and comparing that work would create avoidable duplication. This increment installs the reusable project skills and validator without changing application dependencies. Browser tooling will be integrated with the existing E2E foundation in the codebase-reconciliation phase.
+The current consolidated branch's package manifest contains React 18, Vite 6 and the Node API test runner, but no Playwright configuration. PR #24 contains an existing Playwright configuration and browser suite, but those tests target an older homepage and older selectors. The correct next step is to adapt that harness to the current routes and interactions, not install a competing framework. This increment installs reusable project skills and a validator without changing application dependencies.
 
-Lighthouse CI is also deferred until the intended routes and production-like preview are stable. Public temporary report storage is not enabled by this project; any report upload destination must be reviewed for privacy first.
+Lighthouse CI is deferred until the intended routes and production-like preview are stable. Public temporary report storage is not enabled by this project; any report upload destination must be reviewed for privacy first.
 
 ## How agents must use the skills
 
@@ -69,9 +69,15 @@ Lighthouse CI is also deferred until the intended routes and production-like pre
 6. Inspect the actual files and dependencies before applying instructions.
 7. Validate skills with `python scripts/validate_skills.py .agents/skills` and `python -m unittest discover -s tests -p "test_*.py"`.
 
+## Deployment boundary discovered during implementation
+
+The current repository's `deploy-preview.yml` workflow runs on pull-request activity and automatically deploys a Cloudflare Pages Preview. Opening PR #46 therefore published a non-production preview at `https://pr-46.riverwayse-website.pages.dev/` and verified the exact source marker. Its final non-persisting contact readiness probe returned HTTP 503. No production deployment, DNS change, production secret change, D1 mutation or real enquiry occurred.
+
+When the owner says deployment is deferred, continue committing to a topic branch without opening or updating a PR until a Preview review is authorised. Do not invoke workflow dispatch or production deployment.
+
 ## Boundaries
 
-- No npm dependency was added in this increment.
-- No production workflow, DNS, secret, database or deployment configuration was changed.
-- No deployment was requested or performed.
+- No npm dependency was added in the resource increment.
+- No production workflow, DNS, secret, database or production setting was changed.
+- The repository automatically deployed a non-production PR preview when PR #46 was opened; this was an existing workflow side effect, not a production release.
 - Skills are procedural aids, not proof that any website task has been completed.

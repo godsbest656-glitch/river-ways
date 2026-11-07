@@ -37,6 +37,7 @@ Never turn a reported item into a verified fact by repeating it.
 - Do not introduce a parallel website, duplicate route system, competing lead schema or overlapping design tokens.
 - Do not add dependencies until their value, license, maintenance, compatibility and cost are documented.
 - Do not alter production infrastructure, secrets, customer data or deployments.
+- Inspect pull-request workflow triggers before creating/updating a PR. This repository currently publishes a Cloudflare Pages Preview automatically on PR activity; if the owner says deployment is deferred, keep working on the topic branch without opening/updating a PR until Preview is authorised.
 
 ## Deliverable
 Return a concise architecture map, exact source-of-truth decision, branch/PR reconciliation, route and integration inventory, dependency graph, risk register and sequenced implementation plan. Then proceed with low-risk, reversible work without asking the owner to repeat known decisions.

@@ -28,6 +28,7 @@ These rules govern AI coding agents and human contributors in this repository. T
 - Verify asset licenses, attribution requirements, font licenses, and source provenance before shipping.
 - A preview is not production. A build passing is not proof that a design works in a browser or on a real device.
 - Do not claim a test, visual inspection, deployment, or integration succeeded unless it was actually run and observed.
+- **Preview workflow warning:** `.github/workflows/deploy-preview.yml` automatically publishes a Cloudflare Pages Preview on pull-request activity. If the owner has deferred deployment or preview review, continue on a topic branch without opening or updating a PR until the owner authorises a Preview. Do not invoke deployment workflows manually.
 
 ## Engineering expectations
 - Preserve the existing React + Vite foundation unless an architecture decision record explains why a change is necessary.
