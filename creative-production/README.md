@@ -126,6 +126,10 @@ production/<client-campaign>/
 6. Integrate the internal Creative Studio UI only after the local service has authentication, file boundaries, audit events and human approval.
 7. Keep all deployment and public website changes behind the existing River Ways release gates.
 
+## Model installation runbook
+
+See [MODEL_INSTALLATION.md](./MODEL_INSTALLATION.md) for per-model hardware/licence gates, ComfyUI workflow handoff, benchmark protocol and production activation criteria.
+
 ## Upstream references
 
 - Wan 2.2: https://github.com/Wan-Video/Wan2.2
