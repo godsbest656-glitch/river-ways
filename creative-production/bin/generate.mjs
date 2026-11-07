@@ -91,6 +91,7 @@ export async function runComfyProduction({
   await mkdir(outputDirectory, { recursive: true });
   const saved = [];
   for (const [nodeId, nodeOutput] of Object.entries(completed.outputs)) {
+    if (!/^[a-zA-Z0-9_-]{1,128}$/.test(nodeId)) throw new Error('ComfyUI returned an unsafe output node identifier');
     for (const outputType of ['videos', 'gifs', 'images']) {
       for (const item of nodeOutput?.[outputType] ?? []) {
         const filePath = await saveComfyOutput({
