@@ -23,7 +23,8 @@
 - Disabled model candidates can only run in explicit benchmark-only mode after hardware compatibility review; benchmark outputs cannot be approved for client delivery.
 - HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
 - Remotion remains optional and gated by license acknowledgement. Its Automators tier costs $0.01/render with a $100/month minimum, so it is excluded from the no-added-cost automated production path.
-- Model registry for Wan 2.2 TI2V-5B, HunyuanVideo 1.5 and LTX-2.5 with license/hardware notes and all model adapters disabled by default.
+- Model registry for Wan 2.2 TI2V-5B, HunyuanVideo 1.5 and LTX-2.5 with current hardware/licence gates, benchmark-only eligibility and production disabled by default.
+- Per-model installation, ComfyUI workflow handoff, benchmark and activation runbook.
 - Tests included in the repository test script and GitHub Actions CI workflow.
 - Updated `AGENTS.md` and design index with local creative-production boundaries and documentation.
 
