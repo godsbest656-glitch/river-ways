@@ -35,3 +35,13 @@ The project follows the public Agent Skills folder and `SKILL.md` frontmatter co
 
 - https://github.com/agentskills/agentskills
 - Specification: https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx
+
+
+## Browser testing and accessibility development dependencies
+
+The project uses the following development-only tools. They are not included in the production runtime bundle:
+
+- Playwright Test `@playwright/test@1.64.1` — Apache-2.0. https://github.com/microsoft/playwright
+- axe Playwright integration `@axe-core/playwright@4.14.0` — MPL-2.0. https://github.com/dequelabs/axe-core-npm
+
+Retain the package-provided license files when installing dependencies. These tools are used for automated browser regression and accessibility checks; they do not replace manual accessibility review.
