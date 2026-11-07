@@ -2,6 +2,8 @@
 import { access, copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import os from 'node:os';
+import { statfs } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -181,22 +183,52 @@ async function initCommand(args) {
   process.stdout.write('Status: ' + project.status + '. No media was generated.\n');
 }
 
-function commandExists(command, args = ['--version']) {
-  const result = spawnSync(command, args, { encoding: 'utf8', timeout: 5000, windowsHide: true });
-  return !result.error && result.status === 0;
+function runCapture(command, args = ['--version'], spawnImpl = spawnSync) {
+  const result = spawnImpl(command, args, { encoding: 'utf8', timeout: 10000, windowsHide: true, shell: false });
+  return {
+    available: !result.error && result.status === 0,
+    version: String(result.stdout ?? result.stderr ?? '').trim().slice(0, 1200),
+    error: result.error?.message ?? null
+  };
+}
+
+export async function collectEnvironment({ spawnImpl = spawnSync, statfsImpl = statfs } = {}) {
+  const gpuQuery = runCapture('nvidia-smi', [
+    '--query-gpu=name,memory.total,driver_version',
+    '--format=csv,noheader'
+  ], spawnImpl);
+  const gpus = gpuQuery.available
+    ? gpuQuery.version.split(/\r?\n/).filter(Boolean).map((line) => {
+        const [name, memory, driver] = line.split(',').map((part) => part.trim());
+        return { name, memory, driver };
+      })
+    : [];
+  const python = runCapture('python3', ['--version'], spawnImpl);
+  const pythonWindows = python.available ? python : runCapture('python', ['--version'], spawnImpl);
+  const cuda = runCapture('nvcc', ['--version'], spawnImpl);
+  const ffmpeg = runCapture('ffmpeg', ['-version'], spawnImpl);
+  const ffprobe = runCapture('ffprobe', ['-version'], spawnImpl);
+  const filesystem = await statfsImpl(process.cwd()).catch(() => null);
+  const freeDiskBytes = filesystem ? Number(filesystem.bavail) * Number(filesystem.bsize) : null;
+  return {
+    capturedAt: new Date().toISOString(),
+    operatingSystem: { platform: process.platform, release: os.release(), architecture: process.arch },
+    node: process.version,
+    cpu: { model: os.cpus()[0]?.model ?? null, logicalCores: os.cpus().length },
+    memory: { totalBytes: os.totalmem(), freeBytes: os.freemem() },
+    disk: { freeBytes: Number.isFinite(freeDiskBytes) ? freeDiskBytes : null },
+    gpu: { detected: gpus.length > 0, devices: gpus, nvidiaSmiAvailable: gpuQuery.available },
+    cudaCompiler: cuda,
+    python: pythonWindows,
+    ffmpeg,
+    ffprobe
+  };
 }
 
 async function doctorCommand() {
-  const checks = [
-    ['node', process.version],
-    ['ffmpeg', commandExists('ffmpeg') ? 'available' : 'missing'],
-    ['ffprobe', commandExists('ffprobe') ? 'available' : 'missing'],
-    ['python3', commandExists('python3') ? 'available' : 'missing'],
-    ['python', commandExists('python') ? 'available' : 'missing'],
-    ['nvidia-smi', commandExists('nvidia-smi') ? 'available' : 'missing']
-  ];
-  for (const [name, status] of checks) process.stdout.write(name.padEnd(12) + status + '\n');
-  process.stdout.write('\nThis checks executable presence only; it does not prove model compatibility or usable VRAM.\n');
+  const report = await collectEnvironment();
+  process.stdout.write(JSON.stringify(report, null, 2) + '\n');
+  process.stdout.write('This is a hardware inventory only. It does not download, enable or run any model.\n');
 }
 
 async function modelsCommand() {
