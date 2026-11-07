@@ -1,6 +1,17 @@
 # First Mission — River Ways Website Readiness Audit
 
-Run this task from the River Ways repository root on branch `feat/river-ways-agency-agents`.
+Run this task against the **latest actual River Ways website worktree**, not automatically against the branch that introduced these agent files.
+
+## Worktree alignment — mandatory
+
+The agent integration branch `feat/river-ways-agency-agents` is based on `feat/river-ways-ai-design-skills`. The last reported local website checkpoint was `build/shaped-current-homepage` at `059b084`; that branch was not found in the remote GitHub branch search and may have advanced locally since that report.
+
+Before the audit:
+1. Inspect `git status`, `git worktree list`, local branches, remotes and recent commits. Identify the latest actual website checkout and verify its current HEAD. Do not assume `059b084` is still the latest.
+2. Preserve all uncommitted work and existing worktrees. Do not reset, clean, force-checkout, or overwrite a working tree.
+3. If the latest website checkout is not the agent integration branch, create a separate integration worktree/branch from the latest website HEAD. Bring across only the agent-integration paths from `feat/river-ways-agency-agents`: `.codex/agents/`, `.codex/config.toml`, `docs/agency-agents/`, `third_party/agency-agents/LICENSE`, and the additive specialist-agent section in `AGENTS.md`. Merge the AGENTS.md addition carefully; preserve newer project instructions.
+4. Confirm the integrated branch contains the latest website source and all agent files. Run `git diff --check`.
+5. Perform the audit and first implementation on that latest website integration branch. Keep the existing PR #47 as a reviewable record of the agent definitions; do not merge it into an older website baseline merely to activate the agents.
 
 ## Assignment
 
