@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { access, mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { queueWorkflow, waitForPrompt, saveComfyOutput } from './comfyui-adapter.mjs';
@@ -30,6 +31,37 @@ async function readJson(file) {
   return JSON.parse(await readFile(file, 'utf8'));
 }
 
+export function readGpuTelemetry(spawnImpl = spawnSync) {
+  const result = spawnImpl('nvidia-smi', [
+    '--query-gpu=name,memory.total,memory.used,utilization.gpu,temperature.gpu',
+    '--format=csv,noheader,nounits'
+  ], { encoding: 'utf8', timeout: 5000, windowsHide: true, shell: false });
+  if (result.error || result.status !== 0) return null;
+  return String(result.stdout ?? '').split(/\\r?\\n/).filter(Boolean).map((line) => {
+    const [name, total, used, utilization, temperature] = line.split(',').map((part) => part.trim());
+    return {
+      name,
+      memoryTotalMiB: Number(total),
+      memoryUsedMiB: Number(used),
+      utilizationPercent: Number(utilization),
+      temperatureC: Number(temperature)
+    };
+  }).filter((gpu) => gpu.name && Number.isFinite(gpu.memoryTotalMiB) && Number.isFinite(gpu.memoryUsedMiB));
+}
+
+function summarizeGpuTelemetry(samples) {
+  const devices = samples.flat();
+  if (devices.length === 0) return null;
+  return {
+    sampleCount: samples.length,
+    devices: [...new Set(devices.map((gpu) => gpu.name))],
+    peakMemoryUsedMiB: Math.max(...devices.map((gpu) => gpu.memoryUsedMiB)),
+    totalMemoryMiB: Math.max(...devices.map((gpu) => gpu.memoryTotalMiB)),
+    peakUtilizationPercent: Math.max(...devices.map((gpu) => Number.isFinite(gpu.utilizationPercent) ? gpu.utilizationPercent : 0)),
+    peakTemperatureC: Math.max(...devices.map((gpu) => Number.isFinite(gpu.temperatureC) ? gpu.temperatureC : 0))
+  };
+}
+
 async function writeJobState(file, state) {
   await writeFile(file, JSON.stringify({ schemaVersion: '1.0', updatedAt: new Date().toISOString(), ...state }, null, 2) + '\n');
 }
@@ -46,6 +78,7 @@ export async function runComfyProduction({
   timeoutMs = 30 * 60 * 1000,
   pollIntervalMs = 2000,
   fetchImpl = fetch,
+  gpuQueryImpl = readGpuTelemetry,
   sleepImpl,
   onProgress = () => {}
 }) {
@@ -90,6 +123,12 @@ export async function runComfyProduction({
   }
 
   const generationStartedAt = Date.now();
+  const gpuSamples = [];
+  const sampleGpu = () => {
+    const sample = gpuQueryImpl();
+    if (Array.isArray(sample) && sample.length > 0) gpuSamples.push(sample);
+  };
+  sampleGpu();
   const queued = await queueWorkflow({ baseUrl, workflow, fetchImpl });
   if (!/^[a-zA-Z0-9_-]{1,128}$/.test(queued.promptId)) {
     throw new Error('ComfyUI returned an unsafe prompt identifier');
@@ -121,6 +160,7 @@ export async function runComfyProduction({
       fetchImpl,
       ...(sleepImpl ? { sleepImpl } : {}),
       onProgress: async (progress) => {
+        sampleGpu();
         await writeJobState(jobStatePath, { ...initialState, status: 'running', phase: 'generating', progress });
         await onProgress({ phase: 'generating', ...progress });
       }
@@ -154,6 +194,7 @@ export async function runComfyProduction({
     }
     if (saved.length === 0) throw new Error('ComfyUI completed without any supported video, GIF or image outputs');
 
+    sampleGpu();
     const generationSeconds = Number(((Date.now() - generationStartedAt) / 1000).toFixed(2));
     const promptValues = [];
     const seedValues = [];
@@ -174,7 +215,8 @@ export async function runComfyProduction({
       metrics: {
         generationSeconds,
         outputCount: saved.length,
-        totalOutputBytes: saved.reduce((sum, item) => sum + item.bytes, 0)
+        totalOutputBytes: saved.reduce((sum, item) => sum + item.bytes, 0),
+        gpu: summarizeGpuTelemetry(gpuSamples)
       },
       approval: { generationApproved: true, benchmarkOnly, deliveryApproved: false },
       provenance: {
@@ -196,7 +238,7 @@ export async function runComfyProduction({
       outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
       manifestPath: path.relative(projectRoot, manifestPath).split(path.sep).join('/'),
       outputs: saved,
-      metrics: { generationSeconds, totalOutputBytes: saved.reduce((sum, item) => sum + item.bytes, 0) },
+      metrics: { generationSeconds, totalOutputBytes: saved.reduce((sum, item) => sum + item.bytes, 0), gpu: summarizeGpuTelemetry(gpuSamples) },
       error: null
     });
     return { promptId: queued.promptId, outputDirectory, manifestPath, jobStatePath, outputs: saved };
