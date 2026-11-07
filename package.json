@@ -9,13 +9,17 @@
     "preview": "vite preview",
     "check": "npm run build",
     "test:api": "node --test tests/api/*.test.js",
-    "test": "npm run test:api && npm run test:portfolio",
+    "test": "npm run test:api && npm run test:portfolio && npm run test:creative",
     "test:portfolio": "node --test tests/portfolio/*.test.js",
     "validate:portfolio": "node scripts/validate-portfolio.mjs",
     "validate:routes": "node scripts/validate-static-pages.mjs",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:lighthouse": "lhci autorun"
+    "test:lighthouse": "lhci autorun",
+    "creative:doctor": "node creative-production/bin/creative.mjs doctor",
+    "creative:models": "node creative-production/bin/creative.mjs models",
+    "creative:validate": "node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json",
+    "test:creative": "node --test creative-production/test/*.test.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
