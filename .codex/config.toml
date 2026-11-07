@@ -1,5 +1,6 @@
 # Project-local Codex settings. Loaded only after this repository is trusted.
 # Spawned agents inherit the parent session's permissions; apply least-privilege controls there.
+# Role selection guidance lives in the task-specific descriptions in .codex/agents/*.toml.
 [agents]
 enabled = true
 max_concurrent_threads_per_session = 6
