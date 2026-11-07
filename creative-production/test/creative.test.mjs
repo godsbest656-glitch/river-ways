@@ -62,6 +62,9 @@ test('initialises a draft project without generating media and refuses overwrite
     assert.equal(project.status, 'brief-draft');
     assert.equal(project.approvalRequiredBeforeGeneration, true);
     assert.equal(project.approvalRequiredBeforeDelivery, true);
+    const starter = await readFile(path.join(outputRoot, 'spring-campaign', 'compositions', 'hyperframes', 'index.html'), 'utf8');
+    assert.match(starter, /We engineer/);
+    assert.match(starter, /data-duration/);
     await assert.rejects(
       run(['init', '--brief', briefPath, '--out', outputRoot]),
       /refusing to overwrite/
