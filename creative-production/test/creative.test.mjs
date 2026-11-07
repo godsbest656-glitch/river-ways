@@ -308,6 +308,9 @@ test('ComfyUI production runner saves generated assets and a provenance manifest
       }
     });
     assert.equal(result.promptId, 'test_job_1');
+    const jobState = JSON.parse(await readFile(result.jobStatePath, 'utf8'));
+    assert.equal(jobState.status, 'completed');
+    assert.equal(jobState.outputs.length, 1);
     assert.equal(result.outputs.length, 1);
     const manifest = JSON.parse(await readFile(result.manifestPath, 'utf8'));
     assert.equal(manifest.approval.deliveryApproved, false);
