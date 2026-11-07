@@ -74,8 +74,8 @@ The first operational task for this roster is a **website readiness and experien
 
 The repository includes `.codex/config.toml` to enable multi-agent delegation for this trusted project and cap concurrent specialist threads at six. Codex only loads project-local `.codex/` settings after the user trusts the repository.
 
-1. Open the River Ways repository in Codex.
-2. Switch to `feat/river-ways-agency-agents` (or check out the branch containing this PR).
+1. Open the latest actual River Ways website worktree in Codex. Do not assume the agent integration branch contains the newest website source.
+2. Follow the worktree-alignment instructions in [FIRST_WEBSITE_AUDIT_TASK.md](./FIRST_WEBSITE_AUDIT_TASK.md) to bring the agent files into a separate branch/worktree based on the latest website HEAD.
 3. Trust the repository when Codex asks; reload/restart the project if needed.
 4. Ask Codex to list the custom agents it discovered and confirm it can spawn real subagents.
 5. Run the exact first mission in [FIRST_WEBSITE_AUDIT_TASK.md](./FIRST_WEBSITE_AUDIT_TASK.md).
