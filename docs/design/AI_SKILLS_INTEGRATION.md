@@ -44,7 +44,7 @@ The website work spans design, frontend, backend, content, media, SEO and releas
 |---|---|---|---|
 | Playwright | Apache-2.0 | Real-browser, responsive and end-to-end testing across Chromium, Firefox and WebKit | Adopted as the single desktop/mobile Chromium E2E harness; adapted to current routes and interactions |
 | axe-core | MPL-2.0 | Automated accessibility checks inside browser tests | Adopted through `@axe-core/playwright`; scans cover key routes, with manual WCAG review still required |
-| Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Adopted on six high-value routes with mobile collection, three runs per route, warning-level performance budgets and a hard SEO floor |
+| Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Adopted on four critical routes with mobile collection, one run per route, warning-level performance budgets and a hard SEO floor |
 | Node `node:test` | Node.js built-in | Existing API/unit tests | Keep using the current test runner; no additional API test framework is needed |
 
 Primary sources:

@@ -47,6 +47,7 @@ jobs:
           path: .lighthouseci/
           if-no-files-found: ignore
           retention-days: 7
+          include-hidden-files: true
       - name: Test enquiry API
         run: npm run test:api
       - name: Test portfolio contracts

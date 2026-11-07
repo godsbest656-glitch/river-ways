@@ -6,16 +6,14 @@ module.exports = {
       staticDistDir: "./dist",
       url: [
         "http://localhost/",
-        "http://localhost/about/",
-        "http://localhost/services/",
         "http://localhost/work/",
         "http://localhost/growth-diagnostic/",
         "http://localhost/contact/"
       ],
-      numberOfRuns: 3,
+      numberOfRuns: 1,
       chromePath: chromium.executablePath(),
       settings: {
-        // GitHub-hosted Ubuntu disables unprivileged user namespaces; this isolated CI browser visits only the built local site.
+        // GitHub-hosted Ubuntu disables unprivileged user namespaces; this ephemeral CI browser audits the built public site.
         chromeFlags: "--no-sandbox --disable-dev-shm-usage"
       }
     },

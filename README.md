@@ -27,7 +27,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The browser suite tests desktop and mobile Chromium journeys against the generated static output and runs axe accessibility scans on key routes. Lighthouse CI measures mobile performance, accessibility, best practices and SEO on six important routes. Reports are stored locally and retained as private GitHub Actions artifacts for seven days; they are not uploaded to public Lighthouse storage. Automated scans do not replace manual WCAG 2.2 AA review. CI installs Chromium and runs the full suite on topic-branch pushes.
+The browser suite tests desktop and mobile Chromium journeys against the generated static output and runs axe accessibility scans on key routes. Lighthouse CI measures mobile performance, accessibility, best practices and SEO on four critical routes. Reports are stored locally and retained as private GitHub Actions artifacts for seven days; they are not uploaded to public Lighthouse storage. Automated scans do not replace manual WCAG 2.2 AA review. CI installs Chromium and runs the full suite on topic-branch pushes.
 
 ## Architecture
 
