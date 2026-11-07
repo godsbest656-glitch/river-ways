@@ -12,7 +12,7 @@ This module establishes a local-first production workspace for River Ways. It is
 - A doctor command to detect local Node, Python, FFmpeg, ffprobe and NVIDIA tooling.
 - A machine-readable registry of the named model and renderer candidates with license and hardware gates.
 - A human approval boundary before a project is considered ready for client delivery.
-- A loopback-only ComfyUI adapter for queueing API-format workflows, polling job history and saving validated outputs; covered by mocked API tests.
+- A loopback-only ComfyUI adapter and approval-gated generation runner: validate approved brief/rights, queue API workflows, poll completion, save generated media and write provenance manifests. Covered by mocked API tests.
 
 ## Local render commands
 
@@ -55,12 +55,13 @@ node creative-production/bin/creative.mjs help
 node creative-production/bin/creative.mjs doctor
 node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json
 node creative-production/bin/creative.mjs init --brief creative-production/examples/sample-brief.json --out ./production
+node creative-production/bin/generate.mjs --project ./production/<approved-project> --workflow workflows/comfy-api.json --approved
 node --test creative-production/test/*.test.mjs
 cd creative-production && npm install
 npm run render -- hyperframes --project ../production/<client-campaign>/compositions/hyperframes --output renders/final.mp4 --approved
 ```
 
-The ComfyUI adapter only permits loopback URLs and rejects unsafe output paths. It does not expose a public inference endpoint. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
+Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each completed job writes a manifest with workflow SHA-256 and output provenance; it never approves delivery. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
 
 ## Project structure created by `init`
 
