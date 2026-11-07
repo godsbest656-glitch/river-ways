@@ -12,7 +12,7 @@
 - Draft/approved/rejected brief state, client-asset rights gates, model-license review gate and no-overwrite project creation.
 - Project scaffold with separate generated/approved/rejected assets, HyperFrames/Remotion compositions, renders, QA and delivery folders.
 - SHAPED CURRENT 8-second HyperFrames starter composition copied into each new project.
-- Approval-gated ComfyUI production runner validates approved brief, asset rights and model licence review; queues API-format workflows, polls job history, saves outputs into isolated per-node folders and records workflow SHA-256 provenance.
+- Approval-gated ComfyUI production runner validates approved brief, asset rights, model licence review, an explicitly enabled registry model and exact checkpoint presence in the workflow; queues API-format workflows, polls job history, saves outputs into isolated per-node folders and records model/checkpoint/workflow SHA-256 provenance.
 - Loopback-only ComfyUI adapter rejects remote inference endpoints and unsafe filenames/paths.
 - Local renderer adapters for HyperFrames and optional Remotion. Both require explicit human approval, refuse overwrites, constrain output paths and verify a non-empty render output.
 - HyperFrames pinned to version 0.9.18 in the isolated creative-production package. Cloud rendering, publishing and paid/remote features are not used.
@@ -23,7 +23,9 @@
 
 ## Local test evidence
 
-Node.js v22.16.0 isolated harness: **15/15 tests passed in the prior isolated harness**; two additional ComfyUI end-to-end mocked-flow tests are now committed and awaiting GitHub Actions verification. across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
+Current committed test suite: **16 tests**. This exact revision has not yet completed GitHub Actions.
+
+Node.js v22.16.0 isolated harness: **15 tests passed in the prior isolated harness**; three additional ComfyUI end-to-end/model-gate tests are now committed and awaiting GitHub Actions verification. across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
 
 **Important qualification:** the test harness ran from an isolated local copy of the module logic because this execution environment could not clone the GitHub repository. It is not a checkout-based run of the exact GitHub branch. GitHub Actions has been triggered for the branch; the current runs are still in progress. No live renderer or model inference test has been performed.
 
