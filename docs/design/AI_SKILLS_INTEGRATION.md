@@ -44,7 +44,7 @@ The website work spans design, frontend, backend, content, media, SEO and releas
 |---|---|---|---|
 | Playwright | Apache-2.0 | Real-browser, responsive and end-to-end testing across Chromium, Firefox and WebKit | Adopted as the single desktop/mobile Chromium E2E harness; adapted to current routes and interactions |
 | axe-core | MPL-2.0 | Automated accessibility checks inside browser tests | Adopted through `@axe-core/playwright`; scans cover key routes, with manual WCAG review still required |
-| Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Introduce after route inventory and production-like output are stable; establish measured baselines first |
+| Lighthouse CI | Apache-2.0 | Repeatable performance, accessibility, SEO and best-practice measurements | Adopted on six high-value routes with mobile collection, three runs per route, warning-level performance budgets and a hard SEO floor |
 | Node `node:test` | Node.js built-in | Existing API/unit tests | Keep using the current test runner; no additional API test framework is needed |
 
 Primary sources:
@@ -55,7 +55,7 @@ Primary sources:
 
 ## Project CI resource
 
-`.github/workflows/topic-build.yml` and `.github/workflows/ci.yml` run skill validation, migration validation, the production build, Playwright/axe browser checks, API tests, portfolio tests, public-data validation and the high-severity dependency audit. These workflows do not deploy. The topic workflow runs on non-main branch pushes and avoids the repository's automatic Preview workflow.
+`.github/workflows/topic-build.yml` and `.github/workflows/ci.yml` run skill validation, migration validation, the production build, Playwright/axe browser checks, Lighthouse CI, API tests, portfolio tests, public-data validation and the high-severity dependency audit. These workflows do not deploy. Lighthouse reports use the filesystem target and are retained as private GitHub Actions artifacts for seven days; no public report-storage service or token is used. The topic workflow runs on non-main branch pushes and avoids the repository's automatic Preview workflow.
 
 ## Browser harness adaptation
 

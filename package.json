@@ -14,7 +14,8 @@
     "validate:portfolio": "node scripts/validate-portfolio.mjs",
     "validate:routes": "node scripts/validate-static-pages.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test:lighthouse": "lhci autorun"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -25,6 +26,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^6.0.7",
     "@playwright/test": "1.64.1",
-    "@axe-core/playwright": "4.14.0"
+    "@axe-core/playwright": "4.14.0",
+    "@lhci/cli": "0.16.0"
   }
 }

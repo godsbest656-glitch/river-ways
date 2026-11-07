@@ -45,3 +45,10 @@ The project uses the following development-only tools. They are not included in 
 - axe Playwright integration `@axe-core/playwright@4.14.0` — MPL-2.0. https://github.com/dequelabs/axe-core-npm
 
 Retain the package-provided license files when installing dependencies. These tools are used for automated browser regression and accessibility checks; they do not replace manual accessibility review.
+
+
+## Performance and SEO development dependency
+
+- Lighthouse CI `@lhci/cli@0.16.0` — Apache-2.0. https://github.com/GoogleChrome/lighthouse-ci
+
+Lighthouse reports are generated against the built static site. The project uses the filesystem output target; no temporary public report storage or external Lighthouse CI server is configured.

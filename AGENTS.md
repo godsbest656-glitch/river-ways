@@ -76,7 +76,7 @@ Use `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` as the deployment preparation
 
 
 ## Browser and accessibility regression
-- Run `npm run build`, `npm run test:e2e`, `npm run test:api`, `npm run test:portfolio`, and `npm run validate:portfolio` for website implementation changes.
+- Run `npm run build`, `npm run test:e2e`, `npm run test:lighthouse`, `npm run test:api`, `npm run test:portfolio`, and `npm run validate:portfolio` for website implementation changes.
 - Playwright is the single browser/E2E harness. Extend `tests/e2e`; do not introduce a competing browser runner.
 - Automated axe scans are a regression aid, not a complete WCAG 2.2 AA audit. Also inspect keyboard use, focus visibility, screen-reader semantics, zoom/reflow, motion preferences and contrast manually.
 - Browser tests use the built static output through Vite preview. A passing local preview test does not prove Cloudflare Pages status codes, D1 bindings, email delivery or deployment readiness.
