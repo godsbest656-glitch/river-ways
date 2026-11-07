@@ -11,7 +11,8 @@
     "models": "node bin/creative.mjs models",
     "validate": "node bin/creative.mjs validate examples/sample-brief.json",
     "test": "node --test test/*.test.mjs",
-    "render": "node bin/render.mjs"
+    "render": "node bin/render.mjs",
+    "generate": "node bin/generate.mjs"
   },
   "devDependencies": {
     "hyperframes": "0.9.18"
