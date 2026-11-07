@@ -32,6 +32,7 @@ Run these steps in the local Codex app, IDE extension, or CLI using the intended
 4. Reload/restart the Codex session if the project configuration or agent files were added while the session was already open.
 5. Ask Codex to enumerate the project custom agents it has actually loaded. Confirm the names match the nine files in `.codex/agents/`.
 6. Ask it to run a small, read-only task with `ux-researcher`, then a second independent read-only task with `seo-specialist`. Confirm the selected custom identities and returned work are visible in the Codex session.
+   - In Codex CLI, use `/subagents` to inspect active and completed subagent threads; the desktop app and IDE extension surface subagent activity in the session UI.
 7. Request a coordinated read-only run from `website-orchestrator`, explicitly asking it to delegate separate work to UX Researcher, Brand Guardian, SEO Specialist, Growth Hacker, Accessibility Auditor and Code Reviewer. Confirm real subagent activity/results; a written claim without visible runtime evidence is not sufficient.
 8. Run `docs/agency-agents/FIRST_WEBSITE_AUDIT_TASK.md` against the latest reconciled website worktree.
 9. Only after runtime activation and the audit are verified should implementation work proceed in small reviewed slices.
