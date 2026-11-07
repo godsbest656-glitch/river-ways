@@ -33,7 +33,7 @@
 - Minimum documented GPU memory is 14GB with model offloading; upstream install is Linux, Python 3.10+ and CUDA/PyTorch compatible.
 - Licence: Tencent Hunyuan Community License, not a generic OSI open-source licence. Territory excludes the EU, UK and South Korea.
 - Distribution to third parties requires providing the licence; service deployment requires clear disclosure of the actual service provider and Tencent non-affiliation. The model/output may not be used outside the defined territory.
-- Do not activate for global client campaigns. Obtain legal review of territory, client locations, end-user access and service disclosures first.
+- The generation runner blocks this model unless the approved brief has `rights.territoryReviewed = true` and an explicit `campaign.targetTerritories` list. It rejects EU, UK and South Korea (including common aliases). Do not activate for global client campaigns. Obtain legal review of territory, client locations, end-user access and service disclosures first.
 - Official licence: https://github.com/Tencent-Hunyuan/HunyuanVideo-1.5/blob/main/LICENSE
 
 ### LTX-2.5
