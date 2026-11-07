@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -89,6 +89,7 @@ export async function runComfyProduction({
     throw new Error('Workflow must be a non-empty ComfyUI API-format object');
   }
 
+  const generationStartedAt = Date.now();
   const queued = await queueWorkflow({ baseUrl, workflow, fetchImpl });
   if (!/^[a-zA-Z0-9_-]{1,128}$/.test(queued.promptId)) {
     throw new Error('ComfyUI returned an unsafe prompt identifier');
@@ -140,8 +141,10 @@ export async function runComfyProduction({
             destinationDirectory: path.join(outputDirectory, 'node-' + nodeId),
             fetchImpl
           });
+          const outputStats = await stat(filePath);
           saved.push({
             nodeId,
+            bytes: outputStats.size,
             mediaType: outputType,
             filename: path.basename(filePath),
             source: { filename: item.filename, subfolder: item.subfolder ?? '', type: item.type ?? 'output' }
@@ -151,6 +154,15 @@ export async function runComfyProduction({
     }
     if (saved.length === 0) throw new Error('ComfyUI completed without any supported video, GIF or image outputs');
 
+    const generationSeconds = Number(((Date.now() - generationStartedAt) / 1000).toFixed(2));
+    const promptValues = [];
+    const seedValues = [];
+    for (const node of Object.values(workflow)) {
+      for (const [key, value] of Object.entries(node?.inputs ?? {})) {
+        if (/^(prompt|text|positive_prompt)$/i.test(key) && typeof value === 'string' && value.trim()) promptValues.push(value);
+        if (/^(seed|noise_seed)$/i.test(key) && (typeof value === 'string' || typeof value === 'number')) seedValues.push(value);
+      }
+    }
     const record = {
       schemaVersion: '1.0',
       promptId: queued.promptId,
@@ -159,13 +171,18 @@ export async function runComfyProduction({
       workflowFile: path.relative(projectRoot, workflowFile).split(path.sep).join('/'),
       outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
       outputs: saved,
+      metrics: {
+        generationSeconds,
+        outputCount: saved.length,
+        totalOutputBytes: saved.reduce((sum, item) => sum + item.bytes, 0)
+      },
       approval: { generationApproved: true, benchmarkOnly, deliveryApproved: false },
       provenance: {
         model: { id: model.id, name: model.name, license: model.license, upstream: model.upstream },
         checkpoint: checkpointFile,
         workflowSha256,
-        prompt: null,
-        seed: null,
+        prompt: promptValues,
+        seed: seedValues,
         licenseReviewed: true,
         humanApproved: false
       }
@@ -179,6 +196,7 @@ export async function runComfyProduction({
       outputDirectory: path.relative(projectRoot, outputDirectory).split(path.sep).join('/'),
       manifestPath: path.relative(projectRoot, manifestPath).split(path.sep).join('/'),
       outputs: saved,
+      metrics: { generationSeconds, totalOutputBytes: saved.reduce((sum, item) => sum + item.bytes, 0) },
       error: null
     });
     return { promptId: queued.promptId, outputDirectory, manifestPath, jobStatePath, outputs: saved };
