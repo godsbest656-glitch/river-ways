@@ -69,3 +69,21 @@ Invoke an agent by name in Codex, for example:
 ## First mission
 
 The first operational task for this roster is a **website readiness and experience audit** of the current River Ways website, followed by a prioritised, evidence-backed implementation plan. The first implementation slice should be selected from verified visitor/business impact, not from visual novelty.
+
+## Enable and run in Codex
+
+The repository includes `.codex/config.toml` to enable multi-agent delegation for this trusted project and cap concurrent specialist threads at six. Codex only loads project-local `.codex/` settings after the user trusts the repository.
+
+1. Open the River Ways repository in Codex.
+2. Switch to `feat/river-ways-agency-agents` (or check out the branch containing this PR).
+3. Trust the repository when Codex asks; reload/restart the project if needed.
+4. Ask Codex to list the custom agents it discovered and confirm it can spawn real subagents.
+5. Run the exact first mission in [FIRST_WEBSITE_AUDIT_TASK.md](./FIRST_WEBSITE_AUDIT_TASK.md).
+
+Start prompt:
+
+```text
+Use the website-orchestrator custom agent. First execute docs/agency-agents/FIRST_WEBSITE_AUDIT_TASK.md exactly. Confirm that the project custom agents are loaded and that real subagent delegation works. Run the website audit read-only first; do not modify application code until the audit is complete and the first low-risk implementation slice is justified.
+```
+
+If Codex does not discover the agents, do not claim they are operational. Check project trust, the installed Codex version, and the `.codex/agents/*.toml` files. The upstream Agency Agents converter documents a user-level installation target; this River Ways integration uses Codex's project-scoped custom-agent directory.
