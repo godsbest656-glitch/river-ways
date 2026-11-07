@@ -2,6 +2,7 @@ name: Validate River Ways project skills
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -20,5 +21,7 @@ jobs:
           python-version: "3.12"
       - name: Validate Agent Skills metadata
         run: python scripts/validate_skills.py .agents/skills
+      - name: Validate project Codex agents
+        run: python scripts/validate_codex_agents.py .codex/agents
       - name: Run validator regression tests
         run: python -m unittest discover -s tests -p "test_*.py"
