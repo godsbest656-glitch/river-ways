@@ -13,6 +13,8 @@
 - Project scaffold with separate generated/approved/rejected assets, HyperFrames/Remotion compositions, renders, QA and delivery folders.
 - SHAPED CURRENT 8-second HyperFrames starter composition copied into each new project.
 - Approval-gated ComfyUI production runner validates approved brief, asset rights, model licence review, an explicitly enabled registry model and exact checkpoint presence in the workflow; queues API-format workflows, persists queued/running/completed/failed job state, polls job history, saves outputs into isolated per-node folders and records model/checkpoint/workflow SHA-256 provenance.
+- Workstation doctor reports GPU model/VRAM/driver, OS, CPU, RAM, free disk, CUDA compiler, Python, FFmpeg and ffprobe.
+- FFprobe-based media QA validates container, duration, video/audio streams, codecs, dimensions and frame rate against campaign specs.
 - Loopback-only ComfyUI adapter rejects remote inference endpoints and unsafe filenames/paths.
 - Local renderer adapters for HyperFrames and optional Remotion. Both require explicit human approval, refuse overwrites, constrain output paths and verify a non-empty render output.
 - FFprobe-based media QA validates non-empty media files, video stream, codec/container, duration, dimensions, frame rate and optional audio/spec requirements.
@@ -24,7 +26,7 @@
 
 ## Local test evidence
 
-Current committed test suite: **19 tests**. This exact revision has not yet completed GitHub Actions.
+Current committed test suite: **20 tests**. This exact revision has not yet completed GitHub Actions.
 
 Node.js v22.16.0 isolated harness: **15 tests passed in the prior isolated harness**; three additional ComfyUI end-to-end/model-gate tests are now committed and awaiting GitHub Actions verification. across brief validation, safe project initialisation, starter-template copying, mocked ComfyUI queue/history/output operations, renderer approval, renderer output validation and path containment.
 
