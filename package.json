@@ -18,7 +18,7 @@
     "test:lighthouse": "lhci autorun",
     "creative:doctor": "node creative-production/bin/creative.mjs doctor",
     "creative:models": "node creative-production/bin/creative.mjs models",
-    "creative:validate": "node creative-production/bin/creative.mjs validate",
+    "creative:validate": "node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json",
     "test:creative": "node --test creative-production/test/*.test.mjs"
   },
   "dependencies": {
