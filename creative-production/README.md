@@ -55,13 +55,13 @@ node creative-production/bin/creative.mjs help
 node creative-production/bin/creative.mjs doctor
 node creative-production/bin/creative.mjs validate creative-production/examples/sample-brief.json
 node creative-production/bin/creative.mjs init --brief creative-production/examples/sample-brief.json --out ./production
-node creative-production/bin/generate.mjs --project ./production/<approved-project> --workflow workflows/comfy-api.json --approved
+node creative-production/bin/generate.mjs --project ./production/<approved-project> --workflow workflows/comfy-api.json --model-id wan-2.2-ti2v-5b --checkpoint <exact-checkpoint-filename> --approved
 node --test creative-production/test/*.test.mjs
 cd creative-production && npm install
 npm run render -- hyperframes --project ../production/<client-campaign>/compositions/hyperframes --output renders/final.mp4 --approved
 ```
 
-Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each completed job writes a manifest with workflow SHA-256 and output provenance; it never approves delivery. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
+Generation requires a brief already marked approved, a recorded approver/timestamp, explicit client-asset generation permission and model-license review. It also requires a model enabled in the local registry after hardware/licence validation, and the exact checkpoint filename must appear in the ComfyUI API workflow. The manifest records model ID, licence, checkpoint and workflow SHA-256. The ComfyUI adapter only permits loopback URLs, constrains workflow/output paths and rejects unsafe filenames. It does not expose a public inference endpoint. Each completed job writes a manifest with workflow SHA-256 and output provenance; it never approves delivery. The sample brief is explicitly marked as a fictional internal test fixture. It is not a client brief or a case study.
 
 ## Project structure created by `init`
 
