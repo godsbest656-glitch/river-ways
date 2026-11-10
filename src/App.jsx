@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-
-const LiquidCurrent = lazy(() => import('./components/LiquidCurrent.jsx'));
+ 
 import { createProjectSource, projectRecords } from './portfolio/index.js';
 import { ScrollGallery } from './portfolio/components/index.js';
 import { DeferredLiquidGlassStage, DeferredGlassCard } from './components/DeferredLiquidGlass.jsx';
@@ -9,6 +8,8 @@ import {
   ChevronDown, Layers3, Menu, MessageCircle,
   Search, ShieldCheck, Sparkles, Target, TrendingUp, Workflow, X, Zap
 } from 'lucide-react';
+
+const LiquidCurrent = lazy(() => import('./components/LiquidCurrent.jsx'));
 
 const services = [
   {
