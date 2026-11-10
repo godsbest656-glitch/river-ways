@@ -76,7 +76,6 @@ function CurrentSurface({ reducedMotion }) {
 
 export default function LiquidCurrent() {
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [webglAvailable, setWebglAvailable] = useState(true);
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -86,8 +85,6 @@ export default function LiquidCurrent() {
     return () => query.removeEventListener?.('change', update);
   }, []);
 
-  if (!webglAvailable) return null;
-
   return (
     <div className="liquid-current-canvas" aria-hidden="true">
       <Canvas
@@ -95,9 +92,7 @@ export default function LiquidCurrent() {
         camera={{ position: [0, 0, 1], fov: 50 }}
         gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
         frameloop={reducedMotion ? 'never' : 'always'}
-        onCreated={({ gl }) => {
-          if (!gl.getContext()) setWebglAvailable(false);
-        }}
+        fallback={null}
       >
         <CurrentSurface reducedMotion={reducedMotion} />
       </Canvas>
