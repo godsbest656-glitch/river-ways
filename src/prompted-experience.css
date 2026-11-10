@@ -1,0 +1,118 @@
+/* PromptedSite-inspired interaction layer.
+   Additive enhancements for River Ways' existing SHAPED CURRENT composition.
+   No existing card transforms or layout rules are replaced. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .current-stage {
+    transform-style: preserve-3d;
+  }
+
+  .current-card {
+    backface-visibility: hidden;
+    transition: border-color 280ms ease, box-shadow 280ms ease, translate 280ms cubic-bezier(.2,.7,.2,1);
+  }
+
+  .current-card:hover,
+  .current-card:focus-visible {
+    translate: 0 -3px;
+    border-color: rgba(169,232,247,.72);
+    box-shadow: 0 14px 28px rgba(0,12,25,.2), 0 0 0 1px rgba(169,232,247,.12);
+  }
+
+  .current-card.is-current {
+    border-color: rgba(169,232,247,.62);
+    box-shadow: 0 0 0 1px rgba(169,232,247,.1), 0 12px 28px rgba(0,12,25,.16);
+  }
+
+  .service-feature,
+  .service-compact,
+  .pathway-card,
+  .output-item {
+    transition: translate 280ms cubic-bezier(.2,.7,.2,1), box-shadow 280ms ease, border-color 280ms ease;
+  }
+
+  .service-feature:hover,
+  .service-compact:hover,
+  .pathway-card:hover,
+  .output-item:hover {
+    translate: 0 -4px;
+  }
+
+  .current-card:focus-visible,
+  .pathway-card a:focus-visible,
+  .service-link:focus-visible {
+    outline: 2px solid #168bb7;
+    outline-offset: 4px;
+  }
+}
+
+/* Scroll-linked depth is optional. Unsupported browsers retain the original
+   static composition and the existing IntersectionObserver section reveals. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .current-stage-river {
+      animation: rw-current-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+      transform-origin: 50% 50%;
+    }
+
+    .current-stage-grid {
+      animation: rw-grid-breathe linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+
+    .current-card-stream {
+      animation: rw-card-field linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+
+    .hero-copy h1 span {
+      animation: rw-word-arrive linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 48%;
+    }
+  }
+}
+
+@keyframes rw-current-drift {
+  from { transform: translate3d(-1.5%, 3%, 0) scale(1.08) rotate(-1.5deg); }
+  to { transform: translate3d(1.5%, -3%, 0) scale(.96) rotate(1.5deg); }
+}
+
+@keyframes rw-grid-breathe {
+  from { opacity: .18; }
+  to { opacity: .62; }
+}
+
+@keyframes rw-card-field {
+  from { transform: translate3d(0, 34px, 0) scale(.96); }
+  to { transform: translate3d(0, -12px, 0) scale(1); }
+}
+
+@keyframes rw-word-arrive {
+  from { clip-path: inset(0 0 72% 0); filter: blur(5px); }
+  to { clip-path: inset(0 0 0 0); filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .current-stage,
+  .current-stage-river,
+  .current-stage-grid,
+  .current-card-stream,
+  .hero-copy h1 span,
+  .current-card,
+  .service-feature,
+  .service-compact,
+  .pathway-card,
+  .output-item {
+    animation: none !important;
+    transition: none !important;
+    translate: none !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+}
