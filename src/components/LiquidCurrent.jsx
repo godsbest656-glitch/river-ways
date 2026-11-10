@@ -61,7 +61,7 @@ function CurrentSurface({ reducedMotion }) {
 
   return (
     <mesh>
-      <planeGeometry args={[2, 2, 96, 96]} />
+      <planeGeometry args={[2, 2, 48, 48]} />
       <shaderMaterial
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
@@ -76,6 +76,7 @@ function CurrentSurface({ reducedMotion }) {
 
 export default function LiquidCurrent() {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [inView, setInView] = useState(true);
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -85,13 +86,21 @@ export default function LiquidCurrent() {
     return () => query.removeEventListener?.('change', update);
   }, []);
 
+  useEffect(() => {
+    const element = document.querySelector('.liquid-current-canvas');
+    if (!element || !('IntersectionObserver' in window)) return undefined;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.01 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="liquid-current-canvas" aria-hidden="true">
       <Canvas
         dpr={[1, 1.5]}
         camera={{ position: [0, 0, 1], fov: 50 }}
         gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
-        frameloop={reducedMotion ? 'never' : 'always'}
+        frameloop={reducedMotion || !inView ? 'never' : 'always'}
         fallback={null}
       >
         <CurrentSurface reducedMotion={reducedMotion} />
