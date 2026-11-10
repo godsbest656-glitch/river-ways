@@ -170,6 +170,8 @@ export default function App() {
     root.querySelectorAll('.current-card').forEach((card, index) => {
       card.style.setProperty('--card-pointer-x', (x * 15 * wave[index]).toFixed(2) + 'px');
       card.style.setProperty('--card-pointer-y', (y * 12 * wave[index]).toFixed(2) + 'px');
+      card.style.setProperty('--glass-x', ((0.5 + x * 0.8) * 100).toFixed(1) + '%');
+      card.style.setProperty('--glass-y', ((0.5 + y * 0.8) * 100).toFixed(1) + '%');
     });
   }
 
