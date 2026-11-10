@@ -19,7 +19,7 @@ The visual system is being developed as a living current, not a collection of ef
 
 The site is React 18. React Three Fiber v8 is selected because the official compatibility guidance pairs Fiber v8 with React 18; Fiber v9 is intended for React 19. The shader scene is code-split with React.lazy so it does not block the initial React entry chunk.
 
-The hero now uses `simple-liquid-glass` v5.7.3 (`LiquidGlass` + `LiquidGlassScene`) for real lens-style refraction. The package declares React 16.8–19 compatibility, has an MIT license, exposes a browser-aware SVG/WebGL renderer strategy, and publishes bundle budgets. We use its automatic renderer strategy rather than forcing another WebGL context on desktop; the scene provider supplies the backdrop for supported mobile refraction. Our CSS remains a fallback/tint layer, not a replacement for the library optics. The package is relatively young, so its integration must pass our own browser, accessibility and performance gates before release.
+The hero now uses `simple-liquid-glass` v5.7.3 (`LiquidGlass` + `LiquidGlassScene`) for lens-style refraction. The package declares React 16.8–19 compatibility, has an MIT license, exposes a browser-aware SVG/WebGL renderer strategy, and publishes bundle budgets. Its modules are dynamically imported only after hero engagement or a 3.6-second idle delay; until then, the CSS glass surface remains visible. We use its automatic renderer strategy rather than forcing another WebGL context on desktop; the scene provider supplies the backdrop for supported mobile refraction. Our CSS remains a fallback/tint layer, not a replacement for the library optics. The package is relatively young, so its integration must pass our own browser, accessibility and performance gates before release.
 
 ## Deliberately not done
 
@@ -36,12 +36,12 @@ The hero now uses `simple-liquid-glass` v5.7.3 (`LiquidGlass` + `LiquidGlassScen
 - Lighthouse did report a homepage performance warning: score 0.54 against a 0.60 assertion, LCP 4.60s against 4.0s, and TBT 3.96s against 0.50s. The workflow completed successfully because these are configured warnings, not hard failures.
 - The build emitted a 839.06 kB minified / 225.45 kB gzip `LiquidCurrent` chunk. The scene was code-split but still requested immediately because the lazy component mounted with the hero.
 - A follow-up optimization delays importing the 3D scene until the hero is engaged or 3.6 seconds after mount, reduces the plane mesh from 96×96 to 48×48 segments, and pauses the renderer when the canvas is offscreen. This follow-up is not yet covered by CI.
-- The latest follow-up also adds `simple-liquid-glass` v5.7.3 to the hero cards. Its package and browser behaviour still require a fresh install/build and visual QA on the latest head.
+- The latest follow-up also adds `simple-liquid-glass` v5.7.3 to the hero cards and defers its runtime import alongside the 3D scene. Its package and browser behaviour still require a fresh install/build and visual QA on the latest head.
 - Browser preview, visual review, and context-loss testing remain outstanding. This is not a certified release.
 
 ## Review gates
 
-1. Confirm npm installation and production build with the new React Three Fiber dependencies.
+1. Confirm npm installation and production build with the React Three Fiber and liquid-glass dependencies.
 2. Check WebGL failure and context-loss fallback; the original SVG current must remain visible.
 3. Review the hero at desktop, tablet and narrow mobile widths.
 4. Verify reduced-motion mode, keyboard focus, touch interaction and contrast.
