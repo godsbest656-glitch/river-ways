@@ -103,6 +103,30 @@ const faqs = [
   { q: 'Can you improve an existing website or marketing setup?', a: 'Yes. Work can begin with an assessment of the current site, discovery channels, content, analytics and conversion journey. We then prioritise the most valuable improvements before expanding the system.' }
 ];
 
+function DeferredLiquidCurrent() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const stage = document.querySelector('.current-stage');
+    const enable = () => setEnabled(true);
+    const onPointer = () => enable();
+    const onFocus = () => enable();
+    stage?.addEventListener('pointerenter', onPointer, { once: true, passive: true });
+    stage?.addEventListener('focusin', onFocus, { once: true });
+
+    // Keep the original SVG current as the immediate visual. Defer the 3D
+    // renderer until after first paint, unless the visitor engages the hero.
+    const timeout = window.setTimeout(enable, 3600);
+    return () => {
+      window.clearTimeout(timeout);
+      stage?.removeEventListener('pointerenter', onPointer);
+      stage?.removeEventListener('focusin', onFocus);
+    };
+  }, []);
+
+  return enabled ? <Suspense fallback={null}><LiquidCurrent /></Suspense> : null;
+}
+
 function Brand() {
   return (
     <a className="brand" href="#home" aria-label="River Ways home">
