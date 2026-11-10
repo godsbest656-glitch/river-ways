@@ -1,41 +1,44 @@
-# PromptedSite-inspired experience layer
+# River Ways — SHAPED CURRENT visual implementation
 
-## Decision
+## Direction
 
-Adopt interaction techniques, not PromptedSite's visual identity or template-marketplace structure. River Ways remains the SHAPED CURRENT / sea-sky-blue direction and keeps its existing content, information architecture, portfolio evidence and conversion journey.
+The visual system is being developed as a living current, not a collection of effects. River Ways keeps its established sea/sky-blue identity, typography, content architecture and recognisable mark. Motion should express direction, depth and momentum; it must never compete with the proposition or make the site harder to use.
 
-## Implemented in this branch
+## Current implementation in this branch
 
-- Scroll-linked movement for the existing river field, grid and card composition where CSS view timelines are supported.
-- Restrained kinetic reveal for the hero's emphasized word.
-- Additive depth and focus treatments on the existing interactive current cards; existing pointer-driven transforms are preserved.
-- Subtle lift for the real homepage components: service feature cards, compact service cards, pathway cards and output items.
-- Visible keyboard focus treatment for interactive current cards and key links.
-- Explicit reduced-motion overrides.
-- No new runtime dependency, WebGL bundle, external asset, analytics call or backend behaviour.
+- A lazy-loaded React Three Fiber scene adds a custom GLSL current surface behind the existing interactive hero cards.
+- The shader uses restrained procedural flow, caustic highlights and deep-ocean/ice-blue colour values.
+- The original SVG current remains in place as a graceful visual fallback if the WebGL layer cannot render.
+- The current-stage cards receive translucent optical surfaces, blur, specular highlights and pointer-following light.
+- The River Ways mark remains recognisable; its existing strokes receive a restrained draw-through animation on hover/focus.
+- The earlier CSS scroll-linked motion and component depth refinements remain additive.
+- The Three Fiber canvas is capped at device pixel ratio 1.5 and uses a low-power rendering preference.
+- Reduced-motion preference stops shader time progression and disables the logo animation. Mobile opacity and blur are reduced.
 
-## Graceful degradation
+## Dependency choice
 
-The existing static composition remains the fallback. Scroll-linked effects are gated by `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Hover/depth transitions are also gated by the motion preference. Existing IntersectionObserver section reveals remain unchanged. Motion additions use the independent CSS `translate` property where possible so they do not overwrite the homepage's existing card transforms.
+The site is React 18. React Three Fiber v8 is selected because the official compatibility guidance pairs Fiber v8 with React 18; Fiber v9 is intended for React 19. The shader scene is code-split with React.lazy so it does not block the initial React entry chunk.
 
-## Verification evidence
+The liquid-glass treatment in this iteration is implemented as a small, project-owned CSS/pointer layer rather than adding an unverified third-party glass runtime. A dedicated liquid-glass library can be evaluated separately against browser compatibility, accessibility, bundle size and performance before adoption.
 
-- The initial implementation commit passed the repository's GitHub Actions checks: production build, browser journeys/accessibility, Lighthouse performance and SEO baseline, enquiry API tests, portfolio tests (51 passing), public portfolio validation and dependency audit (zero vulnerabilities).
-- A follow-up CSS refinement aligned selectors with the actual React component classes and preserved the existing card transforms. This follow-up commit requires its own CI run before the package can be considered fully verified.
-- The passing run is evidence for the initial commit only; it must not be represented as verification of the later CSS refinement.
+## Deliberately not done
 
-## Not included
+- No replacement of the approved River Ways logo or core brand identity.
+- No fabricated client work, testimonials, metrics or portfolio evidence.
+- No autoplay video background or full-screen 3D world.
+- No production deployment, DNS changes, Worker replacement or merge to main.
+- No changes to enquiry handling, APIs, data storage or business operations.
 
-- No replacement of River Ways' logo, palette, typography or brand language.
-- No fabricated client work, testimonials, metrics or portfolio material.
-- No heavy Three.js scene or video background.
-- No production deployment, DNS changes, Worker replacement or merge to `main`.
+## Verification status
 
-## Release gates
+This is an implementation candidate, not a certified release. The full CI suite, package audit, browser rendering and responsive visual review must run against this branch's exact head. The earlier successful CI run on the PromptedSite motion branch does not certify these new dependencies or shader changes.
 
-1. Run the full build and CI suite against the latest PR head.
-2. Review at desktop, tablet and narrow mobile widths.
-3. Verify keyboard focus and touch interaction for current-stage cards.
-4. Verify reduced-motion mode disables all newly introduced motion.
-5. Check scroll-linked behaviour in supported browsers and confirm static fallback elsewhere.
-6. Run accessibility and performance checks on the isolated preview before any production decision.
+## Review gates
+
+1. Confirm npm installation and production build with the new React Three Fiber dependencies.
+2. Check WebGL failure and context-loss fallback; the original SVG current must remain visible.
+3. Review the hero at desktop, tablet and narrow mobile widths.
+4. Verify reduced-motion mode, keyboard focus, touch interaction and contrast.
+5. Measure initial bundle impact and runtime GPU cost; the R3F scene must remain a deferred chunk.
+6. Check current Chrome, Safari and Firefox rendering before considering a liquid-glass library.
+7. Keep this PR draft until all checks pass and the preview has been visually reviewed.
