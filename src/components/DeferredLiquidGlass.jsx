@@ -11,7 +11,7 @@ export function DeferredLiquidGlassStage({ children }) {
     const stage = document.querySelector('.current-stage');
 
     const load = async () => {
-      if (disposed || loading || LiquidGlassApi) return;
+      if (disposed || loading) return;
       loading = true;
       try {
         const [glassModule, backdropModule] = await Promise.all([
@@ -39,7 +39,7 @@ export function DeferredLiquidGlassStage({ children }) {
       stage?.removeEventListener('pointerenter', load);
       stage?.removeEventListener('focusin', load);
     };
-  }, [LiquidGlassApi]);
+  }, []);
 
   const Scene = LiquidGlassApi?.LiquidGlassScene;
   return (
