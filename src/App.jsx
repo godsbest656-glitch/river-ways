@@ -3,6 +3,8 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 const LiquidCurrent = lazy(() => import('./components/LiquidCurrent.jsx'));
 import { createProjectSource, projectRecords } from './portfolio/index.js';
 import { ScrollGallery } from './portfolio/components/index.js';
+import { LiquidGlass } from 'simple-liquid-glass';
+import { LiquidGlassScene } from 'simple-liquid-glass/backdrop';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, Check,
   ChevronDown, Layers3, Menu, MessageCircle,
@@ -294,6 +296,7 @@ export default function App() {
             </div>
 
             <div className="hero-visual current-stage" role="group" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
+              <LiquidGlassScene>
               <div className="current-stage-grid" aria-hidden="true" />
               <DeferredLiquidCurrent />
               <div className="current-stage-river" aria-hidden="true">
@@ -315,7 +318,8 @@ export default function App() {
               <div className="current-stage-meta"><span>RW / FIELD STUDY 001</span><span>THE SYSTEM IN MOTION <i /></span></div>
               <div className="current-card-stream">
                 {currentCards.map((card, index) => (
-                  <button key={card.number} type="button" className={'current-card liquid-glass-surface current-card-' + card.symbol + (activeCurrent === index ? ' is-current' : '')} onPointerEnter={() => setActiveCurrent(index)} onFocus={() => setActiveCurrent(index)} onClick={() => setActiveCurrent(index)} aria-pressed={activeCurrent === index}>
+                  <LiquidGlass key={card.number} className="current-card-glass" radius={15} renderer="auto" refraction="lens" lensProfile="player" lensOptions={{ strength: 0.13, depth: 0.18, curvature: 0.45, bend: 0.5, sheen: 1.1, specular: 1.2 }} quality="high" saturation={125} style={{ width: '100%', height: '100%' }}>
+                  <button type="button" className={'current-card current-card-' + card.symbol + (activeCurrent === index ? ' is-current' : '')} onPointerEnter={() => setActiveCurrent(index)} onFocus={() => setActiveCurrent(index)} onClick={() => setActiveCurrent(index)} aria-pressed={activeCurrent === index}>
                     <span className="current-card-index">{card.number} <span>/ {card.label}</span></span>
                     <span className={'current-card-symbol symbol-' + card.symbol} aria-hidden="true">
                       {Array.from({ length: index === 0 ? 7 : index === 1 ? 4 : index === 2 ? 5 : 6 }, (_, i) => <i key={i} />)}
@@ -324,6 +328,7 @@ export default function App() {
                     <span className="current-card-note">{card.note}</span>
                     <span className="current-card-arrow"><ArrowUpRight size={15} /></span>
                   </button>
+                  </LiquidGlass>
                 ))}
               </div>
               <div className="current-stage-footer">
@@ -332,6 +337,7 @@ export default function App() {
                 <span className="current-progress">{String(activeCurrent + 1).padStart(2, '0')} <i /> 04</span>
               </div>
               <span className="current-stage-caption">A connected system, not a collection of tactics.</span>
+              </LiquidGlassScene>
             </div>
           </div>
           <div className="container hero-bottom">
