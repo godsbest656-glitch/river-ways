@@ -18,42 +18,6 @@
 .current-stage-footer,
 .current-stage-caption { z-index: 2; }
 
-.current-card.liquid-glass-surface {
-  isolation: isolate;
-  border-color: rgba(197, 242, 252, .28);
-  background:
-    linear-gradient(145deg, rgba(174, 231, 246, .15), rgba(7, 40, 62, .52)),
-    rgba(7, 43, 66, .46);
-  -webkit-backdrop-filter: blur(17px) saturate(155%);
-  backdrop-filter: blur(17px) saturate(155%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.24),
-    inset 0 -1px 0 rgba(169,232,247,.12),
-    0 14px 34px rgba(0, 12, 25, .18);
-}
-.current-card.liquid-glass-surface::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    260px circle at var(--glass-x, 50%) var(--glass-y, 0%),
-    rgba(220, 250, 255, .22),
-    transparent 62%
-  );
-  content: "";
-  opacity: .8;
-  pointer-events: none;
-  transition: opacity .25s ease;
-}
-.current-card.liquid-glass-surface:hover::before,
-.current-card.liquid-glass-surface:focus-visible::before { opacity: 1; }
-.current-card.liquid-glass-surface.is-current {
-  border-color: rgba(210, 247, 255, .68);
-  background:
-    linear-gradient(145deg, rgba(174, 231, 246, .2), rgba(7, 40, 62, .56)),
-    rgba(7, 43, 66, .5);
-}
 .current-stage-meta,
 .current-stage-footer {
   text-shadow: 0 1px 12px rgba(0, 12, 25, .35);
@@ -79,10 +43,6 @@
 
 @media (max-width: 600px) {
   .liquid-current-canvas { opacity: .56; }
-  .current-card.liquid-glass-surface {
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
-    backdrop-filter: blur(10px) saturate(140%);
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .brand:hover .brand-mark path,
@@ -90,7 +50,6 @@
   .liquid-current-canvas { opacity: .42; }
 }
 @media (hover: none) {
-  .current-card.liquid-glass-surface { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 }
 
 
