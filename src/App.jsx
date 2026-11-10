@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+ 
 import { createProjectSource, projectRecords } from './portfolio/index.js';
 import { ScrollGallery } from './portfolio/components/index.js';
+import { DeferredLiquidGlassStage, DeferredGlassCard } from './components/DeferredLiquidGlass.jsx';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, Check,
   ChevronDown, Layers3, Menu, MessageCircle,
   Search, ShieldCheck, Sparkles, Target, TrendingUp, Workflow, X, Zap
 } from 'lucide-react';
+
+const LiquidCurrent = lazy(() => import('./components/LiquidCurrent.jsx'));
 
 const services = [
   {
@@ -101,6 +105,30 @@ const faqs = [
   { q: 'Can you improve an existing website or marketing setup?', a: 'Yes. Work can begin with an assessment of the current site, discovery channels, content, analytics and conversion journey. We then prioritise the most valuable improvements before expanding the system.' }
 ];
 
+function DeferredLiquidCurrent() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const stage = document.querySelector('.current-stage');
+    const enable = () => setEnabled(true);
+    const onPointer = () => enable();
+    const onFocus = () => enable();
+    stage?.addEventListener('pointerenter', onPointer, { once: true, passive: true });
+    stage?.addEventListener('focusin', onFocus, { once: true });
+
+    // Keep the original SVG current as the immediate visual. Defer the 3D
+    // renderer until after first paint, unless the visitor engages the hero.
+    const timeout = window.setTimeout(enable, 3600);
+    return () => {
+      window.clearTimeout(timeout);
+      stage?.removeEventListener('pointerenter', onPointer);
+      stage?.removeEventListener('focusin', onFocus);
+    };
+  }, []);
+
+  return enabled ? <Suspense fallback={null}><LiquidCurrent /></Suspense> : null;
+}
+
 function Brand() {
   return (
     <a className="brand" href="#home" aria-label="River Ways home">
@@ -168,6 +196,8 @@ export default function App() {
     root.querySelectorAll('.current-card').forEach((card, index) => {
       card.style.setProperty('--card-pointer-x', (x * 15 * wave[index]).toFixed(2) + 'px');
       card.style.setProperty('--card-pointer-y', (y * 12 * wave[index]).toFixed(2) + 'px');
+      card.style.setProperty('--glass-x', ((0.5 + x * 0.8) * 100).toFixed(1) + '%');
+      card.style.setProperty('--glass-y', ((0.5 + y * 0.8) * 100).toFixed(1) + '%');
     });
   }
 
@@ -266,7 +296,9 @@ export default function App() {
             </div>
 
             <div className="hero-visual current-stage" role="group" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
+              <DeferredLiquidGlassStage>
               <div className="current-stage-grid" aria-hidden="true" />
+              <DeferredLiquidCurrent />
               <div className="current-stage-river" aria-hidden="true">
                 <svg viewBox="0 0 660 520" preserveAspectRatio="none">
                   <defs>
@@ -286,7 +318,8 @@ export default function App() {
               <div className="current-stage-meta"><span>RW / FIELD STUDY 001</span><span>THE SYSTEM IN MOTION <i /></span></div>
               <div className="current-card-stream">
                 {currentCards.map((card, index) => (
-                  <button key={card.number} type="button" className={'current-card current-card-' + card.symbol + (activeCurrent === index ? ' is-current' : '')} onPointerEnter={() => setActiveCurrent(index)} onFocus={() => setActiveCurrent(index)} onClick={() => setActiveCurrent(index)} aria-pressed={activeCurrent === index}>
+                  <DeferredGlassCard key={card.number} className="current-card-glass" radius={15} renderer="auto" refraction="lens" lensProfile="player" lensOptions={{ strength: 0.13, depth: 0.18, curvature: 0.45, bend: 0.5, sheen: 1.1, specular: 1.2 }} quality="high" saturation={125} style={{ width: '100%', height: '100%' }}>
+                  <button type="button" className={'current-card current-card-' + card.symbol + (activeCurrent === index ? ' is-current' : '')} onPointerEnter={() => setActiveCurrent(index)} onFocus={() => setActiveCurrent(index)} onClick={() => setActiveCurrent(index)} aria-pressed={activeCurrent === index}>
                     <span className="current-card-index">{card.number} <span>/ {card.label}</span></span>
                     <span className={'current-card-symbol symbol-' + card.symbol} aria-hidden="true">
                       {Array.from({ length: index === 0 ? 7 : index === 1 ? 4 : index === 2 ? 5 : 6 }, (_, i) => <i key={i} />)}
@@ -295,6 +328,7 @@ export default function App() {
                     <span className="current-card-note">{card.note}</span>
                     <span className="current-card-arrow"><ArrowUpRight size={15} /></span>
                   </button>
+                  </DeferredGlassCard>
                 ))}
               </div>
               <div className="current-stage-footer">
@@ -303,6 +337,7 @@ export default function App() {
                 <span className="current-progress">{String(activeCurrent + 1).padStart(2, '0')} <i /> 04</span>
               </div>
               <span className="current-stage-caption">A connected system, not a collection of tactics.</span>
+              </DeferredLiquidGlassStage>
             </div>
           </div>
           <div className="container hero-bottom">

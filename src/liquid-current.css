@@ -1,0 +1,88 @@
+/* SHAPED CURRENT — shader and optical surface layer.
+   This layer is additive: the original SVG current remains the no-WebGL fallback. */
+.current-stage { isolation: isolate; }
+.liquid-current-canvas {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: .96;
+  mix-blend-mode: screen;
+}
+.liquid-current-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+.current-stage-river { z-index: 0; opacity: .38; mix-blend-mode: screen; }
+.current-stage-grid { z-index: 1; pointer-events: none; }
+.current-stage-meta,
+.current-card-stream,
+.current-stage-footer,
+.current-stage-caption { z-index: 2; }
+
+.current-stage-meta,
+.current-stage-footer {
+  text-shadow: 0 1px 12px rgba(0, 12, 25, .35);
+}
+.brand-mark path {
+  stroke-dasharray: 42;
+  stroke-dashoffset: 0;
+  transition: stroke .3s ease, filter .3s ease;
+}
+.brand:hover .brand-mark path:nth-child(1),
+.brand:focus-visible .brand-mark path:nth-child(1) {
+  animation: rw-mark-flow 1.25s ease-in-out both;
+}
+.brand:hover .brand-mark path:nth-child(3),
+.brand:focus-visible .brand-mark path:nth-child(3) {
+  animation: rw-mark-flow 1.25s .12s ease-in-out both;
+}
+@keyframes rw-mark-flow {
+  0% { stroke-dashoffset: 42; filter: drop-shadow(0 0 0 rgba(22,139,183,0)); }
+  65% { stroke-dashoffset: 0; filter: drop-shadow(0 0 5px rgba(22,139,183,.55)); }
+  100% { stroke-dashoffset: -42; filter: drop-shadow(0 0 0 rgba(22,139,183,0)); }
+}
+
+@media (max-width: 600px) {
+  .liquid-current-canvas { opacity: .56; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand:hover .brand-mark path,
+  .brand:focus-visible .brand-mark path { animation: none !important; }
+  .liquid-current-canvas { opacity: .42; }
+}
+@media (hover: none) {
+}
+
+
+/* The React liquid-glass lens owns the outer surface; keep the semantic
+   button transparent and full-size so the optics remain visible beneath it. */
+.current-card-glass {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 15px;
+}
+.current-card-glass .current-card {
+  width: 100%;
+  height: 100%;
+  border-color: rgba(197, 242, 252, .3);
+  background: linear-gradient(145deg, rgba(174, 231, 246, .08), rgba(7, 40, 62, .24));
+  -webkit-backdrop-filter: blur(2px) saturate(125%);
+  backdrop-filter: blur(2px) saturate(125%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 14px 34px rgba(0, 12, 25, .16);
+}
+.current-card-glass .current-card.is-current {
+  border-color: rgba(210, 247, 255, .66);
+}
+.current-card-glass .current-card:focus-visible {
+  outline: 2px solid rgba(169,232,247,.95);
+  outline-offset: -4px;
+}
+@media (max-width: 600px) {
+  .current-card-glass { border-radius: 11px; }
+  .current-card-glass .current-card {
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+  }
+}
