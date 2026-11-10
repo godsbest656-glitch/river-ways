@@ -31,7 +31,12 @@ The liquid-glass treatment in this iteration is implemented as a small, project-
 
 ## Verification status
 
-This is an implementation candidate, not a certified release. The full CI suite, package audit, browser rendering and responsive visual review must run against this branch's exact head. The earlier successful CI run on the PromptedSite motion branch does not certify these new dependencies or shader changes.
+- GitHub Actions `River Ways checks` passed on commit `2a4f772a6dae0537c2d2a939239b7c4517db21ed` (run `42878580915`): dependency installation, production build, browser journeys/accessibility, Lighthouse, enquiry API, portfolio tests, public portfolio validation, D1 migration validation, skill tests and dependency audit.
+- The separate project-skill validation workflow also passed on that commit (run `42878580930`).
+- Lighthouse did report a homepage performance warning: score 0.54 against a 0.60 assertion, LCP 4.60s against 4.0s, and TBT 3.96s against 0.50s. The workflow completed successfully because these are configured warnings, not hard failures.
+- The build emitted a 839.06 kB minified / 225.45 kB gzip `LiquidCurrent` chunk. The scene was code-split but still requested immediately because the lazy component mounted with the hero.
+- A follow-up optimization now delays importing the 3D scene until the hero is engaged or 3.6 seconds after mount, reduces the plane mesh from 96×96 to 48×48 segments, and pauses the renderer when the canvas is offscreen. This follow-up is not yet covered by CI.
+- Browser preview, visual review, and context-loss testing remain outstanding. This is not a certified release.
 
 ## Review gates
 
