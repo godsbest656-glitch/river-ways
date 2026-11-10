@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+
+const LiquidCurrent = lazy(() => import('./components/LiquidCurrent.jsx'));
 import { createProjectSource, projectRecords } from './portfolio/index.js';
 import { ScrollGallery } from './portfolio/components/index.js';
 import {
@@ -267,6 +269,7 @@ export default function App() {
 
             <div className="hero-visual current-stage" role="group" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
               <div className="current-stage-grid" aria-hidden="true" />
+              <Suspense fallback={null}><LiquidCurrent /></Suspense>
               <div className="current-stage-river" aria-hidden="true">
                 <svg viewBox="0 0 660 520" preserveAspectRatio="none">
                   <defs>
@@ -286,7 +289,7 @@ export default function App() {
               <div className="current-stage-meta"><span>RW / FIELD STUDY 001</span><span>THE SYSTEM IN MOTION <i /></span></div>
               <div className="current-card-stream">
                 {currentCards.map((card, index) => (
-                  <button key={card.number} type="button" className={'current-card current-card-' + card.symbol + (activeCurrent === index ? ' is-current' : '')} onPointerEnter={() => setActiveCurrent(index)} onFocus={() => setActiveCurrent(index)} onClick={() => setActiveCurrent(index)} aria-pressed={activeCurrent === index}>
+                  <button key={card.number} type="button" className={'current-card liquid-glass-surface current-card-' + card.symbol + (activeCurrent === index ? ' is-current' : '')} onPointerEnter={() => setActiveCurrent(index)} onFocus={() => setActiveCurrent(index)} onClick={() => setActiveCurrent(index)} aria-pressed={activeCurrent === index}>
                     <span className="current-card-index">{card.number} <span>/ {card.label}</span></span>
                     <span className={'current-card-symbol symbol-' + card.symbol} aria-hidden="true">
                       {Array.from({ length: index === 0 ? 7 : index === 1 ? 4 : index === 2 ? 5 : 6 }, (_, i) => <i key={i} />)}
