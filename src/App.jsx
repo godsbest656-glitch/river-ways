@@ -295,7 +295,7 @@ export default function App() {
 
             <div className="hero-visual current-stage" role="group" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
               <div className="current-stage-grid" aria-hidden="true" />
-              <Suspense fallback={null}><LiquidCurrent /></Suspense>
+              <DeferredLiquidCurrent />
               <div className="current-stage-river" aria-hidden="true">
                 <svg viewBox="0 0 660 520" preserveAspectRatio="none">
                   <defs>
