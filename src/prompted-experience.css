@@ -1,5 +1,6 @@
 /* PromptedSite-inspired interaction layer.
-   Progressive enhancement only: the existing layout and content remain the fallback. */
+   Additive enhancements for River Ways' existing SHAPED CURRENT composition.
+   No existing card transforms or layout rules are replaced. */
 
 @media (prefers-reduced-motion: no-preference) {
   .current-stage {
@@ -8,30 +9,45 @@
 
   .current-card {
     backface-visibility: hidden;
+    transition: border-color 280ms ease, box-shadow 280ms ease, translate 280ms cubic-bezier(.2,.7,.2,1);
   }
 
   .current-card:hover,
-  .current-card:focus-visible,
+  .current-card:focus-visible {
+    translate: 0 -3px;
+    border-color: rgba(169,232,247,.72);
+    box-shadow: 0 14px 28px rgba(0,12,25,.2), 0 0 0 1px rgba(169,232,247,.12);
+  }
+
   .current-card.is-current {
-    transform: translate3d(var(--card-pointer-x, 0px), calc(var(--card-pointer-y, 0px) - 3px), 18px) rotateX(1deg);
+    border-color: rgba(169,232,247,.62);
+    box-shadow: 0 0 0 1px rgba(169,232,247,.1), 0 12px 28px rgba(0,12,25,.16);
   }
 
-  .service-card,
+  .service-feature,
+  .service-compact,
   .pathway-card,
-  .output-card {
-    transform: translateZ(0);
-    transition: transform 280ms cubic-bezier(.2,.7,.2,1), box-shadow 280ms ease, border-color 280ms ease;
+  .output-item {
+    transition: translate 280ms cubic-bezier(.2,.7,.2,1), box-shadow 280ms ease, border-color 280ms ease;
   }
 
-  .service-card:hover,
+  .service-feature:hover,
+  .service-compact:hover,
   .pathway-card:hover,
-  .output-card:hover {
-    transform: translateY(-5px);
+  .output-item:hover {
+    translate: 0 -4px;
+  }
+
+  .current-card:focus-visible,
+  .pathway-card a:focus-visible,
+  .service-link:focus-visible {
+    outline: 2px solid #168bb7;
+    outline-offset: 4px;
   }
 }
 
-/* Scroll-linked depth is deliberately optional. Browsers without view timelines
-   keep the static composition and the existing IntersectionObserver reveals. */
+/* Scroll-linked depth is optional. Unsupported browsers retain the original
+   static composition and the existing IntersectionObserver section reveals. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .current-stage-river {
@@ -87,11 +103,14 @@
   .current-stage-grid,
   .current-card-stream,
   .hero-copy h1 span,
-  .service-card,
+  .current-card,
+  .service-feature,
+  .service-compact,
   .pathway-card,
-  .output-card {
+  .output-item {
     animation: none !important;
     transition: none !important;
+    translate: none !important;
     transform: none !important;
     filter: none !important;
     clip-path: none !important;
