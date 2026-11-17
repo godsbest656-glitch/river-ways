@@ -178,9 +178,9 @@ async function handleWorker(request, env, actor, method, parts) {
     if (parsed.error) return parsed.error;
     const jobId = parts[2];
     const job = await env.LEADS_DB.prepare(
-      "SELECT id, client_id, project_id, status, worker_id FROM creative_jobs WHERE id = ?"
+      "SELECT id, client_id, project_id, status, worker_id, lease_expires_at FROM creative_jobs WHERE id = ?"
     ).bind(jobId).first();
-    if (!job || job.worker_id !== actor.id || !["claimed", "running", "completed"].includes(job.status)) {
+    if (!job || job.worker_id !== actor.id || !["claimed", "running"].includes(job.status) || !job.lease_expires_at || Date.parse(job.lease_expires_at) <= Date.now()) {
       return json(409, { ok: false, error: "job_lease_not_owned" });
     }
     const assetType = clean(parsed.body.assetType, 80);
@@ -223,7 +223,7 @@ async function handleWorker(request, env, actor, method, parts) {
     const job = await env.LEADS_DB.prepare(
       "SELECT id, client_id, project_id, status, worker_id FROM creative_jobs WHERE id = ?"
     ).bind(jobId).first();
-    if (!job || job.worker_id !== actor.id || !["claimed", "running"].includes(job.status)) {
+    if (!job || job.worker_id !== actor.id || !["claimed", "running"].includes(job.status) || !job.lease_expires_at || Date.parse(job.lease_expires_at) <= Date.now()) {
       return json(409, { ok: false, error: "job_lease_not_owned" });
     }
     const now = new Date().toISOString();
