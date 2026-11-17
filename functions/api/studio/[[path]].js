@@ -247,6 +247,18 @@ async function handleWorker(request, env, actor, method, parts) {
   return json(404, { ok: false, error: "not_found" });
 }
 
+async function handleAssets(request, env, method, parts, url) {
+  if (method !== "GET" || parts.length !== 1) return json(405, { ok: false, error: "method_not_allowed" });
+  const clientId = clean(url.searchParams.get("clientId"), 80);
+  const projectId = clean(url.searchParams.get("projectId"), 80);
+  if (!ID.test(clientId)) return json(400, { ok: false, error: "client_id_required" });
+  const query = projectId
+    ? env.LEADS_DB.prepare("SELECT id, client_id, project_id, job_id, version, asset_type, media_type, filename, sha256, status, provenance_json, created_at, updated_at FROM creative_assets WHERE client_id = ? AND project_id = ? ORDER BY created_at DESC LIMIT 100").bind(clientId, projectId)
+    : env.LEADS_DB.prepare("SELECT id, client_id, project_id, job_id, version, asset_type, media_type, filename, sha256, status, provenance_json, created_at, updated_at FROM creative_assets WHERE client_id = ? ORDER BY created_at DESC LIMIT 100").bind(clientId);
+  const { results = [] } = await query.all();
+  return json(200, { ok: true, assets: results });
+}
+
 async function handleAssetFile(request, env, actor, method, parts) {
   if (method !== "GET" || parts.length !== 3 || parts[2] !== "file" || !ID.test(parts[1])) {
     return json(404, { ok: false, error: "not_found" });
@@ -354,6 +366,7 @@ export async function onRequest({ request, env }) {
     if (parts[0] === "jobs") return await handleJobs(request, env, actor, request.method, parts, url);
     if (parts[0] === "worker" && parts[1] === "jobs" && parts[3] === "upload") return await handleWorkerUpload(request, env, actor, parts);
     if (parts[0] === "worker") return await handleWorker(request, env, actor, request.method, parts);
+    if (parts[0] === "assets" && parts.length === 1) return await handleAssets(request, env, request.method, parts, url);
     if (parts[0] === "assets" && parts[2] === "file") return await handleAssetFile(request, env, actor, request.method, parts);
     if (parts[0] === "assets") return await handleApproval(request, env, actor, request.method, parts);
     return json(404, { ok: false, error: "not_found" });
