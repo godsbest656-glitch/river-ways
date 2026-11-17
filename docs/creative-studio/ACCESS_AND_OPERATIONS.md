@@ -33,7 +33,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 | POST | `/api/studio/worker/jobs/:id/upload` | Upload a worker-produced file to private R2 (25 MB maximum; content type allowlist; SHA-256 computed server-side). |
 | POST | `/api/studio/worker/jobs/:id/assets` | Register metadata/provenance for an uploaded asset. |
 | GET | `/api/studio/assets/:id/file` | Stream an asset from private R2 after staff authentication. |
-| POST | `/api/studio/assets/:id/approval` | Record a staff decision against the exact asset SHA-256 and usage scope. |
+| GET | `/api/studio/assets?clientId=:id` | List metadata for one client's assets. |\n| POST | `/api/studio/assets/:id/approval` | Record an agency review decision against the exact asset SHA-256 and usage scope. |
 
 ## Current limitations
 
