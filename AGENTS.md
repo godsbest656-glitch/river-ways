@@ -89,3 +89,10 @@ The project includes a curated Agency Agents team under `.codex/agents/`. These 
 Use `website-orchestrator` for substantial website work. It coordinates UX Researcher, Brand Guardian, UI Designer, Frontend Developer, SEO Specialist, Growth Hacker, Accessibility Auditor and Code Reviewer as appropriate. The root instructions and canonical `docs/design/` governance remain authoritative. Verify that Codex actually discovers and invokes named agents; TOML files alone are not proof of runtime activation.
 
 Validate the agent definitions with `python scripts/validate_codex_agents.py .codex/agents`. The Python regression suite covers this validator. Do not open or update a PR without owner approval because pull-request workflows automatically deploy Cloudflare Preview. No merge, production deployment, DNS/config changes, external outreach or customer-data access is authorised by the presence of these agents.
+
+
+## Simplified engineering and command efficiency
+
+Use `.agents/skills/simplified-engineering/SKILL.md` for routine implementation and code review. The governing principle is the smallest complete change—not the fewest lines at the expense of correctness. Read the affected flow and callers first; reuse existing code and native capabilities; remove unnecessary abstractions and dependencies; test non-trivial logic. Never remove trust-boundary validation, data-loss protection, security, privacy, accessibility or requested behavior.
+
+RTK is optional local developer tooling, not an application dependency. When it is installed and initialized for the active agent, use `rtk` for supported shell commands and `rtk gain` to measure output reduction. If unavailable, use normal commands without delay. Use `rtk bypass` when full diagnostic output is needed. Do not install it automatically, enable telemetry, proxy or third-party pipelines, or treat compressed output as proof of lower total cost. Always inspect failures and report the exact checks run. See the skill for the full workflow.
