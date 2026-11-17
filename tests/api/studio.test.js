@@ -111,13 +111,20 @@ function makeDb() {
   };
 }
 
-const env = (db) => ({
-  LEADS_DB: db,
-  CF_ACCESS_TEAM_DOMAIN: "riverways.cloudflareaccess.com",
-  CF_ACCESS_AUD: "staff-aud",
-  STUDIO_WORKER_AUD: "worker-aud",
-  STUDIO_ALLOWED_EMAILS: "operator@riverways.example"
-});
+const env = (db) => {
+  const objects = new Map();
+  return {
+    LEADS_DB: db,
+    CREATIVE_ASSETS: {
+      async put(key, value, options) { objects.set(key, { body: value, size: value.byteLength, httpMetadata: options?.httpMetadata || {} }); },
+      async get(key) { return objects.get(key) || null; }
+    },
+    CF_ACCESS_TEAM_DOMAIN: "riverways.cloudflareaccess.com",
+    CF_ACCESS_AUD: "staff-aud",
+    STUDIO_WORKER_AUD: "worker-aud",
+    STUDIO_ALLOWED_EMAILS: "operator@riverways.example"
+  };
+};
 
 async function send(path, { method = "GET", body, token, origin = "https://riverwayse.com" } = {}, environment) {
   const headers = {};
