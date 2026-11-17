@@ -72,6 +72,7 @@ function makeDb() {
         if (sql.includes("FROM creative_clients")) return { results: [...clients.values()] };
         if (sql.includes("FROM creative_projects WHERE client_id = ?")) return { results: [...projects.values()].filter((item) => item.client_id === values[0]) };
         if (sql.includes("FROM creative_jobs WHERE client_id = ?")) return { results: [...jobs.values()].filter((item) => item.client_id === values[0] && (!values[1] || item.project_id === values[1])) };
+        if (sql.includes("FROM creative_assets WHERE client_id = ?")) return { results: [...assets.values()].filter((item) => item.client_id === values[0] && (!values[1] || item.project_id === values[1])) };
         return { results: [] };
       },
       async run() {
@@ -256,6 +257,9 @@ test("client → project → job → worker claim → asset metadata → approva
   }, e);
   assert.equal(assetResponse.status, 201);
   const asset = (await assetResponse.json()).asset;
+  const assetList = await send("assets?clientId=" + encodeURIComponent(client.id), { token: staff }, e);
+  assert.equal(assetList.status, 200);
+  assert.equal((await assetList.json()).assets.length, 1);
 
   const staleApproval = await send("assets/" + asset.id + "/approval", {
     method: "POST", token: staff,
