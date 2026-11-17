@@ -1,5 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
-const state = { clients: [], client: null, projects: [], jobs: [] };
+const state = { clients: [], client: null, projects: [], jobs: [], assets: [] };
 
 const defaultBrief = {
   schemaVersion: "1.0",
@@ -153,6 +153,90 @@ async function loadJobs() {
   renderJobs();
 }
 
+
+async function loadAssets() {
+  if (!state.client) return;
+  const result = await api("assets?clientId=" + encodeURIComponent(state.client.id));
+  state.assets = result.assets || [];
+  renderAssets();
+}
+
+function renderAssets() {
+  const list = $("#asset-list");
+  list.replaceChildren();
+  if (!state.assets.length) {
+    list.append(node("p", "muted", "No creative assets have been registered for this workspace yet."));
+    return;
+  }
+  for (const asset of state.assets) {
+    const row = node("article", "asset-row");
+    const preview = node("div", "asset-preview");
+    const url = "/api/studio/assets/" + encodeURIComponent(asset.id) + "/file";
+    if (asset.media_type?.startsWith("image/")) {
+      const image = node("img", "asset-image");
+      image.src = url;
+      image.alt = asset.filename;
+      preview.append(image);
+    } else if (asset.media_type?.startsWith("video/")) {
+      const video = node("video", "asset-video");
+      video.src = url;
+      video.controls = true;
+      video.preload = "metadata";
+      video.setAttribute("aria-label", "Preview " + asset.filename);
+      preview.append(video);
+    } else {
+      preview.append(node("span", "asset-file-icon", asset.media_type === "application/pdf" ? "PDF" : "FILE"));
+    }
+    const details = node("div", "asset-details");
+    details.append(node("strong", "", asset.filename));
+    details.append(node("small", "", asset.asset_type + " · v" + asset.version + " · " + asset.media_type));
+    details.append(node("small", "muted", "SHA-256 " + asset.sha256));
+    const status = node("span", "job-status " + asset.status, asset.status.replaceAll("_", " "));
+    const open = node("a", "asset-open", "Open file ↗");
+    open.href = url;
+    open.target = "_blank";
+    open.rel = "noopener";
+    const controls = node("div", "asset-review-controls");
+    const scope = node("input", "asset-scope");
+    scope.type = "text";
+    scope.maxLength = 240;
+    scope.value = "Internal agency review only";
+    scope.setAttribute("aria-label", "Usage scope for " + asset.filename);
+    const approve = node("button", "button button-primary", "Approve scope");
+    approve.type = "button";
+    approve.disabled = asset.status === "delivered";
+    approve.addEventListener("click", () => reviewAsset(asset, "approved", scope.value));
+    const changes = node("button", "button button-secondary", "Request changes");
+    changes.type = "button";
+    changes.disabled = asset.status === "delivered";
+    changes.addEventListener("click", () => reviewAsset(asset, "changes_requested", scope.value));
+    controls.append(scope, approve, changes);
+    details.append(status, open, controls);
+    row.append(preview, details);
+    list.append(row);
+  }
+}
+
+async function reviewAsset(asset, decision, usageScope) {
+  if (!usageScope.trim()) {
+    notice("Enter the intended usage scope before recording an approval decision.", "error");
+    return;
+  }
+  try {
+    await api("assets/" + encodeURIComponent(asset.id) + "/approval", {
+      method: "POST",
+      body: {
+        decision,
+        usageScope: usageScope.trim(),
+        assetSha256: asset.sha256,
+        notes: "Recorded from the River Ways Creative Studio agency review."
+      }
+    });
+    await loadAssets();
+    notice(decision === "approved" ? "Agency review recorded for this exact asset version." : "Changes requested for this asset version.", "success");
+  } catch (error) { showError(error); }
+}
+
 async function selectClient(client) {
   state.client = client;
   $("#selected-client").textContent = client.name;
@@ -161,6 +245,7 @@ async function selectClient(client) {
   renderClients();
   try {
     await loadProjects();
+    await loadAssets();
     notice("Connected to " + client.name + " workspace.", "success");
   } catch (error) { showError(error); }
 }
