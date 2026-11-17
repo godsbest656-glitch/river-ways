@@ -53,6 +53,8 @@ jobs:
           include-hidden-files: true
       - name: Test enquiry API
         run: npm run test:api
+      - name: Test local creative production engine
+        run: npm run test:creative
       - name: Test portfolio contracts
         run: npm run test:portfolio
       - name: Validate public portfolio data
