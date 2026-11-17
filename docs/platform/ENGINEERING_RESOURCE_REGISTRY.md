@@ -258,3 +258,40 @@ These workspace skills are not the same thing as installing the external GitHub 
 7. **Graphify:** evaluate only after capturing a baseline for time-to-locate relevant code/docs in a real task.
 
 Every pilot must have a named owner, exact upstream commit, scope, test data, acceptance criteria, cost ceiling (zero unless explicitly approved), rollback path and outcome. No resource becomes Adopted, Implemented, Verified or Deployed until its corresponding evidence is recorded under the status vocabulary in this registry.
+
+
+## 11. Simplified engineering + RTK pilot — implementation record
+
+**Pilot scope:** repository-level coding-agent guidance and optional local command-output compression.  
+**Implementation branch:** `build/river-ways-execution-agency-agents`.  
+**Implementation date:** 17 November 2026.
+
+### Changes committed
+
+- Added `.agents/skills/simplified-engineering/SKILL.md`, a River Ways project skill derived from the public Ponytail approach and adapted to this repository's architecture, release gates and quality requirements.
+- Updated `AGENTS.md` to make the skill part of routine engineering guidance and document safe, optional RTK use.
+- No application runtime code, package dependencies, lockfiles, CI workflow, deployment settings, secrets, customer data or production services were changed.
+
+### Pilot behavior
+
+- The skill requires reading affected code and callers before editing, then choosing the smallest complete solution.
+- It prioritizes reuse, native/platform features and existing dependencies before introducing new abstractions or packages.
+- It explicitly protects validation, authorization, data-loss handling, privacy, security, accessibility, compatibility and tests.
+- It requires focused tests for non-trivial logic and honest reporting of checks not run.
+- RTK is documented as optional local tooling. When already installed and initialized, agents may use its command wrappers and `rtk gain`; ordinary commands remain the fallback. Full diagnostics can use `rtk bypass`.
+- No RTK installation, Codex plugin marketplace change, global agent hook, telemetry opt-in, proxy or pipeline was performed. Those require access to the user's local development environment and separate review.
+
+### Evidence and limits
+
+| Check | Result |
+|---|---|
+| Fetch updated `AGENTS.md` from target branch | Pass; new simplified-engineering and RTK instructions read back |
+| Fetch new skill from target branch | Pass; metadata and skill content read back |
+| Skill validator | Not run in this environment |
+| Python regression suite | Not run in this environment |
+| Website build and test suites | Not run; no local checkout/runtime available through this GitHub-only edit |
+| RTK installation and `rtk gain` baseline | Not run; local developer machine unavailable |
+| Ponytail plugin runtime activation | Not run; local Codex plugin manager unavailable |
+| CI / deployment | Not triggered; PR workflow publishes Cloudflare Preview and owner has not authorised a Preview review |
+
+**Status:** Repository guidance implemented and read-back verified. The local RTK installation and measured before/after output pilot remain **blocked pending local environment access**. Do not mark either external tool as installed or runtime-verified until that evidence exists.
