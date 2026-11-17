@@ -21,7 +21,7 @@
 
 ## Architecture boundary
 
-The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The intended connection is a secure job/control API and an authenticated Creative Studio UI; a local worker will claim jobs, execute approved local workflows, and submit metadata/results back to the agency platform.
+The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API and internal Studio UI are now present in code. The remaining bridge is a local worker daemon that claims jobs, executes approved local workflows and submits results to the platform.
 
 D1 stores metadata and audit records, not media bytes. Media storage must be private and client-scoped. A client must not be able to access another client's brief, job, asset or approval record.
 
@@ -32,20 +32,18 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - A complete local worker daemon that connects the queue to the CLI, persists project files, runs approved work and uploads resulting media.
 - Worker integration tests against a live Cloudflare Access service token and R2 bucket.
 - Asset listing, visual review/annotation UI and revision comparison; current UI registers projects/jobs but does not yet present asset previews or approval controls.
-- Local worker/agent bridge that polls or receives queued jobs and calls the existing CLI.
 - End-to-end integration tests across browser, API, D1 and local worker.
 - Live ComfyUI, GPU, model inference or real renderer verification.
-- Client-facing review portal and explicit approval UI.
 - Social publishing integrations and campaign analytics.
 
 ## Next implementation order
 
-1. Build the authenticated Creative Studio API (client/project/job/asset/approval) with tenant-scoped queries and audit events.
-2. Add a secure local-worker protocol: claim/heartbeat/complete/fail, idempotency, lease expiry, bounded retries and signed artifact upload.
-3. Add the internal Creative Studio interface with queue, brief, production, review and delivery states.
-4. Add exact-version approval records and immutable asset provenance.
-5. Connect publishing and performance measurement only after channel credentials and explicit publishing approvals exist.
-6. Run end-to-end tests; only then assess Preview readiness.
+1. Build the local worker daemon and adapt the existing CLI to execute queued project tasks, heartbeat, retry and upload assets.
+2. Add asset listing, preview, revision comparison and staff/client review controls to the Studio UI.
+3. Add client reviewer identity and scoped approval permissions; keep agency and client approval as distinct events.
+4. Add end-to-end tests across browser, Access JWT, D1, R2 and local worker.
+5. Configure Cloudflare Access and Preview D1/R2 bindings only after owner-side environment access and approval.
+6. Connect social publishing and analytics only after platform credentials and explicit publishing approvals exist.
 
 ## Safeguards
 
