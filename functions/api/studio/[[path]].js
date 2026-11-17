@@ -169,6 +169,38 @@ async function handleWorker(request, env, actor, method, parts) {
     await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: workerId, eventType: "job.claimed", entityType: "job", entityId: job.id });
     return json(200, { ok: true, job });
   }
+  if (parts.length === 4 && parts[1] === "jobs" && ID.test(parts[2]) && parts[3] === "assets") {
+    const parsed = await bodyOf(request);
+    if (parsed.error) return parsed.error;
+    const jobId = parts[2];
+    const job = await env.LEADS_DB.prepare(
+      "SELECT id, client_id, project_id, status, worker_id FROM creative_jobs WHERE id = ?"
+    ).bind(jobId).first();
+    if (!job || job.worker_id !== actor.id || !["claimed", "running", "completed"].includes(job.status)) {
+      return json(409, { ok: false, error: "job_lease_not_owned" });
+    }
+    const assetType = clean(parsed.body.assetType, 80);
+    const mediaType = clean(parsed.body.mediaType, 120);
+    const filename = clean(parsed.body.filename, 180);
+    const storageKey = clean(parsed.body.storageKey, 500);
+    const sha256 = clean(parsed.body.sha256, 64).toLowerCase();
+    const version = Number(parsed.body.version);
+    const provenance = parsed.body.provenance ?? {};
+    if (!assetType || !/^[a-z0-9.+-]+\/[a-z0-9.+-]+$/i.test(mediaType) ||
+        !filename || filename.includes("/") || filename.includes("\\\\") ||
+        !storageKey.startsWith("clients/" + job.client_id + "/") ||
+        storageKey.includes("..") || !SHA256.test(sha256) ||
+        !Number.isInteger(version) || version < 1 || !validJson(provenance, 12000)) {
+      return json(422, { ok: false, error: "invalid_asset_metadata" });
+    }
+    const assetId = id();
+    const now = new Date().toISOString();
+    await env.LEADS_DB.prepare(
+      "INSERT INTO creative_assets (id, client_id, project_id, job_id, version, asset_type, media_type, filename, storage_key, sha256, provenance_json, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ).bind(assetId, job.client_id, job.project_id, job.id, version, assetType, mediaType, filename, storageKey, sha256, JSON.stringify(provenance), now, now).run();
+    await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: actor.id, eventType: "asset.registered", entityType: "asset", entityId: assetId, details: { jobId, sha256 } });
+    return json(201, { ok: true, asset: { id: assetId, clientId: job.client_id, projectId: job.project_id, jobId, version, assetType, status: "generated", sha256 } });
+  }
   if (parts.length === 3 && parts[1] === "jobs" && ID.test(parts[2])) {
     const parsed = await bodyOf(request);
     if (parsed.error) return parsed.error;
