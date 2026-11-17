@@ -14,10 +14,20 @@ permissions:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - name: Check out the canonical continuation branch
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Install Rust Token Killer (RTK)
         shell: bash
@@ -29,22 +39,28 @@ jobs:
           rtk --version
           rtk gain
 
+      - name: Install project dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+
       - name: Compare native and RTK command output
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
           mkdir -p "$RUNNER_TEMP/rtk-benchmark"
           report="$RUNNER_TEMP/rtk-benchmark/report.txt"
           : > "$report"
+          failures=0
 
           run_pair() {
             name="$1"
             shift
             native="$RUNNER_TEMP/rtk-benchmark/$name.native.txt"
             compressed="$RUNNER_TEMP/rtk-benchmark/$name.rtk.txt"
+            native_status=0
+            rtk_status=0
 
-            "$@" > "$native" 2>&1 || true
-            rtk "$@" > "$compressed" 2>&1 || true
+            "$@" > "$native" 2>&1 || native_status=$?
+            rtk "$@" > "$compressed" 2>&1 || rtk_status=$?
 
             native_bytes=$(wc -c < "$native" | tr -d ' ')
             rtk_bytes=$(wc -c < "$compressed" | tr -d ' ')
@@ -58,17 +74,29 @@ jobs:
 
             {
               echo "## $name"
+              echo "Native exit: $native_status"
+              echo "RTK exit: $rtk_status"
               echo "Native output: $native_bytes bytes"
               echo "RTK output: $rtk_bytes bytes"
               echo "Difference: $saved_bytes bytes ($saved_pct%)"
               echo
             } | tee -a "$report"
+
+            if [ "$native_status" -ne 0 ] || [ "$rtk_status" -ne 0 ]; then
+              failures=$((failures + 1))
+            fi
           }
 
-          run_pair git-status git status --short --branch
-          run_pair git-log git log -12 --oneline --decorate
-          run_pair git-diff-stat git diff --stat HEAD~1 HEAD
-          run_pair git-branches git branch --list
+          echo "Commit: $GITHUB_SHA" | tee -a "$report"
+          echo "Node: $(node --version); npm: $(npm --version); Python: $(python --version 2>&1)" | tee -a "$report"
+          echo | tee -a "$report"
+
+          run_pair python-skill-validator python scripts/validate_skills.py .agents/skills
+          run_pair python-agent-validator python scripts/validate_codex_agents.py .codex/agents
+          run_pair python-regression-tests python -m unittest discover -s tests -p "test_*.py"
+          run_pair npm-build npm run build
+          run_pair npm-tests npm test
+          run_pair npm-portfolio-validation npm run validate:portfolio
 
           {
             echo "## RTK savings ledger"
@@ -80,8 +108,14 @@ jobs:
             echo "RTK version:"
             rtk --version
             echo
-            echo "Important: byte reduction measures command-output compression only; it is not a measurement of total model/API cost."
+            echo "A byte reduction is a command-output measurement, not a measurement of total model/API cost."
+            echo "Paired commands are run separately; timings are not compared and the benchmark is not a performance benchmark."
           } | tee -a "$report"
+
+          if [ "$failures" -ne 0 ]; then
+            echo "Benchmark rejected: $failures paired command(s) had a non-zero exit status." | tee -a "$report"
+            exit 1
+          fi
 
       - name: Upload benchmark report
         if: always()
