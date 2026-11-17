@@ -161,10 +161,14 @@ async function handleWorker(request, env, actor, method, parts) {
   if (method !== "POST") return json(405, { ok: false, error: "method_not_allowed" });
   if (parts.length === 2 && parts[1] === "claim") {
     const now = new Date().toISOString();
+    const leaseUntil = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     const workerId = clean(actor.id, 120);
+    await env.LEADS_DB.prepare(
+      "UPDATE creative_jobs SET status = CASE WHEN attempt_count >= max_attempts THEN 'failed' ELSE 'queued' END, worker_id = NULL, lease_expires_at = NULL, last_error = CASE WHEN attempt_count >= max_attempts THEN 'Worker lease expired after maximum attempts' ELSE last_error END, finished_at = CASE WHEN attempt_count >= max_attempts THEN ? ELSE NULL END, updated_at = ? WHERE status IN ('claimed', 'running') AND lease_expires_at IS NOT NULL AND lease_expires_at <= ?"
+    ).bind(now, now, now).run();
     const job = await env.LEADS_DB.prepare(
-      "UPDATE creative_jobs SET status = 'claimed', worker_id = ?, claimed_at = ?, attempt_count = attempt_count + 1, updated_at = ? WHERE id = (SELECT id FROM creative_jobs WHERE status = 'queued' AND available_at <= ? ORDER BY created_at ASC LIMIT 1) AND status = 'queued' RETURNING id, client_id, project_id, job_type, payload_json, attempt_count"
-    ).bind(workerId, now, now, now).first();
+      "UPDATE creative_jobs SET status = 'claimed', worker_id = ?, claimed_at = ?, heartbeat_at = ?, lease_expires_at = ?, attempt_count = attempt_count + 1, updated_at = ? WHERE id = (SELECT id FROM creative_jobs WHERE status = 'queued' AND available_at <= ? AND attempt_count < max_attempts ORDER BY created_at ASC LIMIT 1) AND status = 'queued' RETURNING id, client_id, project_id, job_type, payload_json, attempt_count, max_attempts, lease_expires_at"
+    ).bind(workerId, now, now, leaseUntil, now, now).first();
     if (!job) return json(200, { ok: true, job: null });
     await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: workerId, eventType: "job.claimed", entityType: "job", entityId: job.id });
     return json(200, { ok: true, job });
@@ -222,13 +226,21 @@ async function handleWorker(request, env, actor, method, parts) {
     if (!job || job.worker_id !== actor.id || !["claimed", "running"].includes(job.status)) {
       return json(409, { ok: false, error: "job_lease_not_owned" });
     }
+    const now = new Date().toISOString();
+    if (outcome === "heartbeat") {
+      const leaseUntil = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+      await env.LEADS_DB.prepare(
+        "UPDATE creative_jobs SET status = 'running', started_at = COALESCE(started_at, ?), heartbeat_at = ?, lease_expires_at = ?, updated_at = ? WHERE id = ? AND worker_id = ? AND status IN ('claimed', 'running')"
+      ).bind(now, now, leaseUntil, now, jobId, actor.id).run();
+      return json(200, { ok: true, jobId, status: "running", leaseExpiresAt: leaseUntil });
+    }
     if (!["completed", "failed"].includes(outcome) || !validJson(result, 24000)) {
       return json(422, { ok: false, error: "invalid_job_result" });
     }
-    const now = new Date().toISOString();
+    const errorMessage = outcome === "failed" ? clean(parsed.body.error, 1200) : null;
     await env.LEADS_DB.prepare(
-      "UPDATE creative_jobs SET status = ?, result_json = ?, finished_at = ?, updated_at = ? WHERE id = ? AND worker_id = ? AND status IN ('claimed', 'running')"
-    ).bind(outcome, JSON.stringify(result), now, now, jobId, actor.id).run();
+      "UPDATE creative_jobs SET status = ?, result_json = ?, last_error = ?, finished_at = ?, lease_expires_at = NULL, updated_at = ? WHERE id = ? AND worker_id = ? AND status IN ('claimed', 'running')"
+    ).bind(outcome, JSON.stringify(result), errorMessage, now, now, jobId, actor.id).run();
     await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: actor.id, eventType: "job." + outcome, entityType: "job", entityId: jobId });
     return json(200, { ok: true, jobId, status: outcome });
   }
