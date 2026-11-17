@@ -201,7 +201,22 @@ test("client → project → job → worker claim → asset metadata → approva
   assert.equal(claimResponse.status, 200);
   assert.equal((await claimResponse.json()).job.id, job.id);
 
-  const digest = "a".repeat(64);
+  const uploadToken = worker;
+  const uploadRequest = new Request("https://riverwayse.com/api/studio/worker/jobs/" + job.id + "/upload", {
+    method: "POST",
+    headers: {
+      "Cf-Access-Jwt-Assertion": uploadToken,
+      "content-type": "image/png",
+      "content-length": "8",
+      "x-asset-filename": "concept.png"
+    },
+    body: Buffer.from("fake-png")
+  });
+  const uploadResponse = await onRequest({ request: uploadRequest, env: e });
+  assert.equal(uploadResponse.status, 201);
+  const uploaded = await uploadResponse.json();
+  assert.equal(uploaded.bytes, 8);
+  const digest = uploaded.sha256;
   const wrongWorker = await assertion({ audience: "worker-aud", commonName: "other-worker" });
   const deniedAsset = await send("worker/jobs/" + job.id + "/assets", {
     method: "POST", token: wrongWorker,
@@ -215,8 +230,8 @@ test("client → project → job → worker claim → asset metadata → approva
   const assetResponse = await send("worker/jobs/" + job.id + "/assets", {
     method: "POST", token: worker,
     body: {
-      assetType: "concept", mediaType: "application/json", filename: "concept.json",
-      storageKey: "clients/" + client.id + "/projects/" + project.id + "/concept.json",
+      assetType: "concept", mediaType: uploaded.mediaType, filename: uploaded.filename,
+      storageKey: uploaded.storageKey,
       sha256: digest, version: 1, provenance: { source: "test" }
     }
   }, e);
@@ -235,6 +250,9 @@ test("client → project → job → worker claim → asset metadata → approva
   assert.equal(approvalResponse.status, 201);
   assert.equal((await approvalResponse.json()).status, "approved");
   assert.equal(db.assets.get(asset.id).status, "approved");
+  const preview = await send("assets/" + asset.id + "/file", { token: staff }, e);
+  assert.equal(preview.status, 200);
+  assert.equal(await preview.text(), "fake-png");
   assert.equal(db.approvals.length, 1);
   assert.ok(db.audits.length >= 4);
 });
