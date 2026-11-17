@@ -42,6 +42,10 @@ function makeDb() {
           const client = clients.get(values[0]);
           return client?.status === "active" ? client : null;
         }
+        if (sql.includes("FROM creative_projects WHERE id = ? AND client_id = ?")) {
+          const project = projects.get(values[0]);
+          return project?.client_id === values[1] ? { id: project.id, status: project.status } : null;
+        }
         if (sql.includes("FROM creative_jobs WHERE id = ?") && sql.includes("worker_id")) {
           const job = jobs.get(values[0]);
           return job ? { id: job.id, client_id: job.client_id, project_id: job.project_id, status: job.status, worker_id: job.worker_id } : null;
