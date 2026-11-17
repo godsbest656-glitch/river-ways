@@ -193,6 +193,14 @@ async function handleWorker(request, env, actor, method, parts) {
         !Number.isInteger(version) || version < 1 || !validJson(provenance, 12000)) {
       return json(422, { ok: false, error: "invalid_asset_metadata" });
     }
+    if (!env.CREATIVE_ASSETS) return json(503, { ok: false, error: "creative_asset_storage_unavailable" });
+    const storedObject = await env.CREATIVE_ASSETS.head(storageKey);
+    if (!storedObject || storedObject.customMetadata?.sha256 !== sha256 ||
+        storedObject.customMetadata?.clientId !== job.client_id ||
+        storedObject.customMetadata?.projectId !== job.project_id ||
+        storedObject.customMetadata?.jobId !== job.id) {
+      return json(409, { ok: false, error: "uploaded_object_provenance_mismatch" });
+    }
     const assetId = id();
     const now = new Date().toISOString();
     await env.LEADS_DB.prepare(
@@ -278,7 +286,7 @@ async function handleWorkerUpload(request, env, actor, parts) {
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   const sha256 = Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
   const key = "clients/" + job.client_id + "/projects/" + job.project_id + "/" + job.id + "/" + crypto.randomUUID() + "-" + filename;
-  await env.CREATIVE_ASSETS.put(key, bytes, { httpMetadata: { contentType: mediaType } });
+  await env.CREATIVE_ASSETS.put(key, bytes, { httpMetadata: { contentType: mediaType }, customMetadata: { sha256, clientId: job.client_id, projectId: job.project_id, jobId: job.id } });
   await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: actor.id, eventType: "asset.uploaded", entityType: "job", entityId: job.id, details: { storageKey: key, sha256, bytes: length, mediaType } });
   return json(201, { ok: true, storageKey: key, filename, mediaType, sha256, bytes: length });
 }
