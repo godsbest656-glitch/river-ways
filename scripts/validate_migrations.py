@@ -146,6 +146,10 @@ db.execute(
     ("client-a", "client-a", "Client A", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
 )
 db.execute(
+    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+    ("client-b", "client-b", "Client B", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
     """INSERT INTO creative_projects
        (id, client_id, slug, name, objective, brief_json, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
