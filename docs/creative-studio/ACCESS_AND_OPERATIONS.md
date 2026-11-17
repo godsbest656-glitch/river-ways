@@ -29,7 +29,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 | GET / POST | `/api/studio/projects` | List a client's projects and create a draft-brief project. |
 | GET / POST | `/api/studio/jobs` | List a client's jobs and queue a production task. |
 | POST | `/api/studio/worker/claim` | Atomically claim the oldest available queued job using the worker audience. |
-| POST | `/api/studio/worker/jobs/:id` | Complete or fail a job owned by that worker identity. |
+| POST | `/api/studio/worker/jobs/:id` | Renew the five-minute lease with `outcome: heartbeat`, or complete/fail a job owned by that worker identity. |
 | POST | `/api/studio/worker/jobs/:id/upload` | Upload a worker-produced file to private R2 (25 MB maximum; content type allowlist; SHA-256 computed server-side). |
 | POST | `/api/studio/worker/jobs/:id/assets` | Register metadata/provenance for an uploaded asset. |
 | GET | `/api/studio/assets/:id/file` | Stream an asset from private R2 after staff authentication. |
@@ -39,7 +39,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 
 - The current approval endpoint is agency-staff review. A separate client reviewer role and client-facing approval portal are not implemented yet.
 - Private R2 upload and authenticated file streaming are implemented, but no R2 bucket has been provisioned or bound in Preview. Asset URLs are not public or permanent.
-- Worker claim is atomic, but leases, heartbeat, stale-claim recovery and bounded retry policy are not yet implemented.
+- Worker claim, five-minute renewable leases, stale-claim recovery and bounded retry limits are implemented in code; live service-token/worker behavior is not yet verified.
 - The local creative CLI is not yet connected to this API by a worker daemon.
 - A Studio UI is not yet implemented.
 - The API has no public signup and no client can list or access another client's records without an authorised staff identity. Tenant relationship constraints are enforced in D1; endpoint queries must continue to scope by `client_id`.
