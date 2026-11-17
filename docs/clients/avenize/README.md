@@ -65,3 +65,5 @@ The logo image supplied by the client is the visual source of truth. Preserve th
 - [Lead acquisition and conversion operations](./ACQUISITION_OPERATIONS.md)
 - [Niyi Adesanya partnership concept](./PARTNERSHIP_NIYI_ADESANYA.md)
 - [LIMBsimple partnership concept](./PARTNERSHIP_LIMBSIMPLE.md)
+- [Lagos workshop activation plan](./WORKSHOP_ACTIVATION.md)
+- [Weekly growth report template](./WEEKLY_REPORT_TEMPLATE.md)
