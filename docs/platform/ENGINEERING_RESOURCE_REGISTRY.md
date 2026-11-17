@@ -134,3 +134,51 @@
 - **Deferred/Rejected:** decision and rationale are recorded.
 
 No resource is marked Adopted, Implemented, Verified or Deployed merely because it appears here.
+
+## 9. Recovered repository portfolio — River Ways agency
+
+This section records repositories explicitly surfaced in the recovered River Ways work and additional engineering references found during that research. A listing is not an adoption, dependency, integration or security endorsement. The public agency website, internal agency operating platform, Rebuilder and Revenue OS remain distinct work areas with explicit contracts; Avenize is a separate product and is not part of this register's ownership scope.
+
+### 9.1 User-requested repositories
+
+| Resource | Exact source | Intended River Ways capability | Current disposition |
+|---|---|---|---|
+| GitHub Spec Kit | https://github.com/github/spec-kit | Specification-first feature planning and implementation discipline | Evaluate against existing PRD, task and agent workflows; avoid duplicate process |
+| PentAGI | https://github.com/vxcontrol/pentagi | Security research and controlled penetration-testing support | Security-lab evaluation only; isolate, review permissions and never point at production without explicit scope |
+| n8n workflow collection | https://github.com/Zie619/n8n-workflows | Patterns for internal workflow automation and integrations | Reference only; inspect each workflow, credentials, external calls and license before reuse |
+| FreeLLMAPI | Exact repository not confirmed | Low-cost model access and provider fallback research | Identity unresolved; do not adopt a similarly named repository by assumption |
+| Cloudflare security repository | Exact repository not confirmed | Security posture and vulnerability-checking patterns for Cloudflare-hosted services | Identity unresolved; use official Cloudflare guidance and current project controls until identified |
+| Design-cloning repository | Exact repository not confirmed | Website/design reference analysis and implementation acceleration | Identity unresolved; do not copy third-party proprietary assets or code |
+| SkillTree OS | https://skilltreeos.ai/plan/ | Reference for structured skills, roles and operating-system design for the agency | Product/reference research only; not a repository or a dependency |
+
+The three unresolved repository identities must be matched to the original GitHub URLs before any clone, code review or adoption decision. Do not silently substitute golapkamal/Free-LLM-API, Cloudflare Flan Scan, or bienhoang/design-clone; those were only possible matches, not confirmed user selections.
+
+### 9.2 Additional engineering references discovered during research
+
+| Repository | Intended capability | Initial disposition |
+|---|---|---|
+| https://github.com/vercel/ai | Model/provider integration patterns | Reference; compare with existing provider adapters before reuse |
+| https://github.com/supabase-community/vercel-ai-chatbot | Chat UX and AI application patterns | Reference; do not import a full application or Supabase assumptions |
+| https://github.com/PostHog/posthog | Product analytics and event design | Reference; preserve privacy and avoid introducing a paid/hosted dependency without approval |
+| https://github.com/getsentry/sentry | Error monitoring and observability | Reference; evaluate current low-cost monitoring before adding a provider |
+| https://github.com/vercel/next.js | Framework engineering patterns | Reference only; River Ways website currently uses React + Vite, not Next.js |
+| https://github.com/vercel/nextjs-subscription-payments | Subscription/payment reference implementation | Archived reference; do not use as a production payment foundation |
+| https://github.com/shadcn-ui/ui | Accessible component implementation patterns | Reference; selectively adapt patterns to the current design system, do not wholesale replace it |
+| https://github.com/microsoft/playwright | Browser automation and end-to-end testing | Preferred browser test reference; use the repository's existing Playwright harness |
+| https://github.com/vitest-dev/vitest | Unit-test tooling | Reference only; prefer the existing Node test runner unless a demonstrated gap justifies a change |
+| https://github.com/naptha/tesseract.js | OCR and text extraction | Evaluate only for a concrete document/media ingestion task |
+
+### 9.3 Required repository intake gate
+
+Before any resource is integrated, record:
+
+1. Exact canonical repository URL, owner, repository name, upstream commit/tag and retrieval date.
+2. Whether it was user-requested, research-discovered or independently recommended.
+3. License for the exact code, assets, models, datasets and dependencies to be reused; identify commercial-use restrictions.
+4. Maintenance activity, security advisories, dependency health and known vulnerabilities.
+5. Runtime, hardware, storage, bandwidth, provider and ongoing human-maintenance costs.
+6. The River Ways capability/backlog item it addresses and the existing implementation it would replace or complement.
+7. A bounded proof using synthetic/non-sensitive data, measurable acceptance criteria and a rollback path.
+8. Final disposition: reference, evaluating, adopted, implemented, verified, deferred or rejected—with exact commit and test evidence where applicable.
+
+Do not clone or vendor a repository merely to make the register look complete. Prefer extracting a small, license-compatible pattern over importing a second framework or parallel platform. No additional spend, production access, external outreach or customer-data access is authorised by this register.
