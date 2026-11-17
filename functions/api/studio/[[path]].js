@@ -227,6 +227,62 @@ async function handleWorker(request, env, actor, method, parts) {
   return json(404, { ok: false, error: "not_found" });
 }
 
+async function handleAssetFile(request, env, actor, method, parts) {
+  if (method !== "GET" || parts.length !== 3 || parts[2] !== "file" || !ID.test(parts[1])) {
+    return json(404, { ok: false, error: "not_found" });
+  }
+  if (!env.CREATIVE_ASSETS) return json(503, { ok: false, error: "creative_asset_storage_unavailable" });
+  const asset = await env.LEADS_DB.prepare(
+    "SELECT id, client_id, filename, media_type, storage_key, sha256, status FROM creative_assets WHERE id = ?"
+  ).bind(parts[1]).first();
+  if (!asset) return json(404, { ok: false, error: "asset_not_found" });
+  const object = await env.CREATIVE_ASSETS.get(asset.storage_key);
+  if (!object) return json(404, { ok: false, error: "asset_file_not_found" });
+  const safeFilename = asset.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 160) || "creative-asset";
+  return new Response(object.body, {
+    status: 200,
+    headers: {
+      "content-type": asset.media_type || object.httpMetadata?.contentType || "application/octet-stream",
+      "content-length": String(object.size),
+      "content-disposition": 'inline; filename="' + safeFilename + '"',
+      "cache-control": "private, no-store",
+      "x-content-type-options": "nosniff",
+      "x-creative-asset-sha256": asset.sha256,
+      "x-creative-asset-status": asset.status
+    }
+  });
+}
+
+async function handleWorkerUpload(request, env, actor, parts) {
+  if (request.method !== "POST" || parts.length !== 4 || parts[1] !== "jobs" || !ID.test(parts[2]) || parts[3] !== "upload") {
+    return json(404, { ok: false, error: "not_found" });
+  }
+  if (!env.CREATIVE_ASSETS) return json(503, { ok: false, error: "creative_asset_storage_unavailable" });
+  const job = await env.LEADS_DB.prepare(
+    "SELECT id, client_id, project_id, status, worker_id FROM creative_jobs WHERE id = ?"
+  ).bind(parts[2]).first();
+  if (!job || job.worker_id !== actor.id || !["claimed", "running", "completed"].includes(job.status)) {
+    return json(409, { ok: false, error: "job_lease_not_owned" });
+  }
+  const length = Number(request.headers.get("content-length") || 0);
+  const maximum = 25 * 1024 * 1024;
+  if (!Number.isFinite(length) || length <= 0 || length > maximum) return json(413, { ok: false, error: "asset_size_out_of_range" });
+  const mediaType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  const allowedTypes = new Set(["image/png", "image/jpeg", "image/webp", "video/mp4", "video/webm", "application/pdf", "application/json"]);
+  if (!allowedTypes.has(mediaType)) return json(415, { ok: false, error: "asset_media_type_not_allowed" });
+  const rawFilename = clean(request.headers.get("x-asset-filename"), 180);
+  const filename = rawFilename.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/^\.+/, "");
+  if (!filename) return json(422, { ok: false, error: "asset_filename_required" });
+  const bytes = await request.arrayBuffer();
+  if (bytes.byteLength !== length || bytes.byteLength > maximum) return json(400, { ok: false, error: "asset_body_length_mismatch" });
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const sha256 = Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  const key = "clients/" + job.client_id + "/projects/" + job.project_id + "/" + job.id + "/" + crypto.randomUUID() + "-" + filename;
+  await env.CREATIVE_ASSETS.put(key, bytes, { httpMetadata: { contentType: mediaType } });
+  await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: actor.id, eventType: "asset.uploaded", entityType: "job", entityId: job.id, details: { storageKey: key, sha256, bytes: length, mediaType } });
+  return json(201, { ok: true, storageKey: key, filename, mediaType, sha256, bytes: length });
+}
+
 async function handleApproval(request, env, actor, method, parts) {
   if (method !== "POST" || parts.length !== 3 || parts[2] !== "approval" || !ID.test(parts[1])) {
     return json(404, { ok: false, error: "not_found" });
@@ -276,7 +332,9 @@ export async function onRequest({ request, env }) {
     if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
     if (parts[0] === "projects") return await handleProjects(request, env, actor, request.method, parts, url);
     if (parts[0] === "jobs") return await handleJobs(request, env, actor, request.method, parts, url);
+    if (parts[0] === "worker" && parts[1] === "jobs" && parts[3] === "upload") return await handleWorkerUpload(request, env, actor, parts);
     if (parts[0] === "worker") return await handleWorker(request, env, actor, request.method, parts);
+    if (parts[0] === "assets" && parts[2] === "file") return await handleAssetFile(request, env, actor, request.method, parts);
     if (parts[0] === "assets") return await handleApproval(request, env, actor, request.method, parts);
     return json(404, { ok: false, error: "not_found" });
   } catch {
