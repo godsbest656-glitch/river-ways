@@ -1,6 +1,7 @@
 const encoder = new TextEncoder();
 let cachedKeys = null;
 let cachedAt = 0;
+let cachedDomain = null;
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -21,7 +22,7 @@ function decodeBase64Url(value) {
 
 async function loadKeys(teamDomain, fetchImpl) {
   const now = Date.now();
-  if (cachedKeys && now - cachedAt < 5 * 60 * 1000) return cachedKeys;
+  if (cachedKeys && cachedDomain === teamDomain && now - cachedAt < 5 * 60 * 1000) return cachedKeys;
   const response = await fetchImpl("https://" + teamDomain + "/cdn-cgi/access/certs", {
     headers: { accept: "application/json" }
   });
@@ -29,6 +30,7 @@ async function loadKeys(teamDomain, fetchImpl) {
   const payload = await response.json();
   if (!Array.isArray(payload.keys) || payload.keys.length === 0) throw new Error("Cloudflare Access returned no signing keys");
   cachedKeys = payload.keys;
+  cachedDomain = teamDomain;
   cachedAt = now;
   return cachedKeys;
 }
