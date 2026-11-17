@@ -56,3 +56,7 @@ The logo image supplied by the client is the visual source of truth. Preserve th
 - [Execution plan](./EXECUTION_PLAN.md)
 - [Toolchain decisions](./TOOLCHAIN.md)
 - [Approval and evidence gates](./APPROVAL_GATES.md)
+
+- [Campaign 001 production brief](./CAMPAIGN_001.md)
+- [14-day publishing calendar](./PUBLISHING_CALENDAR.md)
+- [Creative asset register](./ASSET_REGISTER.md)
