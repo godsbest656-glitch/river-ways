@@ -60,3 +60,8 @@ The logo image supplied by the client is the visual source of truth. Preserve th
 - [Campaign 001 production brief](./CAMPAIGN_001.md)
 - [14-day publishing calendar](./PUBLISHING_CALENDAR.md)
 - [Creative asset register](./ASSET_REGISTER.md)
+- [Source-checked toolchain evaluation](./TOOLCHAIN_EVALUATION.md)
+- [Sales and corporate communication toolkit](./SALES_TOOLKIT.md)
+- [Lead acquisition and conversion operations](./ACQUISITION_OPERATIONS.md)
+- [Niyi Adesanya partnership concept](./PARTNERSHIP_NIYI_ADESANYA.md)
+- [LIMBsimple partnership concept](./PARTNERSHIP_LIMBSIMPLE.md)
