@@ -1,7 +1,7 @@
 # River Ways — Engineering Resource Registry
 
 **Status:** Research baseline; recommendations are not adoption approvals  
-**Reviewed:** 10 November 2026
+**Reviewed:** 17 November 2026
 
 ## Decision rules
 
@@ -295,3 +295,37 @@ Every pilot must have a named owner, exact upstream commit, scope, test data, ac
 | CI / deployment | Not triggered; PR workflow publishes Cloudflare Preview and owner has not authorised a Preview review |
 
 **Status:** Repository guidance implemented and read-back verified. The local RTK installation and measured before/after output pilot remain **blocked pending local environment access**. Do not mark either external tool as installed or runtime-verified until that evidence exists.
+
+
+## 12. Hosted RTK benchmark — 17 November 2026
+
+**Status:** Hosted installation and bounded command-output benchmark **verified**; local developer-machine installation and Codex hook activation remain unverified.
+
+- **Workflow:** `.github/workflows/rtk-benchmark.yml`
+- **Commit:** `9d1b02aa0dea8b3c58039eeedb8860b60f5a39b3`
+- **Run:** https://github.com/godsbest656-glitch/river-ways/actions/runs/44077860266
+- **Runner:** GitHub-hosted Ubuntu 26.04
+- **RTK:** Rust Token Killer v1.2.0; installer checksum verification passed.
+- **Artifact:** `river-ways-rtk-benchmark-44077860266` (14-day retention).
+
+### Measured results
+
+| Command | Native output | RTK output | Difference |
+|---|---:|---:|---:|
+| `git status --short --branch` | 94 bytes | 95 bytes | -1.1% |
+| `git log -12 --oneline --decorate` | 167 bytes | 121 bytes | 27.5% |
+| `git diff --stat HEAD~1 HEAD` | 187 bytes | 187 bytes | 0% |
+| `git branch --list` | 43 bytes | 43 bytes | 0% |
+
+RTK's own ledger recorded 4 commands, 77 estimated input tokens, 65 output tokens and 12 saved tokens (**15.58% estimated output-token reduction**). The useful reduction in this small sample came from `git log`; other tested commands showed no reduction, and `git status` was one byte larger.
+
+### Interpretation and limits
+
+- This is a real install and command run on a clean hosted runner, not a simulated result.
+- It establishes that RTK installs, verifies and executes against this repository in Linux CI.
+- It does **not** prove savings in the user's interactive coding sessions, Codex hook activation, Windows behavior or total model/API cost.
+- The sample is deliberately small. Expand it with representative long diffs, test/build logs and repeated real coding sessions before making an adoption decision.
+- No application dependency, global hook, telemetry opt-in, third-party pipeline, secret or deployment configuration was added.
+- The benchmark workflow runs only for changes to itself on the canonical topic branch or manual dispatch. It does not create a PR or Cloudflare Preview.
+
+**Decision:** Keep RTK optional. Use the hosted benchmark as an initial technical proof, not as a reason to require RTK or claim a universal savings percentage. The previous Section 11 local-installation limitation is narrowed: hosted verification is complete, while local activation remains pending.
