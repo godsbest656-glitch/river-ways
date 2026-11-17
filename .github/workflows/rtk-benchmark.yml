@@ -1,0 +1,93 @@
+name: RTK output-efficiency benchmark
+
+on:
+  push:
+    branches:
+      - build/river-ways-execution-agency-agents
+    paths:
+      - .github/workflows/rtk-benchmark.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the canonical continuation branch
+        uses: actions/checkout@v4
+
+      - name: Install Rust Token Killer (RTK)
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          rtk --version
+          rtk gain
+
+      - name: Compare native and RTK command output
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/rtk-benchmark"
+          report="$RUNNER_TEMP/rtk-benchmark/report.txt"
+          : > "$report"
+
+          run_pair() {
+            name="$1"
+            shift
+            native="$RUNNER_TEMP/rtk-benchmark/$name.native.txt"
+            compressed="$RUNNER_TEMP/rtk-benchmark/$name.rtk.txt"
+
+            "$@" > "$native" 2>&1 || true
+            rtk "$@" > "$compressed" 2>&1 || true
+
+            native_bytes=$(wc -c < "$native" | tr -d ' ')
+            rtk_bytes=$(wc -c < "$compressed" | tr -d ' ')
+            if [ "$native_bytes" -gt 0 ]; then
+              saved_bytes=$((native_bytes - rtk_bytes))
+              saved_pct=$(awk -v n="$native_bytes" -v r="$rtk_bytes" 'BEGIN { printf "%.1f", (n-r)*100/n }')
+            else
+              saved_bytes=0
+              saved_pct="n/a"
+            fi
+
+            {
+              echo "## $name"
+              echo "Native output: $native_bytes bytes"
+              echo "RTK output: $rtk_bytes bytes"
+              echo "Difference: $saved_bytes bytes ($saved_pct%)"
+              echo
+            } | tee -a "$report"
+          }
+
+          run_pair git-status git status --short --branch
+          run_pair git-log git log -12 --oneline --decorate
+          run_pair git-diff-stat git diff --stat HEAD~1 HEAD
+          run_pair git-branches git branch --list
+
+          {
+            echo "## RTK savings ledger"
+            rtk gain --all --format json
+          } | tee "$RUNNER_TEMP/rtk-benchmark/rtk-gain.json"
+
+          {
+            echo
+            echo "RTK version:"
+            rtk --version
+            echo
+            echo "Important: byte reduction measures command-output compression only; it is not a measurement of total model/API cost."
+          } | tee -a "$report"
+
+      - name: Upload benchmark report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: river-ways-rtk-benchmark-${{ github.run_id }}
+          path: ${{ runner.temp }}/rtk-benchmark/
+          if-no-files-found: warn
+          retention-days: 14
