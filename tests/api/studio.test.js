@@ -116,8 +116,9 @@ const env = (db) => {
   return {
     LEADS_DB: db,
     CREATIVE_ASSETS: {
-      async put(key, value, options) { objects.set(key, { body: value, size: value.byteLength, httpMetadata: options?.httpMetadata || {} }); },
-      async get(key) { return objects.get(key) || null; }
+      async put(key, value, options) { objects.set(key, { body: value, size: value.byteLength, httpMetadata: options?.httpMetadata || {}, customMetadata: options?.customMetadata || {} }); },
+      async get(key) { return objects.get(key) || null; },
+      async head(key) { const object = objects.get(key); return object ? { size: object.size, customMetadata: object.customMetadata } : null; }
     },
     CF_ACCESS_TEAM_DOMAIN: "riverways.cloudflareaccess.com",
     CF_ACCESS_AUD: "staff-aud",
