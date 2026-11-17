@@ -182,3 +182,79 @@ Before any resource is integrated, record:
 8. Final disposition: reference, evaluating, adopted, implemented, verified, deferred or rejected—with exact commit and test evidence where applicable.
 
 Do not clone or vendor a repository merely to make the register look complete. Prefer extracting a small, license-compatible pattern over importing a second framework or parallel platform. No additional spend, production access, external outreach or customer-data access is authorised by this register.
+
+
+## 10. Open-source alternatives and agent skills — November 2026 review
+
+This section records the user's requested alternatives and the initial River Ways fit assessment. These are **research dispositions**, not approvals to install, deploy, subscribe, spend, or connect customer data. The aim is to strengthen the existing agency operating platform, not create a collection of disconnected replacement apps.
+
+### 10.1 Priority engineering and design skills
+
+| Resource | Source | River Ways use | Disposition |
+|---|---|---|---|
+| Ponytail | https://github.com/DietrichGebert/ponytail | Simplification-first engineering, focused changes, review discipline | **Pilot first** as a lightweight review method; retain security, accessibility and data-loss protections |
+| RTK | https://github.com/rtk-ai/rtk | Reduce noisy CLI output and agent context overhead | **Pilot** in the coding environment; measure output reduction and correctness, not headline savings claims |
+| UI UX Pro Max | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill | Design-system direction, interface patterns and UI quality | **Pilot** against River Ways design constitution and current component system; avoid competing design tokens |
+| Corey Haines marketingskills | https://github.com/coreyhaines31/marketingskills | SEO, GEO, CRO, positioning, landing pages, cold outreach, analytics, RevOps and sales enablement | **High-priority pilot** for the growth/acquisition and content workflows |
+| Matt Pocock skills | https://github.com/mattpocock/skills | Requirements clarification, architecture review, triage, specs and PR quality | **High-priority pilot** for engineering workflow; keep requirements questions short and evidence-led |
+| Emil Kowalski skills | https://github.com/emilkowalski/skills | Interaction design, motion, animation engineering, prototypes and UI polish | **High-priority pilot** for the public website and creative interfaces; motion must remain performant and accessible |
+| Graphify | https://github.com/Graphify-Labs/graphify | Queryable map of code, docs and schemas for repository understanding | **Evaluate** only if repository navigation remains a measured bottleneck; start with local/code-only mode |
+| Humanizer | https://github.com/blader/humanizer | Editorial review for repetitive or generic AI-writing patterns | **Optional editorial check**; never let it erase River Ways' voice or replace human review |
+
+The skill/repository names above are not proof that their contents are installed in this repository. Pin the exact upstream revision and inspect each skill's instructions before importing or executing it. Check license and provenance at the exact revision.
+
+### 10.2 Product alternatives mapped to agency operations
+
+| Resource | Source | Potential capability | Disposition and constraints |
+|---|---|---|---|
+| OpenSEO | https://github.com/every-app/open-seo | Keyword research, rank tracking, competitor insights, backlinks, site audits and AI visibility | **Highest-priority product evaluation** for SEO/keyword intelligence. Requires DataForSEO credentials and usage-based data spend; not a zero-cost data source. Test a narrow workflow and record API cost before any connection. |
+| Chatwoot | https://github.com/chatwoot/chatwoot | Shared inbox for website chat, email and supported social/messaging channels | **Evaluate** for client/lead communications only if current platform inbox capabilities are insufficient. Self-hosting needs persistent infrastructure, upgrades, backups and monitoring; confirm edition feature boundaries. |
+| Cal.diy | https://github.com/calcom/cal.diy | Booking and scheduling | **Evaluate** for simple discovery-call booking. Community scope may omit team, workflow, SSO and other advanced features; validate routing needs before selection. |
+| Cap | https://github.com/CapSoftware/Cap | Screen recordings, walkthroughs and client-facing demos | **Pilot desktop workflow first**. Full self-hosting adds API, database, media-server and object-storage operations. Most code is AGPL-3.0; check component licenses. |
+| Open Higgsfield | https://github.com/wide-trace/open-higgsfield | AI image/video generation workspace | **Experimental only**. Small/early repository maturity requires code, provider, model, output-rights and cost review before any use. |
+| VoiceStudio | https://github.com/debpalash/VoiceStudio | Voice generation/cloning, dubbing, transcription and dictation | **Evaluate only for a defined production need**. AGPL-3.0 obligations apply to the application; model/voice assets have separate terms. Requires compute and storage. Voice cloning requires informed consent. |
+| AppFlowy | https://github.com/AppFlowy-IO/AppFlowy | Docs, workspace, wiki and project management | **Defer**: likely duplicates current River Ways docs and operating platform; avoid a second source of truth. AGPL-3.0. |
+| OpenWhispr | https://github.com/OpenWhispr/openwhispr | Desktop dictation and transcription | **Defer**: overlaps VoiceStudio dictation/transcription and is not a core agency platform gap. MIT. |
+| OpenProject | https://github.com/opf/openproject | Project and portfolio management | **Defer**: duplicates existing project/operations workflows and introduces a persistent hosted service. GPL-3.0. |
+| OpenProject/Asana alternative is not a reason to migrate | — | Preserve existing project records and workflows | Reconsider only after a documented gap and migration-cost comparison. |
+
+### 10.3 Security and unresolved identities
+
+| Resource | Source | Disposition |
+|---|---|---|
+| PentAGI | https://github.com/pentagi/pentagi | **Security-lab evaluation only**. Isolate it, define explicit authorized targets and scope, review tool permissions and network egress, and never aim it at production or third-party systems without written authorization. |
+| Lemo-Opuscar | Exact identity/URL not supplied | **Unresolved**. Do not guess the project or install a similarly named package. |
+
+### 10.4 Initial operating architecture
+
+Use the existing River Ways platform as the system of record. Add a capability only when a bounded proof demonstrates that it closes a real gap.
+
+- **Engineering and design workflow:** Ponytail + RTK + Matt Pocock + UI UX Pro Max + Emil Kowalski; Graphify only if repository comprehension is still slow.
+- **Growth and acquisition:** Corey Haines skills; evaluate OpenSEO as a data-backed capability with an explicit per-query/API budget.
+- **Creative production:** deterministic templates and existing creative workflows first; evaluate Open Higgsfield, VoiceStudio and Cap individually, with approval and licensing gates.
+- **Client success:** retain current CRM/lead records; evaluate Chatwoot for inbox consolidation and Cal.diy for booking only if current flows cannot meet requirements.
+- **Knowledge and project execution:** keep current docs and platform authoritative; defer AppFlowy and OpenProject to avoid parallel systems.
+- **Security:** use PentAGI only in a segregated, explicitly authorized test environment.
+
+### 10.5 Existing ChatGPT skill coverage — avoid duplicate setup
+
+A review of the skills currently available in this ChatGPT workspace found relevant existing capabilities for:
+- Website/design-system research and implementation guidance.
+- SEO audits and video transcript extraction.
+- Marketing performance reporting through connected Windsor.ai capabilities.
+- Agent-building, Vercel AI SDK/gateway, React quality review and end-to-end verification.
+- Figma design-to-code and motion workflows.
+
+These workspace skills are not the same thing as installing the external GitHub repositories above. Reuse the available workspace capability for the task it already covers; do not add a second tool merely because its category sounds similar. The external skills still need a separate bounded evaluation before being copied into the River Ways repository.
+
+### 10.6 Pilot order and acceptance gates
+
+1. **Ponytail + RTK:** apply to one existing, bounded code-change/review cycle. Measure command-output reduction, review time, diff size and whether tests/security checks remain intact.
+2. **Matt Pocock + UI UX Pro Max + Emil:** apply to one engineering task and one defined interface/motion task. Verify no duplicate architecture or design system is introduced; run existing checks.
+3. **Corey Haines:** map selected skills to the acquisition backlog (positioning, keyword bank, SEO content, outbound, CRO and measurement). Keep outbound human-approved.
+4. **OpenSEO:** define a small keyword/competitor/site-audit sample, record DataForSEO usage and cost, and compare outputs with current research before deciding.
+5. **Chatwoot or Cal.diy:** do not pilot both at once. Select only the capability with the clearest current operational gap and test with synthetic data.
+6. **Creative tools:** inspect one at a time, beginning with desktop Cap or a narrowly scoped Open Higgsfield proof; record hardware, API charges, licenses and output rights.
+7. **Graphify:** evaluate only after capturing a baseline for time-to-locate relevant code/docs in a real task.
+
+Every pilot must have a named owner, exact upstream commit, scope, test data, acceptance criteria, cost ceiling (zero unless explicitly approved), rollback path and outcome. No resource becomes Adopted, Implemented, Verified or Deployed until its corresponding evidence is recorded under the status vocabulary in this registry.
