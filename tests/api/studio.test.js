@@ -202,6 +202,16 @@ test("client → project → job → worker claim → asset metadata → approva
   assert.equal((await claimResponse.json()).job.id, job.id);
 
   const digest = "a".repeat(64);
+  const wrongWorker = await assertion({ audience: "worker-aud", commonName: "other-worker" });
+  const deniedAsset = await send("worker/jobs/" + job.id + "/assets", {
+    method: "POST", token: wrongWorker,
+    body: {
+      assetType: "concept", mediaType: "application/json", filename: "concept.json",
+      storageKey: "clients/" + client.id + "/projects/" + project.id + "/denied.json",
+      sha256: digest, version: 1, provenance: { source: "test" }
+    }
+  }, e);
+  assert.equal(deniedAsset.status, 409);
   const assetResponse = await send("worker/jobs/" + job.id + "/assets", {
     method: "POST", token: worker,
     body: {
@@ -213,6 +223,11 @@ test("client → project → job → worker claim → asset metadata → approva
   assert.equal(assetResponse.status, 201);
   const asset = (await assetResponse.json()).asset;
 
+  const staleApproval = await send("assets/" + asset.id + "/approval", {
+    method: "POST", token: staff,
+    body: { decision: "approved", usageScope: "internal review only", assetSha256: "b".repeat(64) }
+  }, e);
+  assert.equal(staleApproval.status, 409);
   const approvalResponse = await send("assets/" + asset.id + "/approval", {
     method: "POST", token: staff,
     body: { decision: "approved", usageScope: "internal review only", assetSha256: digest }
