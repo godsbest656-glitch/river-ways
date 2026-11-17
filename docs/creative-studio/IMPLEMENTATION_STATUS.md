@@ -31,7 +31,7 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - Client-facing reviewer identity/approval portal; current approval route is staff-only.
 - A complete local worker daemon that connects the queue to the CLI, persists project files, runs approved work and uploads resulting media.
 - Worker integration tests against a live Cloudflare Access service token and R2 bucket.
-- Asset listing, visual review/annotation UI and revision comparison; current UI registers projects/jobs but does not yet present asset previews or approval controls.
+- Visual annotation, side-by-side revision comparison and client-facing reviewer portal; the current UI lists registered assets, provides authenticated previews and records agency review decisions.
 - End-to-end integration tests across browser, API, D1 and local worker.
 - Live ComfyUI, GPU, model inference or real renderer verification.
 - Social publishing integrations and campaign analytics.
