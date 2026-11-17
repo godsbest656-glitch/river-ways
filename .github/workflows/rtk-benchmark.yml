@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - build/river-ways-execution-agency-agents
-    paths:
-      - .github/workflows/rtk-benchmark.yml
   workflow_dispatch:
 
 permissions:
