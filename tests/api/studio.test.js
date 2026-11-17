@@ -60,8 +60,10 @@ function makeDb() {
           job.status = "claimed";
           job.worker_id = values[0];
           job.claimed_at = values[1];
+          job.heartbeat_at = values[2];
+          job.lease_expires_at = values[3];
           job.attempt_count += 1;
-          job.updated_at = values[2];
+          job.updated_at = values[4];
           return { id: job.id, client_id: job.client_id, project_id: job.project_id, job_type: job.job_type, payload_json: job.payload_json, attempt_count: job.attempt_count };
         }
         return null;
@@ -82,11 +84,15 @@ function makeDb() {
           projects.set(id, { id, client_id, slug, name, objective, status, brief_json, created_at, updated_at });
         } else if (sql.startsWith("INSERT INTO creative_jobs")) {
           const [id, client_id, project_id, job_type, payload_json, available_at, created_at, updated_at] = values;
-          jobs.set(id, { id, client_id, project_id, job_type, payload_json, available_at, created_at, updated_at, status: "queued", attempt_count: 0, worker_id: null });
-        } else if (sql.startsWith("UPDATE creative_jobs SET status = ?, result_json")) {
-          const [status, result_json, finished_at, updated_at, id, worker_id] = values;
+          jobs.set(id, { id, client_id, project_id, job_type, payload_json, available_at, created_at, updated_at, status: "queued", attempt_count: 0, max_attempts: 3, worker_id: null });
+        } else if (sql.startsWith("UPDATE creative_jobs SET status = 'running'")) {
+          const [started_at, heartbeat_at, lease_expires_at, updated_at, id, worker_id] = values;
           const job = jobs.get(id);
-          if (job?.worker_id === worker_id) Object.assign(job, { status, result_json, finished_at, updated_at });
+          if (job?.worker_id === worker_id) Object.assign(job, { status: "running", started_at, heartbeat_at, lease_expires_at, updated_at });
+        } else if (sql.startsWith("UPDATE creative_jobs SET status = ?, result_json")) {
+          const [status, result_json, last_error, finished_at, lease_expires_at, updated_at, id, worker_id] = values;
+          const job = jobs.get(id);
+          if (job?.worker_id === worker_id) Object.assign(job, { status, result_json, last_error, finished_at, lease_expires_at, updated_at });
         } else if (sql.startsWith("INSERT INTO creative_assets")) {
           const [id, client_id, project_id, job_id, version, asset_type, media_type, filename, storage_key, sha256, provenance_json, created_at, updated_at] = values;
           assets.set(id, { id, client_id, project_id, job_id, version, asset_type, media_type, filename, storage_key, sha256, provenance_json, created_at, updated_at, status: "generated" });
@@ -208,6 +214,11 @@ test("client → project → job → worker claim → asset metadata → approva
   const claimResponse = await send("worker/claim", { method: "POST", token: worker, body: {} }, e);
   assert.equal(claimResponse.status, 200);
   assert.equal((await claimResponse.json()).job.id, job.id);
+  const heartbeat = await send("worker/jobs/" + job.id, {
+    method: "POST", token: worker, body: { outcome: "heartbeat" }
+  }, e);
+  assert.equal(heartbeat.status, 200);
+  assert.equal((await heartbeat.json()).status, "running");
 
   const uploadToken = worker;
   const uploadRequest = new Request("https://riverwayse.com/api/studio/worker/jobs/" + job.id + "/upload", {
@@ -262,6 +273,11 @@ test("client → project → job → worker claim → asset metadata → approva
   assert.equal(preview.status, 200);
   assert.equal(await preview.text(), "fake-png");
   assert.equal(db.approvals.length, 1);
+  const completed = await send("worker/jobs/" + job.id, {
+    method: "POST", token: worker, body: { outcome: "completed", result: { assetId: asset.id } }
+  }, e);
+  assert.equal(completed.status, 200);
+  assert.equal(db.jobs.get(job.id).status, "completed");
   assert.ok(db.audits.length >= 4);
 });
 
