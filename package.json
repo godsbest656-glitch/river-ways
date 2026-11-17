@@ -8,7 +8,7 @@
     "build": "vite build && node scripts/generate-static-pages.mjs && node scripts/validate-static-pages.mjs",
     "preview": "vite preview",
     "check": "npm run build",
-    "test:api": "node --test tests/api/*.test.js",
+    "test:api": "node --test tests/api/*.test.js && npm run test:studio",
     "test": "npm run test:api && npm run test:platform && npm run test:portfolio && npm run test:creative",
     "test:portfolio": "node --test tests/portfolio/*.test.js",
     "validate:portfolio": "node scripts/validate-portfolio.mjs",
@@ -17,7 +17,8 @@
     "test:e2e:headed": "playwright test --headed",
     "test:lighthouse": "lhci autorun",
     "test:platform": "node --test tests/platform/*.test.js",
-    "test:creative": "node --test creative-production/test/*.test.mjs"
+    "test:creative": "node --test creative-production/test/*.test.mjs",
+    "test:studio": "node --test tests/api/studio.test.js"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
