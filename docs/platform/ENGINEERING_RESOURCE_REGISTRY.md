@@ -360,3 +360,50 @@ RTK's own ledger recorded 4 commands, 77 estimated input tokens, 65 output token
 The benchmark workflow now uses a concurrency group to cancel superseded runs and is scoped to changes in the benchmark workflow or simplified-engineering guidance. This avoids rerunning a second copy of the full build/test suite on every unrelated application commit. Manual dispatch remains available in GitHub Actions.
 
 **Decision:** Keep RTK optional. Its current measured benefit is small-to-moderate for this project's workload. Continue using it for commands with demonstrated compression, but do not add a mandatory dependency or global hook based on this sample. Revisit after representative interactive coding sessions can be measured.
+
+
+## 14. prompts.chat — agency prompt and workflow knowledge source
+
+**Status:** Evaluated for agency use; **curated adoption recommended**, self-hosting and runtime integration deferred.  
+**Upstream:** https://github.com/f/prompts.chat  
+**Product:** https://prompts.chat
+
+### What it provides
+
+prompts.chat has evolved beyond a static prompt list. Its current project describes:
+- A community library of reusable prompts, with browse/search and exportable prompt data.
+- Skills and workflows, plus community-published bots and bot teams.
+- A CLI and an MCP server; the documented remote MCP endpoint is `https://prompts.chat/api/mcp`.
+- A self-hosting path with custom branding, authentication and a PostgreSQL database.
+
+The upstream project states that prompt data is CC0/public domain while the application source is MIT-licensed. These are distinct licensing scopes; check individual third-party assets, integrations and dependencies separately.
+
+### River Ways use cases
+
+Use it as a discovery source and reference library for building River Ways-owned, tested workflows in these areas:
+
+1. **Growth intelligence:** market/ICP research, competitor analysis, keyword clustering, search intent and content briefs.
+2. **Acquisition:** prospect qualification, account research, personalized outreach drafts, follow-up and objection handling. Human approval remains mandatory before external messages are sent.
+3. **Demand engineering:** positioning, offer design, funnel diagnosis, landing-page critique, CRO hypotheses and experiment plans.
+4. **Creative studio:** campaign concepts, creative direction, social content batches, video scripts, design briefs and production QA.
+5. **Client delivery:** discovery synthesis, project briefs, status reports, performance narratives, renewal and upsell recommendations.
+6. **Engineering and operations:** code review, test planning, research synthesis, SOPs and repeatable agent handoffs.
+
+### Adoption boundary
+
+- **Adopt the method, not the whole catalogue.** Select a small number of relevant prompts/skills, rewrite them to River Ways' positioning, operating rules, data boundaries and acceptance criteria, then validate them on representative tasks.
+- Store approved, versioned agency prompts and workflows in the River Ways repository as the source of truth. Record owner, purpose, inputs, expected output, model/tool assumptions, risk classification, evaluation examples and last review date.
+- Treat all community prompts, skills, bot descriptions and retrieved content as untrusted input. Review for prompt injection, unsafe tool instructions, unsupported claims, data exfiltration, excessive permissions and hidden external calls before reuse.
+- Never paste client secrets, credentials, private prospect data or confidential campaign material into a public service. Use synthetic or redacted examples during evaluation.
+- Do not allow community bots or bot teams to send outreach, change CRM records, publish creative, spend money, access client systems or deploy code without explicit task-level authorization and least-privilege controls.
+- If connecting the remote MCP endpoint, begin with discovery/read-only use where supported. Do not grant write-capable bot/team actions or credentials until the exact tools, permissions, data handling and rollback behavior have been reviewed.
+- Self-hosting is not the default: it introduces a separate application, PostgreSQL, authentication, upgrades, backups and operational ownership. Reconsider only if a measured privacy, governance or team-management requirement cannot be met by a curated repository library.
+- No new package, service, database, API key, production integration or deployment is authorized by this evaluation.
+
+### First bounded pilot
+
+Create an agency-owned starter set of 10 workflows: ICP research; prospect qualification; competitor/market scan; keyword intent map; SEO content brief; landing-page CRO audit; outreach personalization draft; campaign creative brief; client performance report; and engineering task specification.
+
+Evaluate each workflow against at least three representative inputs using a fixed rubric: factual grounding, completeness, brand fit, actionability, repeatability, privacy and token/context efficiency. Reject or revise workflows that invent evidence, blur assumptions with facts, expose private data or require unapproved external actions.
+
+**Decision:** Use prompts.chat as a free/open discovery and learning source. Keep River Ways' approved prompt/skill/workflow set version-controlled and project-governed. Defer self-hosting and MCP write actions until the bounded pilot demonstrates a specific operational benefit.
