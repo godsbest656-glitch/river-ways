@@ -4,3 +4,11 @@
   X-Frame-Options: DENY
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; connect-src 'self'; upgrade-insecure-requests
+
+/studio/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/api/studio/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
