@@ -48,7 +48,7 @@ function makeDb() {
         }
         if (sql.includes("FROM creative_jobs WHERE id = ?") && sql.includes("worker_id")) {
           const job = jobs.get(values[0]);
-          return job ? { id: job.id, client_id: job.client_id, project_id: job.project_id, status: job.status, worker_id: job.worker_id } : null;
+          return job ? { id: job.id, client_id: job.client_id, project_id: job.project_id, status: job.status, worker_id: job.worker_id, lease_expires_at: job.lease_expires_at } : null;
         }
         if (sql.includes("FROM creative_assets WHERE id = ?")) {
           const asset = assets.get(values[0]);
