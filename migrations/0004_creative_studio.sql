@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS creative_projects (
   brief_json TEXT NOT NULL CHECK (json_valid(brief_json)),
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
-  UNIQUE (client_id, slug)
+  UNIQUE (client_id, slug),
+  UNIQUE (id, client_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_creative_projects_client_status
@@ -78,6 +79,7 @@ CREATE TABLE IF NOT EXISTS creative_assets (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   UNIQUE (project_id, asset_type, version),
+  UNIQUE (id, client_id),
   FOREIGN KEY (project_id, client_id)
     REFERENCES creative_projects(id, client_id) ON DELETE RESTRICT,
   FOREIGN KEY (job_id, client_id)
