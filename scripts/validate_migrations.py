@@ -135,6 +135,11 @@ required_creative_tables = {
 if creative_tables != required_creative_tables:
     raise SystemExit(f"Unexpected Creative Studio tables: {sorted(creative_tables)}")
 
+creative_job_columns = {row[1] for row in db.execute("PRAGMA table_info(creative_jobs)")}
+required_job_columns = {"max_attempts", "heartbeat_at", "lease_expires_at", "last_error"}
+if not required_job_columns.issubset(creative_job_columns):
+    raise SystemExit(f"Missing worker lease columns: {sorted(required_job_columns - creative_job_columns)}")
+
 creative_indexes = {
     row[1] for row in db.execute("PRAGMA index_list(creative_jobs)")
 }
