@@ -12,8 +12,12 @@
 - Added `npm run test:creative` and included it in the root `npm test` suite.
 - Added the creative-engine test to GitHub Actions.
 - Added feature-branch push CI triggers. This runs repository checks only; it does not create a Cloudflare Preview or deployment.
-- Added D1 migration `0004_creative_studio.sql` for client-scoped clients, projects, jobs, asset metadata, approval history and audit events.
+- Added D1 migration `0004_creative_studio.sql` for client-scoped clients, projects, jobs, asset metadata, approval history and audit events, including bounded retry/lease metadata.
 - Extended the migration validator to exercise the schema, queue index, foreign keys and cross-client relationship rejection.
+- Added a Cloudflare Access JWT verifier for the Studio API, including signature, issuer, audience and expiry checks plus an exact staff email allowlist and separate worker audience.
+- Added D1-backed client, project and job APIs; atomic queue claims; worker heartbeats, lease expiry/recovery and bounded retries; worker completion/failure; immutable approval events tied to exact asset hashes.
+- Added private R2 upload and authenticated asset streaming endpoints. Uploads are size-limited, content-type allowlisted and hashed server-side; registration verifies the stored object metadata matches the worker/client/project/job and SHA-256.
+- Added an internal `/studio/` workspace UI for client workspaces, draft projects, job queue and production status. It is noindex/no-store and makes no claim that a worker is connected.
 
 ## Architecture boundary
 
@@ -23,11 +27,11 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 
 ## Not yet implemented
 
-- Authenticated Creative Studio route and interface.
-- Cloudflare Access/JWT verification and role-based permissions.
-- D1-backed API endpoints for client/project/job/asset/approval lifecycle.
-- Atomic job claiming, worker leases, retries and stale-job recovery.
-- Private object storage adapter and signed, short-lived asset delivery.
+- Cloudflare Access application/policies and Preview environment configuration.
+- Client-facing reviewer identity/approval portal; current approval route is staff-only.
+- A complete local worker daemon that connects the queue to the CLI, persists project files, runs approved work and uploads resulting media.
+- Worker integration tests against a live Cloudflare Access service token and R2 bucket.
+- Asset listing, visual review/annotation UI and revision comparison; current UI registers projects/jobs but does not yet present asset previews or approval controls.
 - Local worker/agent bridge that polls or receives queued jobs and calls the existing CLI.
 - End-to-end integration tests across browser, API, D1 and local worker.
 - Live ComfyUI, GPU, model inference or real renderer verification.
