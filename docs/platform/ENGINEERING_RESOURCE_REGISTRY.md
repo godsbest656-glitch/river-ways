@@ -329,3 +329,34 @@ RTK's own ledger recorded 4 commands, 77 estimated input tokens, 65 output token
 - The benchmark workflow runs only for changes to itself on the canonical topic branch or manual dispatch. It does not create a PR or Cloudflare Preview.
 
 **Decision:** Keep RTK optional. Use the hosted benchmark as an initial technical proof, not as a reason to require RTK or claim a universal savings percentage. The previous Section 11 local-installation limitation is narrowed: hosted verification is complete, while local activation remains pending.
+
+
+## 13. Expanded RTK project benchmark — 17 November 2026
+
+**Status:** Six paired native/RTK checks passed on a GitHub-hosted Ubuntu 26.04 runner.  
+**Benchmark commit:** `0e33eed394024a058dfe89a7d96f77beee7f8256`  
+**Successful run:** https://github.com/godsbest656-glitch/river-ways/actions/runs/44082949352  
+**Artifact:** [Download benchmark logs and report](https://github.com/godsbest656-glitch/river-ways/actions/runs/44082949352/artifacts/14327682395) (14-day retention).
+
+### Results
+
+| Paired check | Native output | RTK output | Output reduction | Exit codes |
+|---|---:|---:|---:|---|
+| Python skill validator | 34 B | 34 B | 0.0% | 0 / 0 |
+| Python agent validator | 40 B | 40 B | 0.0% | 0 / 0 |
+| Python regression tests | 124 B | 124 B | 0.0% | 0 / 0 |
+| Website production build | 853 B | 818 B | 4.1% | 0 / 0 |
+| Full Node test suite | 14,185 B | 13,567 B | 4.4% | 0 / 0 |
+| Portfolio validation | 122 B | 74 B | 39.3% | 0 / 0 |
+
+- RTK version: 1.2.0; installer SHA-256 verification passed.
+- Across the six RTK-wrapped commands, RTK's ledger reported 3,794 estimated input tokens, 3,616 output tokens and 178 saved tokens (**4.69% average estimated output reduction**).
+- Every paired command returned exit code 0 in both modes. Build and tests therefore passed in both runs.
+- Most of the measurable benefit came from the portfolio validator and the npm-wrapped commands. Python validators/tests had no measurable reduction.
+- These are command-output byte/token estimates from one hosted runner, not billed-token savings, total model-cost savings, speed improvements or proof of local Codex behavior.
+
+### Operational adjustment
+
+The benchmark workflow now uses a concurrency group to cancel superseded runs and is scoped to changes in the benchmark workflow or simplified-engineering guidance. This avoids rerunning a second copy of the full build/test suite on every unrelated application commit. Manual dispatch remains available in GitHub Actions.
+
+**Decision:** Keep RTK optional. Its current measured benefit is small-to-moderate for this project's workload. Continue using it for commands with demonstrated compression, but do not add a mandatory dependency or global hook based on this sample. Revisit after representative interactive coding sessions can be measured.
