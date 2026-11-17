@@ -37,6 +37,7 @@ The browser suite tests desktop and mobile Chromium journeys against the generat
 - `scripts/validate-static-pages.mjs` — route output, metadata, sitemap, 404 and internal-link checks.
 - `public/growth-diagnostic/`, `public/field-guide/`, `public/privacy/` — maintained static experiences and notice.
 - `functions/api/contact.js` — validated same-origin enquiry endpoint.
+- `creative-production/` — local-first creative production CLI, brief/rights gates, ComfyUI adapter, model registry, HyperFrames starter, render adapters and media QA. It is not part of the public Cloudflare request runtime; GPU inference and rendering run on an authorised production workstation.
 - `migrations/0001_leads.sql` through `0003_lead_operations.sql` — UUID lead storage, attribution and operational follow-up schema.
 - `docs/design/` — master design, architecture, project skills and acceptance gates.
 - `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` — Cloudflare D1, Resend and release-readiness requirements.
