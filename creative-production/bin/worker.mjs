@@ -5,10 +5,23 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { slugify, validateBrief } from './creative.mjs';
+import { prepareDraftArtifact } from './draft-adapters.mjs';
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(DIR, '../..');
 const CLI = path.join(DIR, 'creative.mjs');
+
+function projectDirectory(job, productionRoot) {
+  const clientSlug = slugify(job.project.client_slug || job.project.brief?.client?.name);
+  const projectSlug = slugify(job.project.slug);
+  if (!clientSlug || !projectSlug || !job.project_id) throw new Error('Client or project scope is invalid');
+  const uniqueSlug = slugify((clientSlug + '-' + projectSlug + '-' + job.project_id.slice(0, 8)).slice(0, 64));
+  const root = path.resolve(productionRoot);
+  const target = path.join(root, clientSlug, uniqueSlug);
+  const relative = path.relative(root, target);
+  if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) throw new Error('Project path escapes production root');
+  return target;
+}
 export function workerConfig(env = process.env) {
   if (!env.CF_ACCESS_CLIENT_ID?.trim() || !env.CF_ACCESS_CLIENT_SECRET?.trim()) {
     throw new Error('CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET are required');
@@ -72,16 +85,9 @@ export async function prepareProject(job, {
   const validation = validateBrief(brief);
   if (!validation.valid) throw new Error('Project brief is invalid: ' + validation.errors.join('; '));
   if (brief.approval?.status !== 'draft') throw new Error('Project setup accepts draft briefs only');
-  const clientSlug = slugify(job.project.client_slug || brief.client.name);
-  const projectSlug = slugify(job.project.slug);
-  if (!clientSlug || !projectSlug) throw new Error('Client or project slug is invalid');
-  const uniqueSlug = slugify((clientSlug + '-' + projectSlug + '-' + job.project_id.slice(0, 8)).slice(0, 64));
-  brief.campaign = { ...brief.campaign, slug: uniqueSlug };
-  const root = path.resolve(productionRoot);
-  const clientRoot = path.join(root, clientSlug);
-  const target = path.join(clientRoot, uniqueSlug);
-  const relative = path.relative(root, target);
-  if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) throw new Error('Project path escapes production root');
+  const target = projectDirectory(job, productionRoot);
+  const clientRoot = path.dirname(target);
+  brief.campaign = { ...brief.campaign, slug: path.basename(target) };
   await mkdir(clientRoot, { recursive: true });
   const temp = await mkdtemp(path.join(os.tmpdir(), 'river-ways-studio-'));
   try {
@@ -105,6 +111,23 @@ export async function prepareProject(job, {
   }
 }
 
+export async function prepareDraftJob(job, { productionRoot } = {}) {
+  if (!['strategy', 'copy'].includes(job?.job_type)) throw new Error('Unsupported draft job type: ' + String(job?.job_type));
+  if (!job.project?.brief || !job.project?.slug || !job.client_id || !job.project_id || !job.id) throw new Error('Claimed job is missing its scoped project brief');
+  const validation = validateBrief(job.project.brief);
+  if (!validation.valid) throw new Error('Project brief is invalid: ' + validation.errors.join('; '));
+  if (job.project.brief.approval?.status !== 'draft') throw new Error('Draft adapter accepts draft briefs only');
+  const target = projectDirectory(job, productionRoot);
+  const metadata = JSON.parse(await readFile(path.join(target, 'project.json'), 'utf8'));
+  if (metadata.source?.studioClientId !== job.client_id || metadata.source?.studioProjectId !== job.project_id) throw new Error('Local project scope does not match claimed job');
+  const result = await prepareDraftArtifact(job.job_type, job.project.brief);
+  const jobRoot = path.join(target, 'jobs', job.id);
+  await mkdir(jobRoot, { recursive: true });
+  const outputPath = path.join(jobRoot, job.job_type + '-draft.json');
+  await writeFile(outputPath, JSON.stringify(result, null, 2) + '\n', { flag: 'wx' });
+  return { operation: job.job_type, status: 'draft-prepared', localArtifactPath: outputPath, approvalRequired: true, publishable: false, generatedBy: 'deterministic-brief-adapter' };
+}
+
 export async function processClaimedJob(job, config, {
   fetchImpl = fetch, prepare = prepareProject, log = () => {}
 } = {}) {
@@ -119,7 +142,7 @@ export async function processClaimedJob(job, config, {
   timer.unref?.();
   try {
     if (heartbeatError) throw heartbeatError;
-    const result = await prepare(job, { productionRoot: config.productionRoot });
+    const result = job.job_type === 'project_init' ? await prepare(job, { productionRoot: config.productionRoot }) : await prepareDraftJob(job, { productionRoot: config.productionRoot });
     if (heartbeatError) throw heartbeatError;
     await apiRequest(config, route, { method: 'POST', body: { outcome: 'completed', result } }, fetchImpl);
     return { jobId: job.id, status: 'completed', result };
@@ -142,7 +165,7 @@ export async function runWorker({
   let processed = 0;
   while (!signal?.aborted) {
     const claim = await apiRequest(config, 'worker/claim', {
-      method: 'POST', body: { jobTypes: ['project_init'] }
+      method: 'POST', body: { jobTypes: ['project_init', 'strategy', 'copy'] }
     }, fetchImpl);
     if (claim.job) {
       log('Claimed project setup job ' + claim.job.id);
