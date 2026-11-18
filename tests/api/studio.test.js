@@ -57,7 +57,8 @@ function makeDb() {
           return asset ? { id: asset.id, client_id: asset.client_id, project_id: asset.project_id, sha256: asset.sha256, status: asset.status } : null;
         }
         if (sql.includes("UPDATE creative_jobs") && sql.includes("RETURNING")) {
-          const allowedTypes = values.slice(6);\n          const job = [...jobs.values()].filter((item) => item.status === "queued" && allowedTypes.includes(item.job_type)).sort((a,b) => a.created_at.localeCompare(b.created_at))[0];
+          const allowedTypes = values.slice(6);
+          const job = [...jobs.values()].filter((item) => item.status === "queued" && allowedTypes.includes(item.job_type)).sort((a,b) => a.created_at.localeCompare(b.created_at))[0];
           if (!job) return null;
           job.status = "claimed";
           job.worker_id = values[0];
@@ -216,7 +217,9 @@ test("client → project → job → worker claim → asset metadata → approva
   const worker = await assertion({ audience: "worker-aud", email: undefined, commonName: "studio-worker-01" });
   const claimResponse = await send("worker/claim", { method: "POST", token: worker, body: { jobTypes: ["project_init"] } }, e);
   assert.equal(claimResponse.status, 200);
-  const claimed = (await claimResponse.json()).job;\n  assert.equal(claimed.id, job.id);\n  assert.equal(claimed.project.brief.client.name, "Avenize");
+  const claimed = (await claimResponse.json()).job;
+  assert.equal(claimed.id, job.id);
+  assert.equal(claimed.project.brief.client.name, "Avenize");
   const heartbeat = await send("worker/jobs/" + job.id, {
     method: "POST", token: worker, body: { outcome: "heartbeat" }
   }, e);
