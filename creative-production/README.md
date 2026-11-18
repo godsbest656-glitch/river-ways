@@ -7,6 +7,7 @@ This module establishes a local-first production workspace for River Ways. It is
 ## What is implemented
 
 - A dependency-free Node.js CLI to validate a campaign brief and initialise a structured production project, including a SHAPED CURRENT motion starter composition.
+- A local Studio worker that securely claims only `project_init` jobs, validates the saved draft brief, creates a client-isolated local project scaffold and reports completion/failure to the River Ways Studio API.
 - Explicit draft/approved/rejected brief state. Initialising a project never implies client approval.
 - Separate generated, approved and rejected asset folders; separate HyperFrames and Remotion composition folders.
 - A doctor command that reports OS, CPU, total/free RAM, free disk, NVIDIA GPU model/VRAM/driver, CUDA compiler, Python, FFmpeg and ffprobe.
@@ -33,6 +34,7 @@ The render adapters run local CLIs without a shell, require explicit approval, r
 
 - No model weights are downloaded or bundled.
 - No model inference is invoked by this CLI.
+- Strategy, copy, concept, storyboard, image, video, render, QA and delivery queue types are not yet executable by the Studio worker; they remain visibly marked as adapter-pending in the Studio task selector.
 - A loopback-only ComfyUI API adapter is implemented and unit-tested against mocked API responses; no live ComfyUI server or model inference has been verified. No model-specific workflow adapter is enabled.
 - No HyperFrames or Remotion render is claimed as tested.
 - No remote GPU service, public upload endpoint, client portal, automated publishing or unattended client delivery is enabled.
