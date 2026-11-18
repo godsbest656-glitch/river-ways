@@ -1,7 +1,7 @@
 import { json, requireStudioActor } from "./_auth.js";
 
 const JOB_TYPES = new Set(["project_init", "strategy", "copy", "concept", "storyboard", "image", "video", "render", "qa", "delivery"]);
-const WORKER_JOB_TYPES = new Set(["project_init"]);
+const WORKER_JOB_TYPES = new Set(["project_init", "strategy", "copy"]);
 const ID = /^[a-zA-Z0-9_-]{8,80}$/;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SHA256 = /^[a-f0-9]{64}$/;
