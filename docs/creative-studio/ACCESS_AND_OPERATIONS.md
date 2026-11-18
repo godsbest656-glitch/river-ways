@@ -50,7 +50,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 The worker runs on a River Ways-controlled workstation, not in Cloudflare Pages. Install Node.js 22+ and set these environment variables in the workstation's secret manager or local untracked environment (never commit them):
 
 - `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET`: Cloudflare Access service-token credentials for the dedicated worker application.
-- `STUDIO_API_BASE`: optional API base; defaults to `https://riverwayse.com/api/studio`.
+- `STUDIO_API_BASE`: required explicit HTTPS URL for the intended Preview or approved environment; the worker refuses to start without it to prevent accidental production targeting.
 - `RIVER_WAYS_PRODUCTION_ROOT`: optional local output root; defaults to the repository's `production/` directory.
 - `STUDIO_WORKER_POLL_MS`: optional polling interval, clamped to 1–60 seconds.
 
