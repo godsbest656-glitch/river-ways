@@ -75,7 +75,7 @@ export async function prepareProject(job, {
   const clientSlug = slugify(job.project.client_slug || brief.client.name);
   const projectSlug = slugify(job.project.slug);
   if (!clientSlug || !projectSlug) throw new Error('Client or project slug is invalid');
-  const uniqueSlug = (clientSlug + '-' + projectSlug + '-' + job.project_id.slice(0, 8)).slice(0, 64);
+  const uniqueSlug = slugify((clientSlug + '-' + projectSlug + '-' + job.project_id.slice(0, 8)).slice(0, 64));
   brief.campaign = { ...brief.campaign, slug: uniqueSlug };
   const root = path.resolve(productionRoot);
   const clientRoot = path.join(root, clientSlug);
