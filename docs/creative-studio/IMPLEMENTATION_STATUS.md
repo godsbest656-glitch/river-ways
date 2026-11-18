@@ -23,7 +23,7 @@
 
 ## Architecture boundary
 
-The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API and internal Studio UI are now present in code. The remaining bridge is a local worker daemon that claims jobs, executes approved local workflows and submits results to the platform.
+The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API, internal Studio UI and local worker daemon are present in code. The worker currently claims only `project_init`; it creates a draft local scaffold and reports completion. It is not yet a general creative-production executor.
 
 D1 stores metadata and audit records, not media bytes. Media storage must be private and client-scoped. A client must not be able to access another client's brief, job, asset or approval record.
 
@@ -65,3 +65,25 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - The cited GHSA-fc5q-39xc-vjpf advisory was subsequently reported withdrawn on 2026-11-18; the upstream maintainer disputed the claimed vulnerability and no patched picomatch release was listed. See the advisory record and withdrawal status: https://github.com/advisories/GHSA-fc5q-39xc-vjpf and https://db.gcve.eu/vuln/CVE-2026-112366.
 - CI now gates on the production dependency audit and separately reports the full development-tooling audit without misrepresenting a disputed, development-only finding as a production runtime vulnerability.
 - This is a documented temporary risk classification, not a claim that all development dependencies are vulnerability-free. Reassess when the advisory database and upstream package status change.
+
+
+## Avenize first-client acceptance checklist
+
+Avenize is configured as the first draft client workspace from the supplied client brief and logo reference. The River Ways website/Studio is responsible for coordinating and producing its campaign assets; this integration does not generate or publish client assets merely because the brief exists.
+
+| Workstream | Current state | Acceptance evidence still required |
+|---|---|---|
+| Brand foundation | Brief and logo reference recorded | Approved brand kit, exact logo files/variants, colour and typography tokens |
+| Product truth | Claims restricted to verified capabilities | Product feature inventory and approved screenshots/demo capture |
+| Campaign strategy | Brief captured; strategy adapter pending | Approved audience/message/channel plan with source notes |
+| Copy and sales kit | Copy adapter pending | Approved corporate deck, brochure, one-pager, demo script and WhatsApp sequence |
+| Creative concepts | Adapter pending | Approved concepts, storyboards and shot lists |
+| Image/video | Local generation foundation exists; no live inference verified | Rights-cleared models/assets, hardware validation, sample outputs and human review |
+| Render and QA | Local renderer/media QA code exists; no real render verified | Reproducible render, media QA report and visual review |
+| Partnerships | Prospects identified in client brief only | Separate non-binding proposals for Niyi Adesanya and LIMBsimple; no implied endorsement |
+| Activation | Lagos-first, zero-budget plan in brief | Workshop plan, approved registration CTA and owner-approved event details |
+| Publishing | Not connected | Platform account access, content approvals and explicit publish authorization |
+| Measurement | Studio job/audit foundation exists | Lead source, qualification, demo, registration, activation, revenue and partnership reporting |
+| Commercial funding | No budget assumed | Approved conversion-funded allocation and partner-reward terms |
+
+No line above is considered complete solely because a placeholder, plan, mock, or queue type exists.
