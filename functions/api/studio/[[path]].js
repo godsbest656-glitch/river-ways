@@ -226,7 +226,6 @@ async function handleWorker(request, env, actor, method, parts) {
   if (parts.length === 3 && parts[1] === "jobs" && ID.test(parts[2])) {
     const parsed = await bodyOf(request);
     if (parsed.error) return parsed.error;
-    const action = parts[2];
     const jobId = parts[2];
     const outcome = clean(parsed.body.outcome, 24);
     const result = parsed.body.result ?? {};
