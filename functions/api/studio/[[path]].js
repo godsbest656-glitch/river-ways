@@ -1,6 +1,6 @@
 import { json, requireStudioActor } from "./_auth.js";
 
-const JOB_TYPES = new Set(["project_init", "strategy", "copy", "concept", "storyboard", "image", "video", "render", "qa", "delivery"]);
+const JOB_TYPES = new Set(["project_init", "strategy", "copy", "concept", "storyboard", "image", "video", "render", "qa", "delivery"]);\nconst WORKER_JOB_TYPES = new Set(["project_init"]);
 const ID = /^[a-zA-Z0-9_-]{8,80}$/;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SHA256 = /^[a-f0-9]{64}$/;
@@ -164,7 +164,7 @@ async function handleWorker(request, env, actor, method, parts) {
     if (parsed.error) return parsed.error;
     const requestedTypes = parsed.body.jobTypes ?? ["project_init"];
     if (!Array.isArray(requestedTypes) || requestedTypes.length < 1 || requestedTypes.length > JOB_TYPES.size ||
-        requestedTypes.some((type) => !JOB_TYPES.has(type))) return json(422, { ok: false, error: "invalid_worker_job_types" });
+        requestedTypes.some((type) => !WORKER_JOB_TYPES.has(type))) return json(422, { ok: false, error: "invalid_worker_job_types" });
     const placeholders = requestedTypes.map(() => "?").join(", ");
     const now = new Date().toISOString();
     const leaseUntil = new Date(Date.now() + 5 * 60 * 1000).toISOString();
