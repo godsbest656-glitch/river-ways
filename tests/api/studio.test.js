@@ -44,7 +44,9 @@ function makeDb() {
         }
         if (sql.includes("FROM creative_projects WHERE id = ? AND client_id = ?")) {
           const project = projects.get(values[0]);
-          return project?.client_id === values[1] ? { id: project.id, status: project.status } : null;
+          if (project?.client_id !== values[1]) return null;
+          if (sql.includes("brief_json")) return { slug: project.slug, name: project.name, brief_json: project.brief_json, brief_version: 1 };
+          return { id: project.id, status: project.status };
         }
         if (sql.includes("FROM creative_jobs WHERE id = ?") && sql.includes("worker_id")) {
           const job = jobs.get(values[0]);
@@ -55,7 +57,7 @@ function makeDb() {
           return asset ? { id: asset.id, client_id: asset.client_id, project_id: asset.project_id, sha256: asset.sha256, status: asset.status } : null;
         }
         if (sql.includes("UPDATE creative_jobs") && sql.includes("RETURNING")) {
-          const job = [...jobs.values()].filter((item) => item.status === "queued").sort((a,b) => a.created_at.localeCompare(b.created_at))[0];
+          const allowedTypes = values.slice(6);\n          const job = [...jobs.values()].filter((item) => item.status === "queued" && allowedTypes.includes(item.job_type)).sort((a,b) => a.created_at.localeCompare(b.created_at))[0];
           if (!job) return null;
           job.status = "claimed";
           job.worker_id = values[0];
@@ -64,7 +66,7 @@ function makeDb() {
           job.lease_expires_at = values[3];
           job.attempt_count += 1;
           job.updated_at = values[4];
-          return { id: job.id, client_id: job.client_id, project_id: job.project_id, job_type: job.job_type, payload_json: job.payload_json, attempt_count: job.attempt_count };
+          return { id: job.id, client_id: job.client_id, project_id: job.project_id, job_type: job.job_type, payload_json: job.payload_json, attempt_count: job.attempt_count, max_attempts: job.max_attempts, lease_expires_at: job.lease_expires_at };
         }
         return null;
       },
@@ -206,15 +208,15 @@ test("client → project → job → worker claim → asset metadata → approva
 
   const jobResponse = await send("jobs", {
     method: "POST", token: staff,
-    body: { clientId: client.id, projectId: project.id, jobType: "concept", payload: { deliverable: "campaign-concept" } }
+    body: { clientId: client.id, projectId: project.id, jobType: "project_init", payload: { deliverable: "campaign-concept" } }
   }, e);
   assert.equal(jobResponse.status, 202);
   const job = (await jobResponse.json()).job;
 
   const worker = await assertion({ audience: "worker-aud", email: undefined, commonName: "studio-worker-01" });
-  const claimResponse = await send("worker/claim", { method: "POST", token: worker, body: {} }, e);
+  const claimResponse = await send("worker/claim", { method: "POST", token: worker, body: { jobTypes: ["project_init"] } }, e);
   assert.equal(claimResponse.status, 200);
-  assert.equal((await claimResponse.json()).job.id, job.id);
+  const claimed = (await claimResponse.json()).job;\n  assert.equal(claimed.id, job.id);\n  assert.equal(claimed.project.brief.client.name, "Avenize");
   const heartbeat = await send("worker/jobs/" + job.id, {
     method: "POST", token: worker, body: { outcome: "heartbeat" }
   }, e);
