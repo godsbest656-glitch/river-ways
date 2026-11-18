@@ -56,17 +56,6 @@ The worker runs on a River Ways-controlled workstation, not in Cloudflare Pages.
 
 From `creative-production/`, run `npm run worker -- --once` for a single poll or `npm run worker` to keep polling. The current worker claims only `project_init` jobs. It deliberately does not execute strategy, copy, image, video or render jobs until their task adapters, approvals and runtime gates are implemented. A project setup job creates folders and a draft brief only; it does not create marketing assets or approve production.
 
-## Local worker setup (not yet run against a live Access application)
-
-The worker runs on a River Ways-controlled workstation, not in Cloudflare Pages. Install Node.js 22+ and set these environment variables in the workstation's secret manager or local untracked environment (never commit them):
-
-- `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET`: Cloudflare Access service-token credentials for the dedicated worker application.
-- `STUDIO_API_BASE`: optional API base; defaults to `https://riverwayse.com/api/studio`.
-- `RIVER_WAYS_PRODUCTION_ROOT`: optional local output root; defaults to the repository's `production/` directory.
-- `STUDIO_WORKER_POLL_MS`: optional polling interval, clamped to 1–60 seconds.
-
-From `creative-production/`, run `npm run worker -- --once` for a single poll or `npm run worker` to keep polling. The current worker claims only `project_init` jobs. It deliberately does not execute strategy, copy, image, video or render jobs until their task adapters, approvals and runtime gates are implemented. A project setup job creates folders and a draft brief only; it does not create marketing assets or approve production.
-
 ## Required Preview setup (not performed)
 
 1. Create/identify a dedicated Preview D1 database; do not apply migration 0004 to production.
