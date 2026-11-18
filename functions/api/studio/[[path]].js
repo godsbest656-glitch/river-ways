@@ -1,6 +1,6 @@
 import { json, requireStudioActor } from "./_auth.js";
 
-const JOB_TYPES = new Set(["strategy", "copy", "concept", "storyboard", "image", "video", "render", "qa", "delivery"]);
+const JOB_TYPES = new Set(["project_init", "strategy", "copy", "concept", "storyboard", "image", "video", "render", "qa", "delivery"]);
 const ID = /^[a-zA-Z0-9_-]{8,80}$/;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SHA256 = /^[a-f0-9]{64}$/;
@@ -160,6 +160,12 @@ async function handleJobs(request, env, actor, method, parts, url) {
 async function handleWorker(request, env, actor, method, parts) {
   if (method !== "POST") return json(405, { ok: false, error: "method_not_allowed" });
   if (parts.length === 2 && parts[1] === "claim") {
+    const parsed = await bodyOf(request);
+    if (parsed.error) return parsed.error;
+    const requestedTypes = parsed.body.jobTypes ?? ["project_init"];
+    if (!Array.isArray(requestedTypes) || requestedTypes.length < 1 || requestedTypes.length > JOB_TYPES.size ||
+        requestedTypes.some((type) => !JOB_TYPES.has(type))) return json(422, { ok: false, error: "invalid_worker_job_types" });
+    const placeholders = requestedTypes.map(() => "?").join(", ");
     const now = new Date().toISOString();
     const leaseUntil = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     const workerId = clean(actor.id, 120);
@@ -167,9 +173,12 @@ async function handleWorker(request, env, actor, method, parts) {
       "UPDATE creative_jobs SET status = CASE WHEN attempt_count >= max_attempts THEN 'failed' ELSE 'queued' END, worker_id = NULL, lease_expires_at = NULL, last_error = CASE WHEN attempt_count >= max_attempts THEN 'Worker lease expired after maximum attempts' ELSE last_error END, finished_at = CASE WHEN attempt_count >= max_attempts THEN ? ELSE NULL END, updated_at = ? WHERE status IN ('claimed', 'running') AND lease_expires_at IS NOT NULL AND lease_expires_at <= ?"
     ).bind(now, now, now).run();
     const job = await env.LEADS_DB.prepare(
-      "UPDATE creative_jobs SET status = 'claimed', worker_id = ?, claimed_at = ?, heartbeat_at = ?, lease_expires_at = ?, attempt_count = attempt_count + 1, updated_at = ? WHERE id = (SELECT id FROM creative_jobs WHERE status = 'queued' AND available_at <= ? AND attempt_count < max_attempts ORDER BY created_at ASC LIMIT 1) AND status = 'queued' RETURNING id, client_id, project_id, job_type, payload_json, attempt_count, max_attempts, lease_expires_at"
-    ).bind(workerId, now, now, leaseUntil, now, now).first();
+      "UPDATE creative_jobs SET status = 'claimed', worker_id = ?, claimed_at = ?, heartbeat_at = ?, lease_expires_at = ?, attempt_count = attempt_count + 1, updated_at = ? WHERE id = (SELECT id FROM creative_jobs WHERE status = 'queued' AND available_at <= ? AND attempt_count < max_attempts AND job_type IN (" + placeholders + ") ORDER BY created_at ASC LIMIT 1) AND status = 'queued' RETURNING id, client_id, project_id, job_type, payload_json, attempt_count, max_attempts, lease_expires_at"
+    ).bind(workerId, now, now, leaseUntil, now, now, ...requestedTypes).first();
     if (!job) return json(200, { ok: true, job: null });
+    const project = await env.LEADS_DB.prepare("SELECT slug, name, brief_json, brief_version FROM creative_projects WHERE id = ? AND client_id = ?").bind(job.project_id, job.client_id).first();
+    if (!project) return json(409, { ok: false, error: "job_project_missing" });
+    job.project = { ...project, brief: JSON.parse(project.brief_json) };
     await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: workerId, eventType: "job.claimed", entityType: "job", entityId: job.id });
     return json(200, { ok: true, job });
   }
@@ -221,7 +230,7 @@ async function handleWorker(request, env, actor, method, parts) {
     const outcome = clean(parsed.body.outcome, 24);
     const result = parsed.body.result ?? {};
     const job = await env.LEADS_DB.prepare(
-      "SELECT id, client_id, project_id, status, worker_id FROM creative_jobs WHERE id = ?"
+      "SELECT id, client_id, project_id, status, worker_id, lease_expires_at FROM creative_jobs WHERE id = ?"
     ).bind(jobId).first();
     if (!job || job.worker_id !== actor.id || !["claimed", "running"].includes(job.status) || !job.lease_expires_at || Date.parse(job.lease_expires_at) <= Date.now()) {
       return json(409, { ok: false, error: "job_lease_not_owned" });
@@ -291,7 +300,7 @@ async function handleWorkerUpload(request, env, actor, parts) {
   }
   if (!env.CREATIVE_ASSETS) return json(503, { ok: false, error: "creative_asset_storage_unavailable" });
   const job = await env.LEADS_DB.prepare(
-    "SELECT id, client_id, project_id, status, worker_id FROM creative_jobs WHERE id = ?"
+    "SELECT id, client_id, project_id, status, worker_id, lease_expires_at FROM creative_jobs WHERE id = ?"
   ).bind(parts[2]).first();
   if (!job || job.worker_id !== actor.id || !["claimed", "running", "completed"].includes(job.status)) {
     return json(409, { ok: false, error: "job_lease_not_owned" });
