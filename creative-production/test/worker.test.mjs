@@ -22,7 +22,7 @@ const job = {
   client_id: 'client-12345678',
   project_id: 'project-12345678',
   job_type: 'project_init',
-  project: { slug: 'market-entry', brief }
+  project: { slug: 'market-entry', client_slug: 'avenize', brief }
 };
 
 test('worker config requires service credentials and keeps production root local', () => {
