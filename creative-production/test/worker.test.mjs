@@ -26,7 +26,9 @@ const job = {
 };
 
 test('worker config requires service credentials and keeps production root local', () => {
-  assert.throws(() => workerConfig({}), /CF_ACCESS_CLIENT_ID/);\n  assert.throws(() => workerConfig({ CF_ACCESS_CLIENT_ID: 'id', CF_ACCESS_CLIENT_SECRET: 'secret' }), /STUDIO_API_BASE is required/);\n  assert.throws(() => workerConfig({ CF_ACCESS_CLIENT_ID: 'id', CF_ACCESS_CLIENT_SECRET: 'secret', STUDIO_API_BASE: 'http://example.com' }), /must use HTTPS/);
+  assert.throws(() => workerConfig({}), /CF_ACCESS_CLIENT_ID/);
+  assert.throws(() => workerConfig({ CF_ACCESS_CLIENT_ID: 'id', CF_ACCESS_CLIENT_SECRET: 'secret' }), /STUDIO_API_BASE is required/);
+  assert.throws(() => workerConfig({ CF_ACCESS_CLIENT_ID: 'id', CF_ACCESS_CLIENT_SECRET: 'secret', STUDIO_API_BASE: 'http://example.com' }), /must use HTTPS/);
   const config = workerConfig({
     CF_ACCESS_CLIENT_ID: 'client-id',
     CF_ACCESS_CLIENT_SECRET: 'client-secret',
