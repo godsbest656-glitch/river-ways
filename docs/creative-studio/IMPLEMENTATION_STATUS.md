@@ -32,7 +32,7 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - A complete local worker daemon that connects the queue to the CLI, persists project files, runs approved work and uploads resulting media.
 - Worker integration tests against a live Cloudflare Access service token and R2 bucket.
 - Visual annotation, side-by-side revision comparison and client-facing reviewer portal; the current UI lists registered assets, provides authenticated previews and records agency review decisions.
-- End-to-end integration tests across browser, API, D1 and local worker.
+- End-to-end integration tests across browser, API, D1 and local worker. The worker currently has isolated unit/integration tests with a real local CLI scaffold, but not live Access/D1/R2 verification.
 - Live ComfyUI, GPU, model inference or real renderer verification.
 - Social publishing integrations and campaign analytics.
 
