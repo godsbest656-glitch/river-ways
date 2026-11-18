@@ -177,7 +177,7 @@ async function handleWorker(request, env, actor, method, parts) {
       "UPDATE creative_jobs SET status = 'claimed', worker_id = ?, claimed_at = ?, heartbeat_at = ?, lease_expires_at = ?, attempt_count = attempt_count + 1, updated_at = ? WHERE id = (SELECT id FROM creative_jobs WHERE status = 'queued' AND available_at <= ? AND attempt_count < max_attempts AND job_type IN (" + placeholders + ") ORDER BY created_at ASC LIMIT 1) AND status = 'queued' RETURNING id, client_id, project_id, job_type, payload_json, attempt_count, max_attempts, lease_expires_at"
     ).bind(workerId, now, now, leaseUntil, now, now, ...requestedTypes).first();
     if (!job) return json(200, { ok: true, job: null });
-    const project = await env.LEADS_DB.prepare("SELECT slug, name, brief_json, brief_version FROM creative_projects WHERE id = ? AND client_id = ?").bind(job.project_id, job.client_id).first();
+    const project = await env.LEADS_DB.prepare("SELECT p.slug, p.name, p.brief_json, p.brief_version, c.slug AS client_slug FROM creative_projects p JOIN creative_clients c ON c.id = p.client_id WHERE p.id = ? AND p.client_id = ?").bind(job.project_id, job.client_id).first();
     if (!project) return json(409, { ok: false, error: "job_project_missing" });
     job.project = { ...project, brief: JSON.parse(project.brief_json) };
     await audit(env.LEADS_DB, { clientId: job.client_id, projectId: job.project_id, actorId: workerId, eventType: "job.claimed", entityType: "job", entityId: job.id });
