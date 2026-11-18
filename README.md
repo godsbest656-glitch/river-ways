@@ -39,7 +39,7 @@ The browser suite tests desktop and mobile Chromium journeys against the generat
 - `functions/api/contact.js` — validated same-origin enquiry endpoint.
 - `creative-production/` — local-first creative production CLI, brief/rights gates, ComfyUI adapter, model registry, HyperFrames starter, render adapters and media QA. It is not part of the public Cloudflare request runtime; GPU inference and rendering run on an authorised production workstation.
 - `public/studio/` and `functions/api/studio/` — internal Creative Studio workspace and Cloudflare Access-protected control API; requires Preview Access, D1 and private R2 configuration before use.
-- `docs/creative-studio/` — implementation status, security boundary and Preview setup runbook.
+- `creative-production/bin/worker.mjs` — local worker daemon for the safe `project_init` queue task; run with `npm run worker` from `creative-production/` after configuring a Cloudflare Access service token.\n- `docs/creative-studio/` — implementation status, security boundary, worker setup and Preview runbook.
 - `migrations/0001_leads.sql` through `0003_lead_operations.sql` — UUID lead storage, attribution and operational follow-up schema.
 - `docs/design/` — master design, architecture, project skills and acceptance gates.
 - `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` — Cloudflare D1, Resend and release-readiness requirements.
