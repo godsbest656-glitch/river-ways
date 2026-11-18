@@ -17,7 +17,9 @@
 - Added a Cloudflare Access JWT verifier for the Studio API, including signature, issuer, audience and expiry checks plus an exact staff email allowlist and separate worker audience.
 - Added D1-backed client, project and job APIs; atomic queue claims; worker heartbeats, lease expiry/recovery and bounded retries; worker completion/failure; immutable approval events tied to exact asset hashes.
 - Added private R2 upload and authenticated asset streaming endpoints. Uploads are size-limited, content-type allowlisted and hashed server-side; registration verifies the stored object metadata matches the worker/client/project/job and SHA-256.
-- Added an internal `/studio/` workspace UI for client workspaces, draft projects, job queue and production status. It is noindex/no-store and makes no claim that a worker is connected.
+- Added an internal `/studio/` workspace UI for client workspaces, draft projects, job queue, production status, private asset previews and agency review. It is noindex/no-store.
+- Added a local worker daemon in `creative-production/bin/worker.mjs` with Cloudflare Access service-token authentication, explicit HTTPS API target, queue polling, heartbeats, bounded lease-aware execution, completion/failure reporting and client-isolated local project directories.
+- The worker/API claim allowlist is deliberately restricted to `project_init`. It creates a draft local project scaffold from the saved brief; it does not generate strategy, copy, images or video.
 
 ## Architecture boundary
 
@@ -29,8 +31,8 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 
 - Cloudflare Access application/policies and Preview environment configuration.
 - Client-facing reviewer identity/approval portal; current approval route is staff-only.
-- A complete local worker daemon that connects the queue to the CLI, persists project files, runs approved work and uploads resulting media.
-- Worker integration tests against a live Cloudflare Access service token and R2 bucket.
+- Live worker integration tests against a configured Cloudflare Access service token, D1 database and private R2 bucket. Current worker tests are isolated/mocked; no live workstation has been connected.
+- Task adapters beyond `project_init` (strategy, copy, concept, storyboard, image, video, render, QA and delivery). These must be implemented and tested individually before the worker is allowed to claim them.
 - Visual annotation, side-by-side revision comparison and client-facing reviewer portal; the current UI lists registered assets, provides authenticated previews and records agency review decisions.
 - End-to-end integration tests across browser, API, D1 and local worker. The worker currently has isolated unit/integration tests with a real local CLI scaffold, but not live Access/D1/R2 verification.
 - Live ComfyUI, GPU, model inference or real renderer verification.
@@ -38,12 +40,12 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 
 ## Next implementation order
 
-1. Build the local worker daemon and adapt the existing CLI to execute queued project tasks, heartbeat, retry and upload assets.
-2. Add asset listing, preview, revision comparison and staff/client review controls to the Studio UI.
-3. Add client reviewer identity and scoped approval permissions; keep agency and client approval as distinct events.
+1. Connect and verify the local worker against an approved Preview environment; prove `project_init` end-to-end without touching production.
+2. Implement typed strategy and copy task adapters with traceable brief inputs, source/claim checks and draft-only outputs; do not unlock later job types until their handlers and tests exist.
+3. Add visual revision comparison and distinct client reviewer identity/approval permissions; keep agency and client approval as separate events.
 4. Add end-to-end tests across browser, Access JWT, D1, R2 and local worker.
-5. Configure Cloudflare Access and Preview D1/R2 bindings only after owner-side environment access and approval.
-6. Connect social publishing and analytics only after platform credentials and explicit publishing approvals exist.
+5. Implement concept, storyboard, image, video, render and QA adapters behind rights, model, hardware and human-approval gates.
+6. Configure publishing integrations and analytics only after platform credentials and explicit publishing approvals exist.
 
 ## Safeguards
 
