@@ -145,3 +145,10 @@ See [MODEL_INSTALLATION.md](./MODEL_INSTALLATION.md) for per-model hardware/lice
 - HyperFrames: https://github.com/heygen-com/hyperframes
 - Remotion terms and pricing: https://www.remotion.dev/docs/license/pricing
 - Remotion licensing: https://www.remotion.pro/license
+
+
+## Studio strategy and copy draft jobs
+
+The authenticated local worker can now claim `project_init`, `strategy` and `copy` jobs. Strategy and copy adapters are deterministic brief-to-document transforms, not AI inference. They write traceable JSON drafts under the client-scoped project `jobs/<job-id>/` directory and refuse to run unless the local project metadata matches the claimed client and project IDs.
+
+The strategy draft carries the saved objective, audience, market, platforms and deliverables plus explicit approval gaps. The copy foundation carries the supplied primary message and platform list, but intentionally leaves feature claims, proof points, supporting pillars and calls to action empty until verified inputs are supplied. Both outputs remain non-publishable drafts. Image, video, rendering, QA, delivery and publishing are not unlocked by these adapters.
