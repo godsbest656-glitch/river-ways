@@ -578,7 +578,7 @@ test('benchmark validation rejects fabricated or incomplete evidence fields', ()
 test('GPU telemetry parser captures per-device memory and utilisation samples', () => {
   const samples = readGpuTelemetry(() => ({
     status: 0,
-    stdout: 'NVIDIA GeForce RTX 4090, 24564, 18240, 96, 73\\nNVIDIA RTX A4000, 16376, 10240, 65, 68',
+    stdout: 'NVIDIA GeForce RTX 4090, 24564, 18240, 96, 73\nNVIDIA RTX A4000, 16376, 10240, 65, 68',
     stderr: ''
   }));
   assert.equal(samples.length, 2);
