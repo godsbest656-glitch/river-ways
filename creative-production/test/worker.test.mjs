@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { workerConfig, prepareProject, processClaimedJob, runWorker, apiRequest } from '../bin/worker.mjs';
+import { workerConfig, prepareProject, prepareDraftJob, processClaimedJob, runWorker, apiRequest } from '../bin/worker.mjs';
 
 const brief = {
   schemaVersion: '1.0',
@@ -94,7 +94,7 @@ test('worker claims only project setup jobs and exits after one empty poll', asy
     log: () => {}
   });
   assert.equal(result.processed, 0);
-  assert.equal(request.body.jobTypes[0], 'project_init');
+  assert.deepEqual(request.body.jobTypes, ['project_init', 'strategy', 'copy']);
   assert.equal(request.headers.get('CF-Access-Client-Id'), 'id');
   assert.equal(request.headers.get('CF-Access-Client-Secret'), 'secret');
 });
@@ -104,4 +104,26 @@ test('API helper rejects non-success responses without exposing credentials', as
   await assert.rejects(apiRequest(config, 'worker/claim', { method: 'POST', body: {} }, async () => (
     new Response(JSON.stringify({ error: 'authentication_required' }), { status: 401 })
   )), /Studio API 401: authentication_required/);
+});
+
+test('strategy and copy adapters create scoped, traceable draft artifacts only', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-drafts-'));
+  try {
+    await prepareProject(job, { productionRoot: root });
+    for (const jobType of ['strategy', 'copy']) {
+      const result = await prepareDraftJob({ ...job, id: 'job-' + jobType + '-1234', job_type: jobType }, { productionRoot: root });
+      assert.equal(result.status, 'draft-prepared');
+      assert.equal(result.publishable, false);
+      const artifact = JSON.parse(await readFile(result.localArtifactPath, 'utf8'));
+      assert.equal(artifact.status, 'draft');
+      assert.equal(artifact.source.client, 'Avenize');
+      assert.ok(artifact.constraints.some(item => item.includes('Do not invent pricing')));
+      if (jobType === 'copy') {
+        assert.deepEqual(artifact.messageArchitecture.featureClaims, []);
+        assert.deepEqual(artifact.messageArchitecture.proofPoints, []);
+        assert.equal(artifact.channelInputs.length, brief.platforms.length);
+      }
+    }
+    await assert.rejects(prepareDraftJob({ ...job, id: 'job-strategy-1234', job_type: 'strategy', client_id: 'other-client-123' }, { productionRoot: root }), /scope does not match/);
+  } finally { await rm(root, { recursive: true, force: true }); }
 });
