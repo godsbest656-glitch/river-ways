@@ -94,9 +94,9 @@ function makeDb() {
           const job = jobs.get(id);
           if (job?.worker_id === worker_id) Object.assign(job, { status: "running", started_at, heartbeat_at, lease_expires_at, updated_at });
         } else if (sql.startsWith("UPDATE creative_jobs SET status = ?, result_json")) {
-          const [status, result_json, last_error, finished_at, lease_expires_at, updated_at, id, worker_id] = values;
+          const [status, result_json, last_error, finished_at, updated_at, id, worker_id] = values;
           const job = jobs.get(id);
-          if (job?.worker_id === worker_id) Object.assign(job, { status, result_json, last_error, finished_at, lease_expires_at, updated_at });
+          if (job?.worker_id === worker_id) Object.assign(job, { status, result_json, last_error, finished_at, lease_expires_at: null, updated_at });
         } else if (sql.startsWith("INSERT INTO creative_assets")) {
           const [id, client_id, project_id, job_id, version, asset_type, media_type, filename, storage_key, sha256, provenance_json, created_at, updated_at] = values;
           assets.set(id, { id, client_id, project_id, job_id, version, asset_type, media_type, filename, storage_key, sha256, provenance_json, created_at, updated_at, status: "generated" });
