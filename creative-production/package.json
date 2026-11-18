@@ -14,7 +14,8 @@
     "render": "node bin/render.mjs",
     "generate": "node bin/generate.mjs",
     "qa": "node bin/media-qa.mjs",
-    "benchmark": "node bin/benchmark.mjs"
+    "benchmark": "node bin/benchmark.mjs",
+    "worker": "node bin/worker.mjs"
   },
   "devDependencies": {
     "hyperframes": "0.9.18"
