@@ -9,8 +9,6 @@ import { slugify, validateBrief } from './creative.mjs';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(DIR, '../..');
 const CLI = path.join(DIR, 'creative.mjs');
-const DEFAULT_API = 'https://riverwayse.com/api/studio';
-
 export function workerConfig(env = process.env) {
   if (!env.CF_ACCESS_CLIENT_ID?.trim() || !env.CF_ACCESS_CLIENT_SECRET?.trim()) {
     throw new Error('CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET are required');
