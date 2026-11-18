@@ -19,7 +19,7 @@
 - Added private R2 upload and authenticated asset streaming endpoints. Uploads are size-limited, content-type allowlisted and hashed server-side; registration verifies the stored object metadata matches the worker/client/project/job and SHA-256.
 - Added an internal `/studio/` workspace UI for client workspaces, draft projects, job queue, production status, private asset previews and agency review. It is noindex/no-store.
 - Added a local worker daemon in `creative-production/bin/worker.mjs` with Cloudflare Access service-token authentication, explicit HTTPS API target, queue polling, heartbeats, bounded lease-aware execution, completion/failure reporting and client-isolated local project directories.
-- The worker/API claim allowlist is deliberately restricted to `project_init`. It creates a draft local project scaffold from the saved brief; it does not generate strategy, copy, images or video.
+- The worker/API claim allowlist now includes `project_init`, `strategy` and `copy`. Strategy and copy are deterministic, source-traceable brief transforms that write non-publishable JSON drafts; they are not AI inference and leave unsupported claims/proof/CTAs empty.
 
 ## Architecture boundary
 
@@ -32,7 +32,7 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - Cloudflare Access application/policies and Preview environment configuration.
 - Client-facing reviewer identity/approval portal; current approval route is staff-only.
 - Live worker integration tests against a configured Cloudflare Access service token, D1 database and private R2 bucket. Current worker tests are isolated/mocked; no live workstation has been connected.
-- Task adapters beyond `project_init` (strategy, copy, concept, storyboard, image, video, render, QA and delivery). These must be implemented and tested individually before the worker is allowed to claim them.
+- Concept, storyboard, image, video, render, QA and delivery adapters. These must be implemented and tested individually before the worker is allowed to claim them.
 - Visual annotation, side-by-side revision comparison and client-facing reviewer portal; the current UI lists registered assets, provides authenticated previews and records agency review decisions.
 - End-to-end integration tests across browser, API, D1 and local worker. The worker currently has isolated unit/integration tests with a real local CLI scaffold, but not live Access/D1/R2 verification.
 - Live ComfyUI, GPU, model inference or real renderer verification.
@@ -41,7 +41,7 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 ## Next implementation order
 
 1. Connect and verify the local worker against an approved Preview environment; prove `project_init` end-to-end without touching production.
-2. Implement typed strategy and copy task adapters with traceable brief inputs, source/claim checks and draft-only outputs; do not unlock later job types until their handlers and tests exist.
+2. Verify strategy and copy draft adapters in CI and against an approved Preview worker; then implement concept/storyboard adapters behind the same source and approval gates.
 3. Add visual revision comparison and distinct client reviewer identity/approval permissions; keep agency and client approval as separate events.
 4. Add end-to-end tests across browser, Access JWT, D1, R2 and local worker.
 5. Implement concept, storyboard, image, video, render and QA adapters behind rights, model, hardware and human-approval gates.
@@ -87,3 +87,14 @@ Avenize is configured as the first draft client workspace from the supplied clie
 | Commercial funding | No budget assumed | Approved conversion-funded allocation and partner-reward terms |
 
 No line above is considered complete solely because a placeholder, plan, mock, or queue type exists.
+
+
+## Strategy and copy draft adapters (2026-11-19)
+
+- Added deterministic `strategy` and `copy` worker handlers and enabled only those two additional types in the API worker-claim allowlist.
+- Both handlers validate the saved draft brief and verify that the local project metadata belongs to the exact claimed client and project before writing.
+- Strategy output preserves brief-supplied objective, audience, market, platforms and deliverables and lists evidence/approval gaps.
+- Copy output preserves the supplied primary message and platform list but leaves supporting pillars, feature claims, proof points and calls to action empty until verified inputs are supplied.
+- Outputs are stored per job under the client-scoped local project, marked draft/non-publishable, and refuse overwrites.
+- Unit tests cover output provenance, claim restrictions and cross-client scope rejection. CI is running for this change; passing status is not yet confirmed.
+- These adapters are deterministic scaffolding, not model-generated strategy/copy and not a completed campaign deliverable.
