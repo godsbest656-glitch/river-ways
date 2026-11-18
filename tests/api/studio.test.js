@@ -54,7 +54,7 @@ function makeDb() {
         }
         if (sql.includes("FROM creative_assets WHERE id = ?")) {
           const asset = assets.get(values[0]);
-          return asset ? { id: asset.id, client_id: asset.client_id, project_id: asset.project_id, sha256: asset.sha256, status: asset.status } : null;
+          return asset ? { id: asset.id, client_id: asset.client_id, project_id: asset.project_id, filename: asset.filename, media_type: asset.media_type, storage_key: asset.storage_key, sha256: asset.sha256, status: asset.status } : null;
         }
         if (sql.includes("UPDATE creative_jobs") && sql.includes("RETURNING")) {
           const allowedTypes = values.slice(6);
