@@ -213,6 +213,12 @@ test("client → project → job → worker claim → asset metadata → approva
   }, e);
   assert.equal(jobResponse.status, 202);
   const job = (await jobResponse.json()).job;
+  const deferredResponse = await send("jobs", {
+    method: "POST", token: staff,
+    body: { clientId: client.id, projectId: project.id, jobType: "concept", payload: { deliverable: "future-concept-adapter" } }
+  }, e);
+  assert.equal(deferredResponse.status, 202);
+  const deferredJob = (await deferredResponse.json()).job;
 
   const worker = await assertion({ audience: "worker-aud", email: undefined, commonName: "studio-worker-01" });
   const claimResponse = await send("worker/claim", { method: "POST", token: worker, body: { jobTypes: ["project_init"] } }, e);
@@ -220,6 +226,7 @@ test("client → project → job → worker claim → asset metadata → approva
   const claimed = (await claimResponse.json()).job;
   assert.equal(claimed.id, job.id);
   assert.equal(claimed.project.brief.client.name, "Avenize");
+  assert.equal(db.jobs.get(deferredJob.id).status, "queued");
   const heartbeat = await send("worker/jobs/" + job.id, {
     method: "POST", token: worker, body: { outcome: "heartbeat" }
   }, e);
