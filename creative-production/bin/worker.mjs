@@ -72,7 +72,7 @@ export async function prepareProject(job, {
   const validation = validateBrief(brief);
   if (!validation.valid) throw new Error('Project brief is invalid: ' + validation.errors.join('; '));
   if (brief.approval?.status !== 'draft') throw new Error('Project setup accepts draft briefs only');
-  const clientSlug = slugify(brief.client.name);
+  const clientSlug = slugify(job.project.client_slug || brief.client.name);
   const projectSlug = slugify(job.project.slug);
   if (!clientSlug || !projectSlug) throw new Error('Client or project slug is invalid');
   const uniqueSlug = (clientSlug + '-' + projectSlug + '-' + job.project_id.slice(0, 8)).slice(0, 64);
