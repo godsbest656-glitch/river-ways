@@ -42,7 +42,7 @@ function makeDb() {
           const client = clients.get(values[0]);
           return client?.status === "active" ? client : null;
         }
-        if (sql.includes("FROM creative_projects WHERE id = ? AND client_id = ?")) {
+        if (sql.includes("FROM creative_projects WHERE id = ? AND client_id = ?") || sql.includes("FROM creative_projects p JOIN creative_clients c")) {
           const project = projects.get(values[0]);
           if (project?.client_id !== values[1]) return null;
           if (sql.includes("brief_json")) return { slug: project.slug, name: project.name, brief_json: project.brief_json, brief_version: 1, client_slug: clients.get(project.client_id)?.slug };
