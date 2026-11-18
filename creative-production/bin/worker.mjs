@@ -20,7 +20,7 @@ export function workerConfig(env = process.env) {
     throw new Error('STUDIO_API_BASE must use HTTPS (HTTP is allowed only for localhost)');
   }
   return {
-    apiBase: apiBase.replace(/\\/+$/, ''),
+    apiBase: apiBase.replace(/[/]+$/, ''),
     clientId: env.CF_ACCESS_CLIENT_ID.trim(),
     clientSecret: env.CF_ACCESS_CLIENT_SECRET.trim(),
     productionRoot: path.resolve(env.RIVER_WAYS_PRODUCTION_ROOT || path.join(ROOT, 'production')),
