@@ -13,8 +13,14 @@ export function workerConfig(env = process.env) {
   if (!env.CF_ACCESS_CLIENT_ID?.trim() || !env.CF_ACCESS_CLIENT_SECRET?.trim()) {
     throw new Error('CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET are required');
   }
+  const apiBase = (env.STUDIO_API_BASE || '').trim();
+  if (!apiBase) throw new Error('STUDIO_API_BASE is required; set the intended Preview or approved environment explicitly');
+  const parsedApi = new URL(apiBase);
+  if (parsedApi.protocol !== 'https:' && !(parsedApi.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(parsedApi.hostname))) {
+    throw new Error('STUDIO_API_BASE must use HTTPS (HTTP is allowed only for localhost)');
+  }
   return {
-    apiBase: (env.STUDIO_API_BASE || DEFAULT_API).replace(/\/+$/, ''),
+    apiBase: apiBase.replace(/\\/+$/, ''),
     clientId: env.CF_ACCESS_CLIENT_ID.trim(),
     clientSecret: env.CF_ACCESS_CLIENT_SECRET.trim(),
     productionRoot: path.resolve(env.RIVER_WAYS_PRODUCTION_ROOT || path.join(ROOT, 'production')),
