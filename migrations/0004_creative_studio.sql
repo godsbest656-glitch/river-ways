@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS creative_jobs (
   client_id TEXT NOT NULL REFERENCES creative_clients(id) ON DELETE RESTRICT,
   project_id TEXT NOT NULL REFERENCES creative_projects(id) ON DELETE RESTRICT,
   job_type TEXT NOT NULL
-    CHECK (job_type IN ('strategy', 'copy', 'concept', 'storyboard', 'image', 'video', 'render', 'qa', 'delivery')),
+    CHECK (job_type IN ('project_init', 'strategy', 'copy', 'concept', 'storyboard', 'image', 'video', 'render', 'qa', 'delivery')),
   status TEXT NOT NULL DEFAULT 'queued'
     CHECK (status IN ('queued', 'claimed', 'running', 'review_required', 'completed', 'failed', 'cancelled')),
   payload_json TEXT NOT NULL CHECK (json_valid(payload_json)),
