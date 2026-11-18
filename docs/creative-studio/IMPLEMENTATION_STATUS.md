@@ -56,3 +56,12 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - Never enable a model, accept paid terms, or spend money automatically.
 - Never fabricate product capabilities, case studies, testimonials, endorsements or commercial results.
 - Report generated, QA-passed, internally approved, client-approved and delivered as separate states.
+
+
+## Dependency audit decision (2026-11-19)
+
+- The topic-branch CI completed build, browser journeys/accessibility, Lighthouse, enquiry API, creative engine, shared platform, portfolio contracts and public portfolio validation successfully; the only failing step was the final full-tree dependency audit.
+- The audit reported four high-severity paths, all rooted in `picomatch` and reached through development/build tooling (`fdir`, `tinyglobby`, Vite). No production dependency path was reported in the audit output.
+- The cited GHSA-fc5q-39xc-vjpf advisory was subsequently reported withdrawn on 2026-11-18; the upstream maintainer disputed the claimed vulnerability and no patched picomatch release was listed. See the advisory record and withdrawal status: https://github.com/advisories/GHSA-fc5q-39xc-vjpf and https://db.gcve.eu/vuln/CVE-2026-112366.
+- CI now gates on the production dependency audit and separately reports the full development-tooling audit without misrepresenting a disputed, development-only finding as a production runtime vulnerability.
+- This is a documented temporary risk classification, not a claim that all development dependencies are vulnerability-free. Reassess when the advisory database and upstream package status change.
