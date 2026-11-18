@@ -45,7 +45,7 @@ function makeDb() {
         if (sql.includes("FROM creative_projects WHERE id = ? AND client_id = ?")) {
           const project = projects.get(values[0]);
           if (project?.client_id !== values[1]) return null;
-          if (sql.includes("brief_json")) return { slug: project.slug, name: project.name, brief_json: project.brief_json, brief_version: 1 };
+          if (sql.includes("brief_json")) return { slug: project.slug, name: project.name, brief_json: project.brief_json, brief_version: 1, client_slug: clients.get(project.client_id)?.slug };
           return { id: project.id, status: project.status };
         }
         if (sql.includes("FROM creative_jobs WHERE id = ?") && sql.includes("worker_id")) {
