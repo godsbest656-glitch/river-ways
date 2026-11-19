@@ -62,21 +62,43 @@ Read the applicable skill before substantial work:
 
 These skills supplement this file and the canonical design documents. They do not override River Ways' approved tokens, architecture, privacy requirements or release controls. Validate project skill metadata with `python scripts/validate_skills.py .agents/skills` and run its regression tests with `python -m unittest discover -s tests -p "test_*.py"`.
 
-
 ## Portfolio implementation rules
 Before changing portfolio data, media or gallery components, read `docs/design/LIVING_PORTFOLIO_ARCHITECTURE.md` and `docs/design/LIVING_PORTFOLIO_COMPONENT_CONTRACTS.md`. All portfolio presentations must consume normalized records through `src/portfolio/index.js`; do not create parallel datasets. Component workstreams must not edit `src/App.jsx` or global styles. Only the designated integration owner wires completed components into the homepage/routes. Run `npm run test:portfolio` and `npm run validate:portfolio`.
-
 
 ## Route and page implementation rules
 Treat `scripts/generate-static-pages.mjs` as the source for generated About, Services, Work, project-detail, Contact, Insights and Terms pages. Do not create duplicate hand-maintained copies under `public/`. If route content changes, update the generator, `public/sitemap.xml`, the route inventory and validation checks together. Preserve the existing static Growth Diagnostic, Field Guide and Privacy pages unless a separately verified migration is planned. Unknown routes must remain genuine Cloudflare Pages 404 responses; do not add a catch-all SPA rewrite. Run `npm run build` and confirm `scripts/validate-static-pages.mjs` passes. Never deploy as part of route implementation.
 
-
 ## Production environment and D1 rules
 Use `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` as the deployment preparation source. Never invent a D1 database ID, sender identity, secret or Cloudflare binding. Inspect the target D1 schema before applying migrations; migrations 0002 and 0003 use `ALTER TABLE ADD COLUMN` and must not be blindly rerun. Run `python scripts/validate_migrations.py` in CI, but do not confuse in-memory SQLite validation with proof that Cloudflare D1 has been migrated. Never deploy, change DNS or apply production migrations without explicit owner approval.
-
 
 ## Browser and accessibility regression
 - Run `npm run build`, `npm run test:e2e`, `npm run test:lighthouse`, `npm run test:api`, `npm run test:portfolio`, and `npm run validate:portfolio` for website implementation changes.
 - Playwright is the single browser/E2E harness. Extend `tests/e2e`; do not introduce a competing browser runner.
-- Automated axe scans are a regression aid, not a complete WCAG 2.2 AA audit. Also inspect keyboard use, focus visibility, screen-reader semantics, zoom/reflow, motion preferences and contrast manually.
+- Automated axe scans are a regression aid, not a complete WCAG 2.2 AA audit. Also inspect keyboard use, focus visibility, screen-reader semantics, zoom/reflow, motion preferences and contrast.
 - Browser tests use the built static output through Vite preview. A passing local preview test does not prove Cloudflare Pages status codes, D1 bindings, email delivery or deployment readiness.
+
+## GodMode execution workflow
+For substantial implementation tasks, follow `docs/engineering/GODMODE_INTEGRATION.md`. Use the selected NoobyGains/GodMode plugin when it is installed and verified in the active Codex environment. If the plugin is not installed, follow the documented sequence manually. Do not claim plugin activation without a successful local doctor check and skill discovery.
+
+Use these steps:
+1. State the problem, expected value, scope and reason for the change.
+2. Write unique requirements. Give each requirement one observable obligation and one verification method.
+3. Verify current platform and project facts against repository source or authoritative documentation.
+4. Create small tasks. Name each task's files, inputs, outputs, dependencies, test command and expected result.
+5. Establish a failing test or reproducible baseline before code changes.
+6. Make one coherent change at a time on a topic branch.
+7. Review specification compliance, code quality, security, privacy and regression risk.
+8. Run the exact checks for the changed area. Record the command, result and commit SHA.
+9. Mark a task complete only when its acceptance criteria and evidence pass.
+
+## ASD-STE100 writing rules
+- Use short, direct sentences.
+- Use active voice and present tense.
+- Name the actor when an instruction needs an actor.
+- Use one requirement or instruction in each sentence.
+- Use familiar words. Define technical terms before use.
+- Avoid vague terms unless a measurable limit defines them.
+- State the condition, action, limit and expected result.
+- Give each requirement a unique ID and a verification method.
+
+GodMode does not override this file, the canonical design documents, privacy rules, branch controls or release gates. Do not open or update a pull request until the owner authorises Preview review. Do not deploy, merge, change production configuration or apply remote migrations without explicit owner approval.
