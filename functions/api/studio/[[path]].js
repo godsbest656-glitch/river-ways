@@ -545,11 +545,14 @@ export async function onRequest({ request, env }) {
   if (!sameOrigin(request)) return json(403, { ok: false, error: "same_origin_required" });
   const parts = url.pathname.replace(/^\/api\/studio\/?/, "").split("/").filter(Boolean);
   const isWorker = parts[0] === "worker";
-  const auth = await requireStudioActor(request, env, { role: isWorker ? "worker" : "staff" });
+  const isClientPortal = parts[0] === "portal";
+  const auth = await requireStudioActor(request, env, { role: isWorker ? "worker" : isClientPortal ? "client" : "staff" });
   if (auth.response) return auth.response;
   const actor = auth.actor;
   try {
-    if (parts[0] === "portal") return await handleClientPortal(request, env, actor, request.method, parts, url);\n    if (parts[0] === "clients" && parts[2] === "reviewers") return await handleClientReviewers(request, env, actor, request.method, parts);\n    if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
+    if (parts[0] === "portal") return await handleClientPortal(request, env, actor, request.method, parts, url);
+    if (parts[0] === "clients" && parts[2] === "reviewers") return await handleClientReviewers(request, env, actor, request.method, parts);
+    if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
     if (parts[0] === "projects") return await handleProjects(request, env, actor, request.method, parts, url);
     if (parts[0] === "jobs") return await handleJobs(request, env, actor, request.method, parts, url);
     if (parts[0] === "worker" && parts[1] === "jobs" && parts[3] === "upload") return await handleWorkerUpload(request, env, actor, parts);
