@@ -1,0 +1,4 @@
+# Client reviewer portal is a protected SPA route; keep the URL for route selection.
+/client-review /index.html 200
+/client-review/ /index.html 200
+/client-review/* /index.html 200
