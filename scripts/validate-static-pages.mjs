@@ -93,6 +93,8 @@ async function validateInternalReferences() {
       let pathname;
       try { pathname = decodeURIComponent(url.pathname); } catch { failures.push("Invalid URL encoding in " + relativeFile + ": " + reference); continue; }
       let target;
+      // This authenticated portal is intentionally served by the explicit Pages SPA rewrite.
+      if (pathname === "/client-review" || pathname === "/client-review/") continue;
       if (pathname === "/") target = path.join(dist, "index.html");
       else {
         const relativePath = pathname.split("/").filter(Boolean).join(path.sep);
