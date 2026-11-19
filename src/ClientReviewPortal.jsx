@@ -97,6 +97,7 @@ function AssetCard({ asset, onRefresh }) {
       });
       setMessage(decision === 'approved' ? 'Your approval has been recorded for this version.' : 'Your revision request has been sent.');
       setNotes('');
+      await loadComments();
       onRefresh();
     } catch (err) { setError(err.message); }
     finally { setBusy(false); }
