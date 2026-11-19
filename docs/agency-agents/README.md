@@ -97,3 +97,14 @@ Use the website-orchestrator custom agent. First execute docs/agency-agents/FIRS
 ```
 
 If Codex does not discover the agents, do not claim they are operational. Check project trust, the installed Codex version, and the `.codex/agents/*.toml` files. The upstream Agency Agents converter documents a user-level installation target; this River Ways integration uses Codex's project-scoped custom-agent directory.
+
+## Controlled-language task and report standard
+
+All substantial work by the orchestrator and specialist agents must follow the shared task contract in the root AGENTS.md. This is an ASD-STE100-inspired adaptation for clear technical communication, not a claim of formal ASD-STE100 compliance.
+
+Each assignment must state its objective, evidence and inputs, permitted scope, prohibited actions, deliverables, acceptance criteria, verification method and report requirements. Each finding must identify its source, evidence, severity, visitor or business impact, recommendation, regression risk, unknowns and checks not performed.
+
+Use the shared status values: NOT STARTED, IN PROGRESS, IMPLEMENTED, VERIFIED and BLOCKED. An agent may report VERIFIED only when it has checked the relevant acceptance criteria and recorded evidence. Use NOT RUN for checks that were not performed. Do not infer that a specialist was invoked, a test passed or a feature works from a configuration file or plan alone.
+
+Use short, direct sentences and exact file paths. Define terms that may have more than one meaning. Separate verified observations from recommendations and assumptions. Do not apply this controlled style to public-facing creative copy when expressive language better serves the audience.
+
