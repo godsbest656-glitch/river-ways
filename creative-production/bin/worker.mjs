@@ -112,7 +112,7 @@ export async function prepareProject(job, {
 }
 
 export async function prepareDraftJob(job, { productionRoot } = {}) {
-  if (!['strategy', 'copy'].includes(job?.job_type)) throw new Error('Unsupported draft job type: ' + String(job?.job_type));
+  if (!['strategy', 'copy', 'concept', 'storyboard'].includes(job?.job_type)) throw new Error('Unsupported draft job type: ' + String(job?.job_type));
   if (!job.project?.brief || !job.project?.slug || !job.client_id || !job.project_id || !job.id) throw new Error('Claimed job is missing its scoped project brief');
   const validation = validateBrief(job.project.brief);
   if (!validation.valid) throw new Error('Project brief is invalid: ' + validation.errors.join('; '));
@@ -165,10 +165,10 @@ export async function runWorker({
   let processed = 0;
   while (!signal?.aborted) {
     const claim = await apiRequest(config, 'worker/claim', {
-      method: 'POST', body: { jobTypes: ['project_init', 'strategy', 'copy'] }
+      method: 'POST', body: { jobTypes: ['project_init', 'strategy', 'copy', 'concept', 'storyboard'] }
     }, fetchImpl);
     if (claim.job) {
-      log('Claimed project setup job ' + claim.job.id);
+      log('Claimed Studio job ' + claim.job.job_type + ' ' + claim.job.id);
       const result = await processClaimedJob(claim.job, config, { fetchImpl, log });
       processed += 1;
       log('Job ' + result.jobId + ': ' + result.status);
