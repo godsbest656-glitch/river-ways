@@ -144,7 +144,7 @@ async function handleProjects(request, env, actor, method, parts, url) {
     const clientId = clean(url.searchParams.get("clientId"), 80);
     if (!ID.test(clientId)) return json(400, { ok: false, error: "client_id_required" });
     const { results = [] } = await env.LEADS_DB.prepare(
-      "SELECT id, client_id, slug, name, objective, status, brief_version, brief_json, created_at, updated_at FROM creative_projects WHERE client_id = ? ORDER BY updated_at DESC"
+      "SELECT id, client_id, slug, name, objective, status, brief_version, created_at, updated_at FROM creative_projects WHERE client_id = ? ORDER BY updated_at DESC"
     ).bind(clientId).all();
     return json(200, { ok: true, projects: results });
   }
@@ -475,6 +475,18 @@ async function handleClientPortal(request, env, actor, method, parts, url) {
         "x-creative-asset-sha256": asset.sha256
       }
     });
+  }
+
+  if (parts.length === 4 && parts[1] === "assets" && ID.test(parts[2]) && parts[3] === "review" && method === "GET") {
+    const asset = await env.LEADS_DB.prepare(
+      "SELECT id, client_id FROM creative_assets WHERE id = ?"
+    ).bind(parts[2]).first();
+    if (!asset) return json(404, { ok: false, error: "asset_not_found" });
+    if (!await requireClientMembership(env, actor, asset.client_id)) return json(403, { ok: false, error: "client_membership_required" });
+    const { results = [] } = await env.LEADS_DB.prepare(
+      "SELECT id, reviewer_email, decision, notes, asset_sha256, created_at FROM creative_client_review_events WHERE client_id = ? AND asset_id = ? ORDER BY created_at DESC"
+    ).bind(asset.client_id, asset.id).all();
+    return json(200, { ok: true, reviews: results });
   }
 
   if (parts.length === 4 && parts[1] === "assets" && ID.test(parts[2]) && parts[3] === "review" && method === "POST") {
