@@ -81,6 +81,64 @@ async function handleClients(request, env, actor, method, parts) {
   return json(201, { ok: true, client: { id: clientId, slug, name, status: "active", brandProfile: profile } });
 }
 
+async function handleClientReviewers(request, env, actor, method, parts) {
+  const clientId = clean(parts[1], 80);
+  if (!ID.test(clientId) || parts.length < 3 || parts.length > 4 || parts[2] !== "reviewers") {
+    return json(404, { ok: false, error: "not_found" });
+  }
+  const client = await env.LEADS_DB.prepare(
+    "SELECT id FROM creative_clients WHERE id = ? AND status = 'active'"
+  ).bind(clientId).first();
+  if (!client) return json(404, { ok: false, error: "client_not_found" });
+
+  if (parts.length === 3 && method === "GET") {
+    const { results = [] } = await env.LEADS_DB.prepare(
+      "SELECT id, client_id, email, role, status, invited_by, created_at, updated_at FROM creative_client_memberships WHERE client_id = ? ORDER BY created_at DESC"
+    ).bind(clientId).all();
+    return json(200, { ok: true, reviewers: results });
+  }
+
+  if (parts.length === 3 && method === "POST") {
+    const parsed = await bodyOf(request);
+    if (parsed.error) return parsed.error;
+    const email = clean(parsed.body.email, 254).toLowerCase();
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+      return json(422, { ok: false, error: "valid_reviewer_email_required" });
+    }
+    const membershipId = id();
+    const now = new Date().toISOString();
+    try {
+      await env.LEADS_DB.prepare(
+        "INSERT INTO creative_client_memberships (id, client_id, email, role, status, invited_by, created_at, updated_at) VALUES (?, ?, ?, 'reviewer', 'active', ?, ?, ?)"
+      ).bind(membershipId, clientId, email, actor.id, now, now).run();
+    } catch {
+      return json(409, { ok: false, error: "reviewer_already_exists" });
+    }
+    await audit(env.LEADS_DB, {
+      clientId, actorId: actor.id, eventType: "client.reviewer_added",
+      entityType: "client_reviewer", entityId: membershipId, details: { email }
+    });
+    return json(201, {
+      ok: true,
+      reviewer: { id: membershipId, clientId, email, role: "reviewer", status: "active", invitedBy: actor.id, createdAt: now }
+    });
+  }
+
+  if (parts.length === 4 && method === "DELETE" && ID.test(parts[3])) {
+    const now = new Date().toISOString();
+    const result = await env.LEADS_DB.prepare(
+      "UPDATE creative_client_memberships SET status = 'revoked', updated_at = ? WHERE id = ? AND client_id = ? AND status = 'active'"
+    ).bind(now, parts[3], clientId).run();
+    if (!result?.meta?.changes) return json(404, { ok: false, error: "active_reviewer_not_found" });
+    await audit(env.LEADS_DB, {
+      clientId, actorId: actor.id, eventType: "client.reviewer_revoked",
+      entityType: "client_reviewer", entityId: parts[3]
+    });
+    return json(200, { ok: true, reviewerId: parts[3], status: "revoked" });
+  }
+  return json(405, { ok: false, error: "method_not_allowed" });
+}
+
 async function handleProjects(request, env, actor, method, parts, url) {
   if (parts.length === 1 && method === "GET") {
     const clientId = clean(url.searchParams.get("clientId"), 80);
@@ -370,7 +428,7 @@ export async function onRequest({ request, env }) {
   if (auth.response) return auth.response;
   const actor = auth.actor;
   try {
-    if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
+    if (parts[0] === "clients" && parts[2] === "reviewers") return await handleClientReviewers(request, env, actor, request.method, parts);\n    if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
     if (parts[0] === "projects") return await handleProjects(request, env, actor, request.method, parts, url);
     if (parts[0] === "jobs") return await handleJobs(request, env, actor, request.method, parts, url);
     if (parts[0] === "worker" && parts[1] === "jobs" && parts[3] === "upload") return await handleWorkerUpload(request, env, actor, parts);
