@@ -108,3 +108,54 @@ Use one primary workflow plugin. Do not install a second overlapping GodMode pac
 - Result: DEFERRED. No PR or deployment action was taken.
 
 **Current outcome:** Reconciliation baseline recorded. The website source has not been merged or changed by this audit. The next code change must follow the file-level comparison in REC-01 through REC-03.
+
+
+## 9. Lead schema and API incompatibility
+
+The PR #24 release branch and the execution branch do not use the same lead schema. Do not combine their migration files by filename or copy the PR #24 API function into the execution branch.
+
+| Concern | PR #24: `feat/ads-gate-readiness` | Execution base: `build/river-ways-execution` |
+|---|---|---|
+| Lead key | Integer auto-increment primary key. | UUID text primary key. |
+| Duplicate protection | Client submission key with a unique partial index. | Brief hash and a two-minute duplicate window. |
+| Rate limit storage | Counts recent leads by salted IP hash. | Dedicated `lead_rate_limits` table with a 15-minute window. |
+| Attribution | Landing page and UTM columns. | Landing page, referrer, UTM, journey and engagement fields. |
+| Lifecycle | `pipeline_status` added by migration 0004. | `stage` added by migration 0002. |
+| Operations | Migration 0004 adds assignment and follow-up fields. | Migration 0003 adds assignment and follow-up fields. |
+| Migration sequence | 0001 leads, 0002 attribution, 0003 submission idempotency, 0004 operations. | 0001 UUID leads and rate limits, 0002 stage and attribution, 0003 operations. |
+
+The two branches both use the filenames `migrations/0001_leads.sql`, `migrations/0002_*.sql` and `migrations/0003_*.sql`. Their contents and schema contracts differ.
+
+The PR #24 contact function queries `submission_key` and writes an integer lead ID. The execution contact function queries and writes UUID lead IDs. The PR #24 operations migration creates `pipeline_status`. The execution branch uses `stage` and explicitly avoids a second lifecycle field.
+
+These differences are incompatible at the database and API levels. A direct migration copy can break existing lead records or cause runtime SQL errors.
+
+## 10. Demand Intelligence dependency
+
+PR #30 adds `functions/api/ai/demand-intelligence.js`, a visitor-facing component, migration `0005_ai_demand_usage.sql` and an `AI_DEMAND_ENABLED` feature gate.
+
+The endpoint uses the `ai_demand_usage` table and the `LEADS_DB`, `RATE_LIMIT_SALT` and `AI` bindings. It returns a disabled response when `AI_DEMAND_ENABLED` is not `true`.
+
+Keep this feature out of the release candidate until the owner approves model cost and the Preview environment verifies the AI binding, usage migration, quota behavior and failure responses.
+
+## 11. Required integration design
+
+- Keep the UUID schema and `stage` lifecycle as the current execution-branch baseline until a deliberate schema decision changes it.
+- Preserve the existing brief-hash duplicate check and rate-limit table.
+- Decide whether the product needs a stable client submission key in addition to the existing duplicate window.
+- If the owner approves that behavior, add a new migration after the current migration 0003. Do not reuse the PR #24 migration number or its integer schema.
+- Add API tests before changing the contact handler.
+- Verify migration order against a fresh SQLite database and a populated database.
+- Preserve the existing API response contract or document and test an explicit versioned change.
+- Do not apply any migration to remote D1 without owner approval.
+
+## 12. Updated completion record
+
+- Requirement REC-SCHEMA-01: Compare the PR #24 lead schema with the execution-branch lead schema.
+- Result: PASS. The primary key, duplicate strategy, rate-limit model, lifecycle field and migration order differ.
+- Requirement REC-SCHEMA-02: Compare the PR #30 feature dependency with the current website base.
+- Result: PASS. The feature requires a separate usage table, AI binding, feature flag and cost approval.
+- Requirement REC-SCHEMA-03: Prevent an unsafe migration copy.
+- Result: PASS. This branch records the incompatibility. No migration or API code changed.
+- Requirement REC-SCHEMA-04: Verify remote D1 compatibility.
+- Result: BLOCKED. No remote D1 schema or Preview binding was inspected.
