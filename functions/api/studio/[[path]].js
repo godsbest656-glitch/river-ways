@@ -102,7 +102,7 @@ async function handleClientReviewers(request, env, actor, method, parts) {
     const parsed = await bodyOf(request);
     if (parsed.error) return parsed.error;
     const email = clean(parsed.body.email, 254).toLowerCase();
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return json(422, { ok: false, error: "valid_reviewer_email_required" });
     }
     const membershipId = id();
