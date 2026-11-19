@@ -418,6 +418,127 @@ async function handleApproval(request, env, actor, method, parts) {
   return json(201, { ok: true, approvalId, assetId: asset.id, status: nextStatus, assetSha256: expectedSha });
 }
 
+async function requireClientMembership(env, actor, clientId) {
+  return env.LEADS_DB.prepare(
+    "SELECT m.id FROM creative_client_memberships m JOIN creative_clients c ON c.id = m.client_id WHERE m.client_id = ? AND m.email = ? AND m.role = 'reviewer' AND m.status = 'active' AND c.status = 'active'"
+  ).bind(clientId, actor.email).first();
+}
+
+async function handleClientPortal(request, env, actor, method, parts, url) {
+  if (parts.length === 2 && parts[1] === "clients" && method === "GET") {
+    const { results = [] } = await env.LEADS_DB.prepare(
+      "SELECT c.id, c.slug, c.name FROM creative_clients c JOIN creative_client_memberships m ON m.client_id = c.id WHERE m.email = ? AND m.role = 'reviewer' AND m.status = 'active' AND c.status = 'active' ORDER BY c.name"
+    ).bind(actor.email).all();
+    return json(200, { ok: true, clients: results });
+  }
+
+  if (parts.length === 2 && parts[1] === "projects" && method === "GET") {
+    const clientId = clean(url.searchParams.get("clientId"), 80);
+    if (!ID.test(clientId)) return json(400, { ok: false, error: "client_id_required" });
+    if (!await requireClientMembership(env, actor, clientId)) return json(403, { ok: false, error: "client_membership_required" });
+    const { results = [] } = await env.LEADS_DB.prepare(
+      "SELECT id, client_id, slug, name, objective, status, brief_version, brief_json, created_at, updated_at FROM creative_projects WHERE client_id = ? ORDER BY updated_at DESC"
+    ).bind(clientId).all();
+    return json(200, { ok: true, projects: results });
+  }
+
+  if (parts.length === 2 && parts[1] === "assets" && method === "GET") {
+    const clientId = clean(url.searchParams.get("clientId"), 80);
+    const projectId = clean(url.searchParams.get("projectId"), 80);
+    if (!ID.test(clientId)) return json(400, { ok: false, error: "client_id_required" });
+    if (!await requireClientMembership(env, actor, clientId)) return json(403, { ok: false, error: "client_membership_required" });
+    const query = projectId
+      ? env.LEADS_DB.prepare("SELECT id, client_id, project_id, version, asset_type, media_type, filename, sha256, status, created_at, updated_at FROM creative_assets WHERE client_id = ? AND project_id = ? ORDER BY created_at DESC LIMIT 100").bind(clientId, projectId)
+      : env.LEADS_DB.prepare("SELECT id, client_id, project_id, version, asset_type, media_type, filename, sha256, status, created_at, updated_at FROM creative_assets WHERE client_id = ? ORDER BY created_at DESC LIMIT 100").bind(clientId);
+    const { results = [] } = await query.all();
+    return json(200, { ok: true, assets: results });
+  }
+
+  if (parts.length === 4 && parts[1] === "assets" && ID.test(parts[2]) && parts[3] === "file" && method === "GET") {
+    if (!env.CREATIVE_ASSETS) return json(503, { ok: false, error: "creative_asset_storage_unavailable" });
+    const asset = await env.LEADS_DB.prepare(
+      "SELECT id, client_id, filename, media_type, storage_key, sha256 FROM creative_assets WHERE id = ?"
+    ).bind(parts[2]).first();
+    if (!asset) return json(404, { ok: false, error: "asset_not_found" });
+    if (!await requireClientMembership(env, actor, asset.client_id)) return json(403, { ok: false, error: "client_membership_required" });
+    const object = await env.CREATIVE_ASSETS.get(asset.storage_key);
+    if (!object) return json(404, { ok: false, error: "asset_file_not_found" });
+    const safeFilename = asset.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 160) || "creative-asset";
+    return new Response(object.body, {
+      status: 200,
+      headers: {
+        "content-type": asset.media_type || object.httpMetadata?.contentType || "application/octet-stream",
+        "content-length": String(object.size),
+        "content-disposition": 'inline; filename="' + safeFilename + '"',
+        "cache-control": "private, no-store",
+        "x-content-type-options": "nosniff",
+        "x-creative-asset-sha256": asset.sha256
+      }
+    });
+  }
+
+  if (parts.length === 4 && parts[1] === "assets" && ID.test(parts[2]) && parts[3] === "review" && method === "POST") {
+    const parsed = await bodyOf(request);
+    if (parsed.error) return parsed.error;
+    const decision = clean(parsed.body.decision, 24);
+    const notes = clean(parsed.body.notes, 2000);
+    const expectedSha = clean(parsed.body.assetSha256, 64).toLowerCase();
+    if (!["approved", "changes_requested", "rejected"].includes(decision) || !SHA256.test(expectedSha)) {
+      return json(422, { ok: false, error: "review_requires_decision_and_asset_hash" });
+    }
+    const asset = await env.LEADS_DB.prepare(
+      "SELECT id, client_id, project_id, sha256, status FROM creative_assets WHERE id = ?"
+    ).bind(parts[2]).first();
+    if (!asset) return json(404, { ok: false, error: "asset_not_found" });
+    if (!await requireClientMembership(env, actor, asset.client_id)) return json(403, { ok: false, error: "client_membership_required" });
+    if (asset.sha256 !== expectedSha) return json(409, { ok: false, error: "asset_version_changed" });
+    if (asset.status === "delivered") return json(409, { ok: false, error: "delivered_asset_is_immutable" });
+    const reviewId = id();
+    const now = new Date().toISOString();
+    await env.LEADS_DB.batch([
+      env.LEADS_DB.prepare(
+        "INSERT INTO creative_client_review_events (id, client_id, project_id, asset_id, reviewer_email, decision, notes, asset_sha256, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(reviewId, asset.client_id, asset.project_id, asset.id, actor.email, decision, notes, expectedSha, now),
+      env.LEADS_DB.prepare(
+        "INSERT INTO creative_audit_events (id, client_id, project_id, actor_id, event_type, entity_type, entity_id, details_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(id(), asset.client_id, asset.project_id, actor.email, "client.asset." + decision, "asset", asset.id, JSON.stringify({ reviewId, assetSha256: expectedSha }), now)
+    ]);
+    return json(201, { ok: true, reviewId, assetId: asset.id, decision, assetSha256: expectedSha });
+  }
+
+  if (parts.length === 4 && parts[1] === "assets" && ID.test(parts[2]) && parts[3] === "comments") {
+    const asset = await env.LEADS_DB.prepare(
+      "SELECT id, client_id, project_id FROM creative_assets WHERE id = ?"
+    ).bind(parts[2]).first();
+    if (!asset) return json(404, { ok: false, error: "asset_not_found" });
+    if (!await requireClientMembership(env, actor, asset.client_id)) return json(403, { ok: false, error: "client_membership_required" });
+    if (method === "GET") {
+      const { results = [] } = await env.LEADS_DB.prepare(
+        "SELECT id, reviewer_email, comment, created_at FROM creative_client_comments WHERE client_id = ? AND asset_id = ? ORDER BY created_at ASC"
+      ).bind(asset.client_id, asset.id).all();
+      return json(200, { ok: true, comments: results });
+    }
+    if (method === "POST") {
+      const parsed = await bodyOf(request);
+      if (parsed.error) return parsed.error;
+      const comment = clean(parsed.body.comment, 4000);
+      if (!comment) return json(422, { ok: false, error: "comment_required" });
+      const commentId = id();
+      const now = new Date().toISOString();
+      await env.LEADS_DB.prepare(
+        "INSERT INTO creative_client_comments (id, client_id, project_id, asset_id, reviewer_email, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      ).bind(commentId, asset.client_id, asset.project_id, asset.id, actor.email, comment, now).run();
+      await audit(env.LEADS_DB, {
+        clientId: asset.client_id, projectId: asset.project_id, actorId: actor.email,
+        eventType: "client.asset.comment_added", entityType: "asset_comment", entityId: commentId
+      });
+      return json(201, { ok: true, comment: { id: commentId, assetId: asset.id, comment, createdAt: now } });
+    }
+  }
+
+  return json(404, { ok: false, error: "not_found" });
+}
+
 export async function onRequest({ request, env }) {
   if (!env.LEADS_DB) return json(503, { ok: false, error: "studio_database_unavailable" });
   const url = new URL(request.url);
@@ -428,7 +549,7 @@ export async function onRequest({ request, env }) {
   if (auth.response) return auth.response;
   const actor = auth.actor;
   try {
-    if (parts[0] === "clients" && parts[2] === "reviewers") return await handleClientReviewers(request, env, actor, request.method, parts);\n    if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
+    if (parts[0] === "portal") return await handleClientPortal(request, env, actor, request.method, parts, url);\n    if (parts[0] === "clients" && parts[2] === "reviewers") return await handleClientReviewers(request, env, actor, request.method, parts);\n    if (parts[0] === "clients") return await handleClients(request, env, actor, request.method, parts);
     if (parts[0] === "projects") return await handleProjects(request, env, actor, request.method, parts, url);
     if (parts[0] === "jobs") return await handleJobs(request, env, actor, request.method, parts, url);
     if (parts[0] === "worker" && parts[1] === "jobs" && parts[3] === "upload") return await handleWorkerUpload(request, env, actor, parts);
