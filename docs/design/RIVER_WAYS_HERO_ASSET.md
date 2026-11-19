@@ -11,8 +11,8 @@
 |---|---|
 | Repository path | `public/assets/river-ways/hero-current.webp` |
 | Format | WebP |
-| Committed derivative dimensions | 800 × 450 px |
-| Committed derivative size | 18,814 bytes |
+| Committed derivative dimensions | 640 × 360 px |
+| Committed derivative size | 12,756 bytes |
 | Source artwork dimensions | 1,672 × 941 px |
 | Source artwork size | 136,478 bytes |
 | Source | Original AI-generated River Ways artwork, created 19 November 2026 |
