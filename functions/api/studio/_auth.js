@@ -37,7 +37,7 @@ async function loadKeys(teamDomain, fetchImpl) {
 
 export async function verifyAccessAssertion(assertion, env, { fetchImpl = fetch, now = Date.now() } = {}) {
   if (typeof assertion !== "string" || assertion.length > 12000) return null;
-  const teamDomain = String(env.CF_ACCESS_TEAM_DOMAIN || "").trim().replace(/^https?:\\/\\//, "").replace(/\\/$/, "");
+  const teamDomain = String(env.CF_ACCESS_TEAM_DOMAIN || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
   const expectedAudiences = [env.CF_ACCESS_AUD, env.STUDIO_WORKER_AUD, env.STUDIO_CLIENT_AUD]
     .filter((value) => typeof value === "string" && value.trim());
   if (!teamDomain || expectedAudiences.length === 0) return null;
