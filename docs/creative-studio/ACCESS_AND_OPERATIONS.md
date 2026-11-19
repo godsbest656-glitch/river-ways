@@ -4,18 +4,18 @@
 
 The Studio API is implemented as Cloudflare Pages Functions under `/api/studio/*`. It is not ready to expose until the migration is applied to a dedicated Preview D1 database and Cloudflare Access is configured for the Studio route and API.
 
-The API independently verifies the `Cf-Access-Jwt-Assertion` signature against the configured Cloudflare Access team's signing keys. It validates issuer, audience, expiry and signing algorithm. Staff identities are additionally checked against an explicit email allowlist. Worker requests require the separate worker audience.
+The API independently verifies the `Cf-Access-Jwt-Assertion` signature against the configured Cloudflare Access team's signing keys. It validates issuer, audience, expiry and signing algorithm. Staff identities require the staff audience and an explicit email allowlist. Worker requests require the separate worker audience. Client reviewer identities require the separate client audience and a normalized email identity; the next portal layer must also verify an active client membership on every request.
 
 ## Required environment bindings
 
 | Name | Purpose |
 |---|---|
-| `LEADS_DB` | D1 binding for the existing River Ways operations database; includes migration 0004 after it is reviewed and applied to the correct environment. |
+| `LEADS_DB` | D1 binding for the existing River Ways operations database; includes migrations 0004 and 0005 after they are reviewed and applied to the correct environment. |
 | `CREATIVE_ASSETS` | Private R2 bucket binding for generated media. Configure bucket access only for the Pages Functions worker; do not make the bucket public.
 | `CF_ACCESS_TEAM_DOMAIN` | Cloudflare Access team domain, hostname only. |
 | `CF_ACCESS_AUD` | Access application audience tag for River Ways Studio staff. |
 | `STUDIO_ALLOWED_EMAILS` | Comma-separated exact staff email allowlist. |
-| `STUDIO_WORKER_AUD` | Separate Access audience tag for the private production worker service token. |
+| `STUDIO_WORKER_AUD` | Separate Access audience tag for the private production worker service token. |\n| `STUDIO_CLIENT_AUD` | Separate Access audience tag for client reviewers. It must not be shared with staff or worker applications. |
 
 Do not commit any Access secrets or credentials. The audience values are identifiers, not bearer secrets. Configure the Studio path policy in Cloudflare Access before enabling staff use. The API still rejects requests if the Access JWT is absent or invalid.
 
@@ -36,7 +36,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 | GET | `/api/studio/assets?clientId=:id` | List metadata for one client's assets. |
 | POST | `/api/studio/assets/:id/approval` | Record an agency review decision against the exact asset SHA-256 and usage scope. |
 
-## Current limitations
+## Client reviewer foundation\n\nMigration 0005 adds explicit, revocable client reviewer memberships. The authentication helper now separates staff, worker and client Access audiences. This is an identity boundary only: it does not yet expose client portal data or allow client approvals. Do not configure or expose a client portal until the membership-scoped API routes and cross-client isolation tests are implemented. Adding a membership is an agency action; it does not send an invitation email.\n\n## Current limitations
 
 - The current approval endpoint is agency-staff review. A separate client reviewer role and client-facing approval portal are not implemented yet.
 - Private R2 upload and authenticated file streaming are implemented, but no R2 bucket has been provisioned or bound in Preview. Asset URLs are not public or permanent.
@@ -59,7 +59,7 @@ From `creative-production/`, run `npm run worker -- --once` for a single poll or
 ## Required Preview setup (not performed)
 
 1. Create/identify a dedicated Preview D1 database; do not apply migration 0004 to production.
-2. Configure the `LEADS_DB` Preview binding and apply migrations 0001–0004 in order after schema inspection.
+2. Configure the `LEADS_DB` Preview binding and apply migrations 0001–0005 in order after schema inspection.
 3. Create Cloudflare Access applications/policies for the Studio route and API; configure staff identity allowlist and separate worker audience.
 4. Provision a private R2 bucket and bind it as `CREATIVE_ASSETS`; configure the environment values above in Preview only.
 5. Verify unauthenticated access is rejected and an allowlisted staff identity can create a client/project/job.
