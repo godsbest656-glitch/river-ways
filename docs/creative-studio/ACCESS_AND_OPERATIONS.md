@@ -26,7 +26,15 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 
 | Method | Route | Purpose |
 |---|---|---|
-| GET / POST | `/api/studio/clients` | List and create agency client workspaces. |\n| GET / POST | `/api/studio/clients/:clientId/reviewers` | List active/revoked reviewer memberships or add a normalized reviewer email. |\n| DELETE | `/api/studio/clients/:clientId/reviewers/:membershipId` | Revoke one reviewer within that client workspace without deleting its audit history. |\n| GET | `/api/studio/portal/clients` | List only active client workspaces assigned to the authenticated reviewer. |\n| GET | `/api/studio/portal/projects?clientId=:id` | List projects after checking active membership for that exact client. |\n| GET | `/api/studio/portal/assets?clientId=:id` | List client asset metadata within the authenticated reviewer's membership. |\n| GET | `/api/studio/portal/assets/:id/file` | Stream a private asset only after resolving its client and checking active membership. |\n| GET / POST | `/api/studio/portal/assets/:id/comments` | Read or add tenant-scoped client comments. |\n| POST | `/api/studio/portal/assets/:id/review` | Append a client decision against the exact asset SHA-256 without changing agency approval state. |
+| GET / POST | `/api/studio/clients` | List and create agency client workspaces. |
+| GET / POST | `/api/studio/clients/:clientId/reviewers` | List active/revoked reviewer memberships or add a normalized reviewer email. |
+| DELETE | `/api/studio/clients/:clientId/reviewers/:membershipId` | Revoke one reviewer within that client workspace without deleting its audit history. |
+| GET | `/api/studio/portal/clients` | List only active client workspaces assigned to the authenticated reviewer. |
+| GET | `/api/studio/portal/projects?clientId=:id` | List projects after checking active membership for that exact client. |
+| GET | `/api/studio/portal/assets?clientId=:id` | List client asset metadata within the authenticated reviewer's membership. |
+| GET | `/api/studio/portal/assets/:id/file` | Stream a private asset only after resolving its client and checking active membership. |
+| GET / POST | `/api/studio/portal/assets/:id/comments` | Read or add tenant-scoped client comments. |
+| POST | `/api/studio/portal/assets/:id/review` | Append a client decision against the exact asset SHA-256 without changing agency approval state. |
 | GET / POST | `/api/studio/projects` | List a client's projects and create a draft-brief project. |
 | GET / POST | `/api/studio/jobs` | List a client's jobs and queue a production task. |
 | POST | `/api/studio/worker/claim` | Atomically claim the oldest available queued job using the worker audience. |
@@ -39,7 +47,9 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 
 ## Client reviewer foundation
 
-Migration 0005 adds explicit, revocable client reviewer memberships. Staff can list, add and revoke memberships through the reviewer-management routes above. Email addresses are trimmed and lowercased; a reviewer can have one membership per client. Revocation is soft (status changes to `revoked`) so the audit trail and membership history remain available. These routes are staff-only and scope every mutation by both client and membership ID.\n\nThe authentication helper separates staff, worker and client Access audiences. Client portal routes require the dedicated client audience and an active membership match (client ID + normalized email) on every request. The portal can list assigned clients, projects and assets; stream private asset files; and add/read comments. Client review decisions are append-only rows in `creative_client_review_events`, bound to the exact asset SHA-256. They do not change the agency-controlled `creative_assets.status` or agency approval events. Migration 0006 adds separate client review and comment history with composite tenant foreign keys. Adding a membership does not yet send an invitation email; the client must already be covered by the dedicated Cloudflare Access client application/policy.
+Migration 0005 adds explicit, revocable client reviewer memberships. Staff can list, add and revoke memberships through the reviewer-management routes above. Email addresses are trimmed and lowercased; a reviewer can have one membership per client. Revocation is soft (status changes to `revoked`) so the audit trail and membership history remain available. These routes are staff-only and scope every mutation by both client and membership ID.
+
+The authentication helper separates staff, worker and client Access audiences. Client portal routes require the dedicated client audience and an active membership match (client ID + normalized email) on every request. The portal can list assigned clients, projects and assets; stream private asset files; and add/read comments. Client review decisions are append-only rows in `creative_client_review_events`, bound to the exact asset SHA-256. They do not change the agency-controlled `creative_assets.status` or agency approval events. Migration 0006 adds separate client review and comment history with composite tenant foreign keys. Adding a membership does not yet send an invitation email; the client must already be covered by the dedicated Cloudflare Access client application/policy.
 
 ## Current limitations
 
