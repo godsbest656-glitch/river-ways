@@ -75,9 +75,9 @@ Avenize is configured as the first draft client workspace from the supplied clie
 |---|---|---|
 | Brand foundation | Brief and logo reference recorded | Approved brand kit, exact logo files/variants, colour and typography tokens |
 | Product truth | Claims restricted to verified capabilities | Product feature inventory and approved screenshots/demo capture |
-| Campaign strategy | Brief captured; strategy adapter pending | Approved audience/message/channel plan with source notes |
-| Copy and sales kit | Copy adapter pending | Approved corporate deck, brochure, one-pager, demo script and WhatsApp sequence |
-| Creative concepts | Adapter pending | Approved concepts, storyboards and shot lists |
+| Campaign strategy | Deterministic draft adapter implemented; requires review | Approved audience/message/channel plan with source notes |
+| Copy and sales kit | Deterministic copy foundation implemented; finished copy remains pending | Verified feature facts, proof, approved CTA and client-reviewed assets |
+| Creative concepts | Three structured concept territories and storyboard outline adapters implemented as drafts | Client-selected concept, developed storyboard, verified evidence and approved CTA |
 | Image/video | Local generation foundation exists; no live inference verified | Rights-cleared models/assets, hardware validation, sample outputs and human review |
 | Render and QA | Local renderer/media QA code exists; no real render verified | Reproducible render, media QA report and visual review |
 | Partnerships | Prospects identified in client brief only | Separate non-binding proposals for Niyi Adesanya and LIMBsimple; no implied endorsement |
