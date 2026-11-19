@@ -1,5 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
-const state = { clients: [], client: null, projects: [], jobs: [], assets: [] };
+const state = { clients: [], client: null, projects: [], jobs: [], assets: [], reviewers: [] };
 
 const defaultBrief = {
   schemaVersion: "1.0",
@@ -161,6 +161,46 @@ async function loadAssets() {
   renderAssets();
 }
 
+async function loadReviewers() {
+  if (!state.client) return;
+  const result = await api("clients/" + encodeURIComponent(state.client.id) + "/reviewers");
+  state.reviewers = result.reviewers || [];
+  renderReviewers();
+}
+
+function renderReviewers() {
+  const list = $("#reviewer-list");
+  list.replaceChildren();
+  if (!state.reviewers.length) {
+    list.append(node("p", "muted", "No reviewers have been added to this workspace."));
+    return;
+  }
+  for (const reviewer of state.reviewers) {
+    const row = node("div", "reviewer-row");
+    const identity = node("div", "reviewer-identity");
+    identity.append(node("strong", "", reviewer.email));
+    identity.append(node("small", "", "Added " + new Date(reviewer.created_at).toLocaleDateString()));
+    const status = node("span", "job-status " + reviewer.status, reviewer.status);
+    row.append(identity, status);
+    if (reviewer.status === "active") {
+      const revoke = node("button", "button button-quiet reviewer-revoke", "Revoke");
+      revoke.type = "button";
+      revoke.addEventListener("click", () => revokeReviewer(reviewer));
+      row.append(revoke);
+    }
+    list.append(row);
+  }
+}
+
+async function revokeReviewer(reviewer) {
+  if (!state.client || !window.confirm("Revoke reviewer access for " + reviewer.email + "?")) return;
+  try {
+    await api("clients/" + encodeURIComponent(state.client.id) + "/reviewers/" + encodeURIComponent(reviewer.id), { method: "DELETE" });
+    await loadReviewers();
+    notice("Reviewer access revoked. The membership history is retained.", "success");
+  } catch (error) { showError(error); }
+}
+
 function renderAssets() {
   const list = $("#asset-list");
   list.replaceChildren();
@@ -244,11 +284,24 @@ async function selectClient(client) {
   $("#new-project-toggle").disabled = false;
   renderClients();
   try {
-    await loadProjects();
-    await loadAssets();
+    await Promise.all([loadProjects(), loadAssets(), loadReviewers()]);
     notice("Connected to " + client.name + " workspace.", "success");
   } catch (error) { showError(error); }
 }
+
+$("#reviewer-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!state.client) return;
+  const email = String(new FormData(event.currentTarget).get("email") || "").trim();
+  try {
+    await api("clients/" + encodeURIComponent(state.client.id) + "/reviewers", {
+      method: "POST", body: { email }
+    });
+    event.currentTarget.reset();
+    await loadReviewers();
+    notice("Reviewer membership added. Confirm the email is also covered by the client Cloudflare Access policy.", "success");
+  } catch (error) { showError(error); }
+});
 
 $("#new-client-toggle").addEventListener("click", () => $("#client-form").classList.toggle("hidden"));
 $("#client-form").addEventListener("submit", async (event) => {
