@@ -8,6 +8,7 @@ EXPECTED_FILES = [
     "0002_lead_pipeline_attribution.sql",
     "0003_lead_operations.sql",
     "0004_creative_studio.sql",
+    "0005_creative_client_reviewers.sql",
 ]
 
 files = sorted(MIGRATIONS.glob("*.sql"))
@@ -131,9 +132,43 @@ creative_tables = {
 required_creative_tables = {
     "creative_clients", "creative_projects", "creative_jobs",
     "creative_assets", "creative_approval_events", "creative_audit_events",
+    "creative_client_memberships",
 }
 if creative_tables != required_creative_tables:
     raise SystemExit(f"Unexpected Creative Studio tables: {sorted(creative_tables)}")
+
+membership_indexes = {
+    row[1] for row in db.execute("PRAGMA index_list(creative_client_memberships)")
+}
+if "idx_creative_client_memberships_email_status" not in membership_indexes:
+    raise SystemExit("Missing client reviewer membership lookup index")
+
+db.execute(
+    """INSERT INTO creative_client_memberships
+       (id, client_id, email, role, status, invited_by, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+    ("reviewer-a", "client-a", "reviewer@example.com", "reviewer", "active",
+     "staff@example.com", "2026-11-19T10:00:00Z", "2026-11-19T10:00:00Z"),
+)
+membership = db.execute(
+    "SELECT client_id, email, role, status FROM creative_client_memberships WHERE id = ?",
+    ("reviewer-a",),
+).fetchone()
+if membership != ("client-a", "reviewer@example.com", "reviewer", "active"):
+    raise SystemExit(f"Unexpected reviewer membership: {membership}")
+
+try:
+    db.execute(
+        """INSERT INTO creative_client_memberships
+           (id, client_id, email, role, status, invited_by, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        ("reviewer-duplicate", "client-a", "reviewer@example.com", "reviewer", "active",
+         "staff@example.com", "2026-11-19T10:00:00Z", "2026-11-19T10:00:00Z"),
+    )
+except sqlite3.IntegrityError:
+    pass
+else:
+    raise SystemExit("Duplicate client reviewer membership was accepted")
 
 creative_job_columns = {row[1] for row in db.execute("PRAGMA table_info(creative_jobs)")}
 required_job_columns = {"max_attempts", "heartbeat_at", "lease_expires_at", "last_error"}
@@ -193,4 +228,4 @@ else:
 if db.execute("PRAGMA foreign_key_check").fetchall():
     raise SystemExit("Creative Studio schema contains foreign-key violations")
 
-print("Validated client-scoped Creative Studio tables, queue index, approval history and cross-client foreign-key isolation.")
+print("Validated client-scoped Creative Studio tables, reviewer membership uniqueness, queue indexes, approval history and cross-client foreign-key isolation.")
