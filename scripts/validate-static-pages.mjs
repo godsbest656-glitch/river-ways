@@ -120,9 +120,9 @@ if (!(await exists(headersPath))) {
   failures.push("Missing Cloudflare Pages security headers");
 } else {
   const headers = await fs.readFile(headersPath, "utf8");
-  if (!/\\/client-review\\*/.test(headers) ||
-      !/X-Robots-Tag:\\s*noindex,\\s*nofollow/i.test(headers) ||
-      !/Cache-Control:\\s*no-store/i.test(headers)) {
+  if (!headers.includes("/client-review*") ||
+      !headers.includes("X-Robots-Tag: noindex, nofollow") ||
+      !headers.includes("Cache-Control: no-store")) {
     failures.push("Client review portal must be noindex and non-cacheable");
   }
 }
