@@ -80,3 +80,9 @@ Use `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` as the deployment preparation
 - Playwright is the single browser/E2E harness. Extend `tests/e2e`; do not introduce a competing browser runner.
 - Automated axe scans are a regression aid, not a complete WCAG 2.2 AA audit. Also inspect keyboard use, focus visibility, screen-reader semantics, zoom/reflow, motion preferences and contrast manually.
 - Browser tests use the built static output through Vite preview. A passing local preview test does not prove Cloudflare Pages status codes, D1 bindings, email delivery or deployment readiness.
+
+
+## GodMode execution workflow
+For substantial implementation tasks, follow `docs/engineering/GODMODE_INTEGRATION.md`. The selected upstream workflow plugin is NoobyGains/GodMode. If the plugin is installed, use its applicable skills for rationale, intent discovery, grounding, task planning, test-first execution, review, and completion evidence. If it is not installed, follow the documented workflow manually; do not claim plugin activation.
+
+GodMode supplements this file. It does not override River Ways product/design authority, privacy and security rules, branch controls, deployment restrictions, or definition of done. Keep work on topic branches. Do not open or update a pull request until the owner authorises Preview review. Do not mark work complete without fresh verification evidence from the exact candidate commit.
