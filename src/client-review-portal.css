@@ -79,3 +79,10 @@
   .crp-review-actions .crp-button { flex:1; }
   .crp-security-note { align-items:flex-start; text-align:center; }
 }
+
+.crp-review-history { margin:12px 0 14px; padding:12px; border:1px solid #dce9ee; border-radius:9px; background:#f8fbfc; }
+.crp-review-history>strong { display:block; margin-bottom:9px; color:#294e62; font-size:11px; }
+.crp-review-event { padding:9px 0; border-top:1px solid #e4edf1; }
+.crp-review-event>span { color:#087ca8; font-size:10px; font-weight:800; text-transform:capitalize; }
+.crp-review-event p { margin:4px 0; color:#526d7c; font-size:11px; line-height:1.5; }
+.crp-review-event small { color:#81939d; font-size:9px; }
