@@ -398,3 +398,24 @@ h3 { letter-spacing: -.035em; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal-section { opacity: 1 !important; transform: none !important; }
 }
+
+
+/* Original River Ways artwork behind the existing interactive hero field. */
+.current-stage { position: relative; }
+.current-stage-image {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 54%;
+  opacity: .76;
+  filter: saturate(.88) contrast(1.06);
+  pointer-events: none;
+}
+.current-stage-grid { opacity: .32; }
+.current-stage-river { opacity: .62; }
+@media (max-width: 600px) {
+  .current-stage-image { object-position: 52% center; opacity: .68; }
+}
