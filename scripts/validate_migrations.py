@@ -8,7 +8,8 @@ EXPECTED_FILES = [
     "0002_lead_pipeline_attribution.sql",
     "0003_lead_operations.sql",
     "0004_creative_studio.sql",
-    "0005_creative_client_reviewers.sql",\n    "0006_creative_client_review_activity.sql",
+    "0005_creative_client_reviewers.sql",
+    "0006_creative_client_review_activity.sql",
 ]
 
 files = sorted(MIGRATIONS.glob("*.sql"))
@@ -132,7 +133,8 @@ creative_tables = {
 required_creative_tables = {
     "creative_clients", "creative_projects", "creative_jobs",
     "creative_assets", "creative_approval_events", "creative_audit_events",
-    "creative_client_memberships",
+    "creative_client_memberships", "creative_client_review_events",
+    "creative_client_comments",
 }
 if creative_tables != required_creative_tables:
     raise SystemExit(f"Unexpected Creative Studio tables: {sorted(creative_tables)}")
@@ -142,6 +144,17 @@ membership_indexes = {
 }
 if "idx_creative_client_memberships_email_status" not in membership_indexes:
     raise SystemExit("Missing client reviewer membership lookup index")
+
+review_indexes = {
+    row[1] for row in db.execute("PRAGMA index_list(creative_client_review_events)")
+}
+comment_indexes = {
+    row[1] for row in db.execute("PRAGMA index_list(creative_client_comments)")
+}
+if "idx_creative_client_reviews_asset_history" not in review_indexes:
+    raise SystemExit("Missing client review history index")
+if "idx_creative_client_comments_asset_history" not in comment_indexes:
+    raise SystemExit("Missing client comment history index")
 
 creative_job_columns = {row[1] for row in db.execute("PRAGMA table_info(creative_jobs)")}
 required_job_columns = {"max_attempts", "heartbeat_at", "lease_expires_at", "last_error"}
@@ -224,6 +237,33 @@ except sqlite3.IntegrityError:
     pass
 else:
     raise SystemExit("Cross-client creative job reference was accepted")
+
+db.execute(
+    """INSERT INTO creative_client_review_events
+       (id, client_id, project_id, asset_id, reviewer_email, decision, notes, asset_sha256, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+    ("client-review-a", "client-a", "project-a", "asset-a", "reviewer@example.com",
+     "changes_requested", "Please revise the opening frame", "a" * 64, "2026-11-19T10:00:00Z"),
+)
+db.execute(
+    """INSERT INTO creative_client_comments
+       (id, client_id, project_id, asset_id, reviewer_email, comment, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)""",
+    ("client-comment-a", "client-a", "project-a", "asset-a", "reviewer@example.com",
+     "Please increase contrast", "2026-11-19T10:01:00Z"),
+)
+try:
+    db.execute(
+        """INSERT INTO creative_client_review_events
+           (id, client_id, project_id, asset_id, reviewer_email, decision, notes, asset_sha256, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        ("client-review-cross", "client-b", "project-a", "asset-a", "reviewer@example.com",
+         "approved", "", "a" * 64, "2026-11-19T10:00:00Z"),
+    )
+except sqlite3.IntegrityError:
+    pass
+else:
+    raise SystemExit("Cross-client client review event was accepted")
 
 if db.execute("PRAGMA foreign_key_check").fetchall():
     raise SystemExit("Creative Studio schema contains foreign-key violations")
