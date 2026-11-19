@@ -15,7 +15,8 @@ The API independently verifies the `Cf-Access-Jwt-Assertion` signature against t
 | `CF_ACCESS_TEAM_DOMAIN` | Cloudflare Access team domain, hostname only. |
 | `CF_ACCESS_AUD` | Access application audience tag for River Ways Studio staff. |
 | `STUDIO_ALLOWED_EMAILS` | Comma-separated exact staff email allowlist. |
-| `STUDIO_WORKER_AUD` | Separate Access audience tag for the private production worker service token.\n| `STUDIO_CLIENT_AUD` | Separate Access audience tag for client reviewers. It must not be shared with staff or worker applications. |
+| `STUDIO_WORKER_AUD` | Separate Access audience tag for the private production worker service token.
+| `STUDIO_CLIENT_AUD` | Separate Access audience tag for client reviewers. It must not be shared with staff or worker applications. |
 
 Do not commit any Access secrets or credentials. The audience values are identifiers, not bearer secrets. Configure the Studio path policy in Cloudflare Access before enabling staff use. The API still rejects requests if the Access JWT is absent or invalid.
 
@@ -36,7 +37,11 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 | GET | `/api/studio/assets?clientId=:id` | List metadata for one client's assets. |
 | POST | `/api/studio/assets/:id/approval` | Record an agency review decision against the exact asset SHA-256 and usage scope. |
 
-## Client reviewer foundation\n\nMigration 0005 adds explicit, revocable client reviewer memberships. The authentication helper now separates staff, worker and client Access audiences. This is an identity boundary only: it does not yet expose client portal data or allow client approvals. Do not configure or expose a client portal until the membership-scoped API routes and cross-client isolation tests are implemented. Adding a membership is an agency action; it does not send an invitation email.\n\n## Current limitations
+## Client reviewer foundation
+
+Migration 0005 adds explicit, revocable client reviewer memberships. The authentication helper now separates staff, worker and client Access audiences. This is an identity boundary only: it does not yet expose client portal data or allow client approvals. Do not configure or expose a client portal until the membership-scoped API routes and cross-client isolation tests are implemented. Adding a membership is an agency action; it does not send an invitation email.
+
+## Current limitations
 
 - The current approval endpoint is agency-staff review. A separate client reviewer role and client-facing approval portal are not implemented yet.
 - Private R2 upload and authenticated file streaming are implemented, but no R2 bucket has been provisioned or bound in Preview. Asset URLs are not public or permanent.
