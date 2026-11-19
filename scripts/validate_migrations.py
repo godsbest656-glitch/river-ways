@@ -8,7 +8,7 @@ EXPECTED_FILES = [
     "0002_lead_pipeline_attribution.sql",
     "0003_lead_operations.sql",
     "0004_creative_studio.sql",
-    "0005_creative_client_reviewers.sql",
+    "0005_creative_client_reviewers.sql",\n    "0006_creative_client_review_activity.sql",
 ]
 
 files = sorted(MIGRATIONS.glob("*.sql"))
@@ -228,4 +228,4 @@ else:
 if db.execute("PRAGMA foreign_key_check").fetchall():
     raise SystemExit("Creative Studio schema contains foreign-key violations")
 
-print("Validated client-scoped Creative Studio tables, reviewer membership uniqueness, queue indexes, approval history and cross-client foreign-key isolation.")
+print("Validated client-scoped Creative Studio tables, reviewer membership uniqueness, queue indexes, agency approvals, separate client review/comments history and cross-client foreign-key isolation.")
