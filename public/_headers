@@ -12,3 +12,7 @@
 /api/studio/*
   Cache-Control: no-store
   X-Robots-Tag: noindex, nofollow
+
+/client-review*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
