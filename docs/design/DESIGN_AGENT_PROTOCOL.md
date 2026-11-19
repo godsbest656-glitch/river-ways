@@ -89,3 +89,14 @@ For ongoing work, use this sequence:
 7. Report completed actions, evidence, blockers, and untested items separately. Never describe a preview as production or claim a test passed without a current run.
 
 Do not create another prototype or parallel branch unless it answers a specific unresolved question that cannot be tested in the integrated implementation. Do not merge, deploy, or alter production infrastructure without explicit approval.
+
+## Controlled-language execution contract (ASD-STE100-inspired)
+
+Apply the shared task contract in the root AGENTS.md to every substantial design or implementation task. This is an adaptation inspired by ASD-STE100 Simplified Technical English. It is not a claim of formal compliance and does not replace the official standard.
+
+Before work, define the objective, source evidence, scope, boundaries, deliverables, acceptance criteria, verification method and report. Confirm the branch, starting commit and working-tree state. Inspect existing behavior before editing. Make the smallest complete change and preserve unrelated work.
+
+Use the status values NOT STARTED, IN PROGRESS, IMPLEMENTED, VERIFIED and BLOCKED. Use VERIFIED only when every acceptance criterion has been checked and its evidence is recorded. Mark checks that were not run as NOT RUN. Separate verified facts, recommendations, assumptions and open decisions.
+
+Keep technical instructions direct and specific. Define ambiguous terms and measurable outcomes. Keep public creative and brand writing expressive. The seven stages above remain the design workflow; this contract standardizes the task instructions and reports within those stages. It does not create a second workflow.
+
