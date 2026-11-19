@@ -110,3 +110,16 @@ Report:
 - commands/tests run and actual results
 - screenshots or preview evidence, if available
 - remaining blockers and owner decisions
+
+## ASD-STE100-inspired execution discipline
+
+Use the shared controlled-language task contract in the root AGENTS.md. This adapts selected ASD-STE100 principles for clear AI-agent instructions and implementation records. It does not claim formal compliance with ASD-STE100 and does not replace the official standard.
+
+For this mission, the orchestrator must define the objective, current evidence, permitted scope, hard boundaries, deliverables, acceptance criteria, verification steps and completion report before execution. Confirm the exact branch, starting commit and working-tree state. Inspect the current source. Preserve existing behavior and unrelated work. Make only the smallest complete change that meets a verified acceptance criterion.
+
+Every specialist finding must include the exact source path or other evidence reference, observation, severity, visitor/business impact, recommendation, regression risk, unknowns and tests not performed. Separate verified facts from recommendations and assumptions.
+
+Use these status values in the audit and backlog: NOT STARTED, IN PROGRESS, IMPLEMENTED, VERIFIED and BLOCKED. Use VERIFIED only after the acceptance criteria have been checked and evidence has been recorded. Mark checks that were not run as NOT RUN. A configured agent is not proof of discovery or invocation. A written test plan is not proof that a test passed.
+
+The completion report must include the objective, status, starting and ending commit, files changed, behavior preserved, agents actually invoked, delegation evidence, commands and checks actually run, results, checks not run, defects, limitations, blockers, owner decisions and next action. Keep technical instructions direct and specific. Keep public-facing creative writing expressive when appropriate.
+
