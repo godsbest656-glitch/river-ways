@@ -94,7 +94,7 @@ test('worker claims only project setup jobs and exits after one empty poll', asy
     log: () => {}
   });
   assert.equal(result.processed, 0);
-  assert.deepEqual(request.body.jobTypes, ['project_init', 'strategy', 'copy']);
+  assert.deepEqual(request.body.jobTypes, ['project_init', 'strategy', 'copy', 'concept', 'storyboard']);
   assert.equal(request.headers.get('CF-Access-Client-Id'), 'id');
   assert.equal(request.headers.get('CF-Access-Client-Secret'), 'secret');
 });
@@ -110,7 +110,7 @@ test('strategy and copy adapters create scoped, traceable draft artifacts only',
   const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-drafts-'));
   try {
     await prepareProject(job, { productionRoot: root });
-    for (const jobType of ['strategy', 'copy']) {
+    for (const jobType of ['strategy', 'copy', 'concept', 'storyboard']) {
       const result = await prepareDraftJob({ ...job, id: 'job-' + jobType + '-1234', job_type: jobType }, { productionRoot: root });
       assert.equal(result.status, 'draft-prepared');
       assert.equal(result.publishable, false);
