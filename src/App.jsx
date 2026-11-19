@@ -258,6 +258,7 @@ export default function App() {
             </div>
 
             <div className="hero-visual current-stage" role="group" aria-label="An interactive model of how River Ways turns market signals into business momentum" onPointerMove={moveCurrent} onPointerLeave={resetCurrent}>
+              <img className="current-stage-image" src="/assets/river-ways/hero-current.webp" alt="" aria-hidden="true" fetchPriority="high" decoding="async" />
               <div className="current-stage-grid" aria-hidden="true" />
               <div className="current-stage-river" aria-hidden="true">
                 <svg viewBox="0 0 660 520" preserveAspectRatio="none">
