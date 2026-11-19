@@ -44,6 +44,20 @@
           <span id="client-status" class="status">—</span>
         </div>
 
+        <section class="panel-section reviewer-management" aria-labelledby="reviewer-heading">
+          <div class="section-title">
+            <div><div class="section-kicker">CLIENT ACCESS</div><h3 id="reviewer-heading">Reviewers & approvals</h3></div>
+            <a class="button button-secondary" href="/client-review" target="_blank" rel="noopener">Open client portal ↗</a>
+          </div>
+          <p class="hint">Add a reviewer by email or revoke existing access. Membership is checked on every portal request; the separate Cloudflare Access client policy must also include the reviewer.</p>
+          <form id="reviewer-form" class="reviewer-form">
+            <label class="sr-only" for="reviewer-email">Reviewer email address</label>
+            <input id="reviewer-email" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="reviewer@company.com">
+            <button class="button button-primary" type="submit">Add reviewer</button>
+          </form>
+          <div id="reviewer-list" class="reviewer-list"><p class="muted">Select a client workspace to manage reviewers.</p></div>
+        </section>
+
         <div class="metrics" aria-label="Production counts">
           <div class="metric"><span>Projects</span><strong id="metric-projects">—</strong></div>
           <div class="metric"><span>Queued jobs</span><strong id="metric-queued">—</strong></div>
