@@ -26,7 +26,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 
 | Method | Route | Purpose |
 |---|---|---|
-| GET / POST | `/api/studio/clients` | List and create agency client workspaces. |
+| GET / POST | `/api/studio/clients` | List and create agency client workspaces. |\n| GET / POST | `/api/studio/clients/:clientId/reviewers` | List active/revoked reviewer memberships or add a normalized reviewer email. |\n| DELETE | `/api/studio/clients/:clientId/reviewers/:membershipId` | Revoke one reviewer within that client workspace without deleting its audit history. |
 | GET / POST | `/api/studio/projects` | List a client's projects and create a draft-brief project. |
 | GET / POST | `/api/studio/jobs` | List a client's jobs and queue a production task. |
 | POST | `/api/studio/worker/claim` | Atomically claim the oldest available queued job using the worker audience. |
@@ -39,7 +39,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 
 ## Client reviewer foundation
 
-Migration 0005 adds explicit, revocable client reviewer memberships. The authentication helper now separates staff, worker and client Access audiences. This is an identity boundary only: it does not yet expose client portal data or allow client approvals. Do not configure or expose a client portal until the membership-scoped API routes and cross-client isolation tests are implemented. Adding a membership is an agency action; it does not send an invitation email.
+Migration 0005 adds explicit, revocable client reviewer memberships. Staff can list, add and revoke memberships through the reviewer-management routes above. Email addresses are trimmed and lowercased; a reviewer can have one membership per client. Revocation is soft (status changes to `revoked`) so the audit trail and membership history remain available. These routes are staff-only and scope every mutation by both client and membership ID.\n\nThe authentication helper separates staff, worker and client Access audiences. Client portal data and client review actions are not yet exposed; client audience authentication alone does not grant access. The next implementation cycle must require an active membership match (client ID + normalized email) on every client portal request before any client data is returned. Adding a membership does not yet send an invitation email; the client must already be covered by the dedicated Cloudflare Access client application/policy.
 
 ## Current limitations
 
