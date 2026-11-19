@@ -437,7 +437,7 @@ async function handleClientPortal(request, env, actor, method, parts, url) {
     if (!ID.test(clientId)) return json(400, { ok: false, error: "client_id_required" });
     if (!await requireClientMembership(env, actor, clientId)) return json(403, { ok: false, error: "client_membership_required" });
     const { results = [] } = await env.LEADS_DB.prepare(
-      "SELECT id, client_id, slug, name, objective, status, brief_version, brief_json, created_at, updated_at FROM creative_projects WHERE client_id = ? ORDER BY updated_at DESC"
+      "SELECT id, client_id, slug, name, objective, status, brief_version, created_at, updated_at FROM creative_projects WHERE client_id = ? ORDER BY updated_at DESC"
     ).bind(clientId).all();
     return json(200, { ok: true, projects: results });
   }
