@@ -15,7 +15,7 @@ The API independently verifies the `Cf-Access-Jwt-Assertion` signature against t
 | `CF_ACCESS_TEAM_DOMAIN` | Cloudflare Access team domain, hostname only. |
 | `CF_ACCESS_AUD` | Access application audience tag for River Ways Studio staff. |
 | `STUDIO_ALLOWED_EMAILS` | Comma-separated exact staff email allowlist. |
-| `STUDIO_WORKER_AUD` | Separate Access audience tag for the private production worker service token. |\n| `STUDIO_CLIENT_AUD` | Separate Access audience tag for client reviewers. It must not be shared with staff or worker applications. |
+| `STUDIO_WORKER_AUD` | Separate Access audience tag for the private production worker service token.\n| `STUDIO_CLIENT_AUD` | Separate Access audience tag for client reviewers. It must not be shared with staff or worker applications. |
 
 Do not commit any Access secrets or credentials. The audience values are identifiers, not bearer secrets. Configure the Studio path policy in Cloudflare Access before enabling staff use. The API still rejects requests if the Access JWT is absent or invalid.
 
