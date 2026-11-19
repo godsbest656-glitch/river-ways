@@ -32,7 +32,7 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 - Cloudflare Access application/policies and Preview environment configuration.
 - Client-facing reviewer identity/approval portal; current approval route is staff-only.
 - Live worker integration tests against a configured Cloudflare Access service token, D1 database and private R2 bucket. Current worker tests are isolated/mocked; no live workstation has been connected.
-- Concept, storyboard, image, video, render, QA and delivery adapters. These must be implemented and tested individually before the worker is allowed to claim them.
+- Image, video, render, QA and delivery adapters. Concept and storyboard currently produce deterministic structural drafts only; they do not generate media or constitute approved creative.
 - Visual annotation, side-by-side revision comparison and client-facing reviewer portal; the current UI lists registered assets, provides authenticated previews and records agency review decisions.
 - End-to-end integration tests across browser, API, D1 and local worker. The worker currently has isolated unit/integration tests with a real local CLI scaffold, but not live Access/D1/R2 verification.
 - Live ComfyUI, GPU, model inference or real renderer verification.
@@ -41,10 +41,10 @@ D1 stores metadata and audit records, not media bytes. Media storage must be pri
 ## Next implementation order
 
 1. Connect and verify the local worker against an approved Preview environment; prove `project_init` end-to-end without touching production.
-2. Verify strategy and copy draft adapters in CI and against an approved Preview worker; then implement concept/storyboard adapters behind the same source and approval gates.
+2. Verify strategy, copy, concept and storyboard draft adapters in CI and against an approved Preview worker; then add visual revision comparison and client reviewer permissions.
 3. Add visual revision comparison and distinct client reviewer identity/approval permissions; keep agency and client approval as separate events.
 4. Add end-to-end tests across browser, Access JWT, D1, R2 and local worker.
-5. Implement concept, storyboard, image, video, render and QA adapters behind rights, model, hardware and human-approval gates.
+5. Implement image, video, render and QA adapters behind rights, model, hardware and human-approval gates.
 6. Configure publishing integrations and analytics only after platform credentials and explicit publishing approvals exist.
 
 ## Safeguards
@@ -98,3 +98,12 @@ No line above is considered complete solely because a placeholder, plan, mock, o
 - Outputs are stored per job under the client-scoped local project, marked draft/non-publishable, and refuse overwrites.
 - Unit tests cover output provenance, claim restrictions and cross-client scope rejection. CI is running for this change; passing status is not yet confirmed.
 - These adapters are deterministic scaffolding, not model-generated strategy/copy and not a completed campaign deliverable.
+
+
+## Concept and storyboard draft adapters (2026-11-19)
+
+- Added deterministic `concept` and `storyboard` worker handlers. The API allowlist and local poller now permit `project_init`, `strategy`, `copy`, `concept` and `storyboard` only.
+- Concept output provides three reviewable creative territories anchored to the saved brief's exact primary message. It does not invent product features, evidence, pricing, testimonials, endorsements or results.
+- Storyboard output creates a four-beat structural outline only for video/motion deliverables actually present in the brief. Evidence and CTA beats remain placeholders until verified product proof and approved conversion details are supplied.
+- Outputs remain draft-only, non-production and non-publishable; existing client/project scope validation, lease ownership, retry handling and no-overwrite behaviour remain in place.
+- Added adapter-level tests and extended worker tests for the two additional job types. Full repository CI is still required; no live Access/D1/R2 worker run is claimed.
