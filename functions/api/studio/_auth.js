@@ -37,8 +37,9 @@ async function loadKeys(teamDomain, fetchImpl) {
 
 export async function verifyAccessAssertion(assertion, env, { fetchImpl = fetch, now = Date.now() } = {}) {
   if (typeof assertion !== "string" || assertion.length > 12000) return null;
-  const teamDomain = String(env.CF_ACCESS_TEAM_DOMAIN || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
-  const expectedAudiences = [env.CF_ACCESS_AUD, env.STUDIO_WORKER_AUD].filter((value) => typeof value === "string" && value.trim());
+  const teamDomain = String(env.CF_ACCESS_TEAM_DOMAIN || "").trim().replace(/^https?:\\/\\//, "").replace(/\\/$/, "");
+  const expectedAudiences = [env.CF_ACCESS_AUD, env.STUDIO_WORKER_AUD, env.STUDIO_CLIENT_AUD]
+    .filter((value) => typeof value === "string" && value.trim());
   if (!teamDomain || expectedAudiences.length === 0) return null;
 
   const parts = assertion.split(".");
@@ -92,6 +93,18 @@ export async function requireStudioActor(request, env, { role = "staff", fetchIm
     return { actor: { id: String(claims.common_name || claims.email || "creative-worker"), role: "worker" } };
   }
 
+  if (role === "client") {
+    if (!env.STUDIO_CLIENT_AUD || !audiences.includes(env.STUDIO_CLIENT_AUD)) {
+      return { response: json(403, { ok: false, error: "client_access_required" }) };
+    }
+    const email = String(claims.email || "").trim().toLowerCase();
+    if (!email) return { response: json(403, { ok: false, error: "client_identity_required" }) };
+    return { actor: { id: email, email, role: "client_reviewer" } };
+  }
+
+  if (!env.CF_ACCESS_AUD || !audiences.includes(env.CF_ACCESS_AUD)) {
+    return { response: json(403, { ok: false, error: "staff_access_required" }) };
+  }
   const email = String(claims.email || "").trim().toLowerCase();
   const allowed = String(env.STUDIO_ALLOWED_EMAILS || "").split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
   if (!email || !allowed.includes(email)) return { response: json(403, { ok: false, error: "studio_access_denied" }) };
