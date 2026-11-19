@@ -143,6 +143,26 @@ membership_indexes = {
 if "idx_creative_client_memberships_email_status" not in membership_indexes:
     raise SystemExit("Missing client reviewer membership lookup index")
 
+creative_job_columns = {row[1] for row in db.execute("PRAGMA table_info(creative_jobs)")}
+required_job_columns = {"max_attempts", "heartbeat_at", "lease_expires_at", "last_error"}
+if not required_job_columns.issubset(creative_job_columns):
+    raise SystemExit(f"Missing worker lease columns: {sorted(required_job_columns - creative_job_columns)}")
+
+creative_indexes = {
+    row[1] for row in db.execute("PRAGMA index_list(creative_jobs)")
+}
+if "idx_creative_jobs_queue" not in creative_indexes:
+    raise SystemExit("Missing creative job queue index")
+
+db.execute(
+    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+    ("client-a", "client-a", "Client A", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
+    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+    ("client-b", "client-b", "Client B", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+
 db.execute(
     """INSERT INTO creative_client_memberships
        (id, client_id, email, role, status, invited_by, created_at, updated_at)
@@ -169,26 +189,6 @@ except sqlite3.IntegrityError:
     pass
 else:
     raise SystemExit("Duplicate client reviewer membership was accepted")
-
-creative_job_columns = {row[1] for row in db.execute("PRAGMA table_info(creative_jobs)")}
-required_job_columns = {"max_attempts", "heartbeat_at", "lease_expires_at", "last_error"}
-if not required_job_columns.issubset(creative_job_columns):
-    raise SystemExit(f"Missing worker lease columns: {sorted(required_job_columns - creative_job_columns)}")
-
-creative_indexes = {
-    row[1] for row in db.execute("PRAGMA index_list(creative_jobs)")
-}
-if "idx_creative_jobs_queue" not in creative_indexes:
-    raise SystemExit("Missing creative job queue index")
-
-db.execute(
-    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-    ("client-a", "client-a", "Client A", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
-)
-db.execute(
-    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-    ("client-b", "client-b", "Client B", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
-)
 db.execute(
     """INSERT INTO creative_projects
        (id, client_id, slug, name, objective, brief_json, created_at, updated_at)
