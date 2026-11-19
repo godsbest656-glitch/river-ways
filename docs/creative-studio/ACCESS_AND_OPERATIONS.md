@@ -34,7 +34,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 | GET | `/api/studio/portal/assets?clientId=:id` | List client asset metadata within the authenticated reviewer's membership. |
 | GET | `/api/studio/portal/assets/:id/file` | Stream a private asset only after resolving its client and checking active membership. |
 | GET / POST | `/api/studio/portal/assets/:id/comments` | Read or add tenant-scoped client comments. |
-| POST | `/api/studio/portal/assets/:id/review` | Append a client decision against the exact asset SHA-256 without changing agency approval state. |
+| GET | `/api/studio/portal/assets/:id/review` | Read tenant-scoped client review history for one asset. |\n| POST | `/api/studio/portal/assets/:id/review` | Append a client decision against the exact asset SHA-256 without changing agency approval state. |
 | GET / POST | `/api/studio/projects` | List a client's projects and create a draft-brief project. |
 | GET / POST | `/api/studio/jobs` | List a client's jobs and queue a production task. |
 | POST | `/api/studio/worker/claim` | Atomically claim the oldest available queued job using the worker audience. |
@@ -49,7 +49,7 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 
 Migration 0005 adds explicit, revocable client reviewer memberships. Staff can list, add and revoke memberships through the reviewer-management routes above. Email addresses are trimmed and lowercased; a reviewer can have one membership per client. Revocation is soft (status changes to `revoked`) so the audit trail and membership history remain available. These routes are staff-only and scope every mutation by both client and membership ID.
 
-The authentication helper separates staff, worker and client Access audiences. Client portal routes require the dedicated client audience and an active membership match (client ID + normalized email) on every request. The portal can list assigned clients, projects and assets; stream private asset files; and add/read comments. Client review decisions are append-only rows in `creative_client_review_events`, bound to the exact asset SHA-256. They do not change the agency-controlled `creative_assets.status` or agency approval events. Migration 0006 adds separate client review and comment history with composite tenant foreign keys. Adding a membership does not yet send an invitation email; the client must already be covered by the dedicated Cloudflare Access client application/policy.
+The authentication helper separates staff, worker and client Access audiences. Client portal routes require the dedicated client audience and an active membership match (client ID + normalized email) on every request. The portal UI is served at `/client-review` through a Cloudflare Pages rewrite to the app shell. Configure a dedicated Cloudflare Access application/policy for `/client-review*` and `/api/studio/portal/*` using `STUDIO_CLIENT_AUD`; do not include staff or worker paths in that audience. The portal can list assigned clients, minimal project metadata and assets; stream private asset files; add/read comments; and read review history. Client review decisions are append-only rows in `creative_client_review_events`, bound to the exact asset SHA-256. They do not change the agency-controlled `creative_assets.status` or agency approval events. Migration 0006 adds separate client review and comment history with composite tenant foreign keys. Adding a membership does not yet send an invitation email; the client must already be covered by the dedicated Cloudflare Access client application/policy.
 
 ## Current limitations
 
@@ -57,7 +57,7 @@ The authentication helper separates staff, worker and client Access audiences. C
 - Private R2 upload and authenticated file streaming are implemented, but no R2 bucket has been provisioned or bound in Preview. Asset URLs are not public or permanent.
 - Worker claim, five-minute renewable leases, stale-claim recovery and bounded retry limits are implemented in code; live service-token/worker behavior is not yet verified.
 - The local worker daemon is implemented for the `project_init` task only. It claims typed jobs, renews leases, runs the existing CLI without a shell, writes an isolated local project scaffold and reports completion/failure. It does not generate campaign copy, images or video.
-- The Studio UI is implemented for client/project/job management and asset preview/agency review.
+- The staff Studio interface and separate client review portal are distinct surfaces. The client portal currently supports workspace selection, asset preview, comments, review history, approval and revision requests. It is not an agency production approval, and the route must remain behind the dedicated client Cloudflare Access policy.
 - The API has no public signup and no client can list or access another client's records without an authorised staff identity. Tenant relationship constraints are enforced in D1; endpoint queries must continue to scope by `client_id`.
 
 ## Local worker setup (not yet run against a live Access application)
@@ -74,8 +74,8 @@ From `creative-production/`, run `npm run worker -- --once` for a single poll or
 ## Required Preview setup (not performed)
 
 1. Create/identify a dedicated Preview D1 database; do not apply migration 0004 to production.
-2. Configure the `LEADS_DB` Preview binding and apply migrations 0001–0005 in order after schema inspection.
-3. Create Cloudflare Access applications/policies for the Studio route and API; configure staff identity allowlist and separate worker audience.
+2. Configure the `LEADS_DB` Preview binding and apply migrations 0001–0006 in order after schema inspection.
+3. Create separate Cloudflare Access applications/policies for staff Studio, client reviewer (`/client-review*` and `/api/studio/portal/*`) and worker routes; configure the staff identity allowlist and distinct audiences.
 4. Provision a private R2 bucket and bind it as `CREATIVE_ASSETS`; configure the environment values above in Preview only.
 5. Verify unauthenticated access is rejected and an allowlisted staff identity can create a client/project/job.
 6. Verify a worker service token can claim and complete only `project_init` jobs; other queued job types must remain untouched.
