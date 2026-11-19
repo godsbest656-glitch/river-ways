@@ -54,7 +54,7 @@ The worker runs on a River Ways-controlled workstation, not in Cloudflare Pages.
 - `RIVER_WAYS_PRODUCTION_ROOT`: optional local output root; defaults to the repository's `production/` directory.
 - `STUDIO_WORKER_POLL_MS`: optional polling interval, clamped to 1–60 seconds.
 
-From `creative-production/`, run `npm run worker -- --once` for a single poll or `npm run worker` to keep polling. The current worker claims only `project_init` jobs. It deliberately does not execute strategy, copy, image, video or render jobs until their task adapters, approvals and runtime gates are implemented. A project setup job creates folders and a draft brief only; it does not create marketing assets or approve production.
+From `creative-production/`, run `npm run worker -- --once` for a single poll or `npm run worker` to keep polling. The worker currently claims `project_init`, `strategy`, `copy`, `concept` and `storyboard` jobs. Strategy, copy, concept and storyboard are deterministic, source-traceable draft adapters; they are not AI inference, generated media or approved campaign deliverables. Image, video, render, QA and delivery remain disabled until their individual adapters, rights checks and runtime gates are implemented. A project setup job creates folders and a draft brief only; it does not create marketing assets or approve production.
 
 ## Required Preview setup (not performed)
 
