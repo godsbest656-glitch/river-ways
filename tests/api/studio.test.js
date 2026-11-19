@@ -294,6 +294,12 @@ test("client → project → job → worker claim → asset metadata → approva
   }, e);
   assert.equal(completed.status, 200);
   assert.equal(db.jobs.get(job.id).status, "completed");
+
+  const conceptClaim = await send("worker/claim", { method: "POST", token: worker, body: { jobTypes: ["concept"] } }, e);
+  assert.equal(conceptClaim.status, 200);
+  assert.equal((await conceptClaim.json()).job.id, deferredJob.id);
+  const deniedMediaClaim = await send("worker/claim", { method: "POST", token: worker, body: { jobTypes: ["image"] } }, e);
+  assert.equal(deniedMediaClaim.status, 422);
   assert.ok(db.audits.length >= 4);
 });
 
