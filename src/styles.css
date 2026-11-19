@@ -492,3 +492,24 @@ h3 { letter-spacing: -.035em; }
   .hero-copy-centered .hero-note { margin-top: 22px; }
   .current-stage { min-height: 430px; }
 }
+
+
+/* Original River Ways artwork behind the existing interactive hero field. */
+.current-stage { position: relative; }
+.current-stage-image {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 54%;
+  opacity: .76;
+  filter: saturate(.88) contrast(1.06);
+  pointer-events: none;
+}
+.current-stage-grid { opacity: .32; }
+.current-stage-river { opacity: .62; }
+@media (max-width: 600px) {
+  .current-stage-image { object-position: 52% center; opacity: .68; }
+}
