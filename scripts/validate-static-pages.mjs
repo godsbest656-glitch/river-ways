@@ -120,8 +120,9 @@ if (!(await exists(redirectsPath))) {
   failures.push("Missing Cloudflare Pages rewrite for the private client review SPA route");
 } else {
   const redirects = await fs.readFile(redirectsPath, "utf8");
-  if (!/^\\/client-review\\s+\\/index\\.html\\s+200\\s*$/m.test(redirects) ||
-      !/^\\/client-review\\/\\*\\s+\\/index\\.html\\s+200\\s*$/m.test(redirects)) {
+  const redirectRules = new Set(redirects.split(/\r?\n/).map((line) => line.trim()));
+  if (!redirectRules.has("/client-review /index.html 200") ||
+      !redirectRules.has("/client-review/* /index.html 200")) {
     failures.push("Client review route must rewrite to the app shell without changing its URL");
   }
 }
