@@ -33,6 +33,7 @@ function AssetCard({ asset, onRefresh }) {
   const [preview, setPreview] = useState('');
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -40,8 +41,12 @@ function AssetCard({ asset, onRefresh }) {
 
   const loadComments = useCallback(async () => {
     try {
-      const result = await request('/assets/' + encodeURIComponent(asset.id) + '/comments');
-      setComments(result.comments || []);
+      const [commentResult, reviewResult] = await Promise.all([
+        request('/assets/' + encodeURIComponent(asset.id) + '/comments'),
+        request('/assets/' + encodeURIComponent(asset.id) + '/review')
+      ]);
+      setComments(commentResult.comments || []);
+      setReviews(reviewResult.reviews || []);
     } catch (err) {
       setError(err.message);
     }
@@ -49,22 +54,22 @@ function AssetCard({ asset, onRefresh }) {
 
   useEffect(() => {
     let active = true;
+    let objectUrl = '';
     fetch(API + '/assets/' + encodeURIComponent(asset.id) + '/file', { credentials: 'same-origin' })
       .then(async (response) => {
         if (!response.ok) throw new Error('Preview is unavailable for this asset.');
         return response.blob();
       })
       .then((blob) => {
-        if (active) setPreview(URL.createObjectURL(blob));
+        objectUrl = URL.createObjectURL(blob);
+        if (active) setPreview(objectUrl);
+        else URL.revokeObjectURL(objectUrl);
       })
       .catch((err) => { if (active) setError(err.message); });
     loadComments();
     return () => {
       active = false;
-      setPreview((current) => {
-        if (current) URL.revokeObjectURL(current);
-        return '';
-      });
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [asset.id, loadComments]);
 
@@ -117,6 +122,7 @@ function AssetCard({ asset, onRefresh }) {
         </div>
         <div className="crp-comments">
           <h4><MessageSquare size={16} /> Conversation ({comments.length})</h4>
+          {reviews.length > 0 && <div className="crp-review-history"><strong>Review history</strong>{reviews.map((item) => <div className="crp-review-event" key={item.id}><span>{item.decision.replaceAll('_', ' ')}</span><p>{item.notes || 'No additional notes.'}</p><small>{item.reviewer_email} · {formatDate(item.created_at)}</small></div>)}</div>}
           {comments.length ? comments.map((item) => <div className="crp-comment" key={item.id}><p>{item.comment}</p><small>{item.reviewer_email} · {formatDate(item.created_at)}</small></div>) : <p className="crp-muted">No comments on this asset yet.</p>}
           <form onSubmit={submitComment}>
             <label className="crp-label" htmlFor={'comment-' + asset.id}>Add a comment</label>
