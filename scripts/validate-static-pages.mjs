@@ -115,6 +115,18 @@ else {
   if (!notFound.includes('content="noindex,follow"')) failures.push("404 fallback must be noindex");
 }
 
+const headersPath = path.join(dist, "_headers");
+if (!(await exists(headersPath))) {
+  failures.push("Missing Cloudflare Pages security headers");
+} else {
+  const headers = await fs.readFile(headersPath, "utf8");
+  if (!/\\/client-review\\*/.test(headers) ||
+      !/X-Robots-Tag:\\s*noindex,\\s*nofollow/i.test(headers) ||
+      !/Cache-Control:\\s*no-store/i.test(headers)) {
+    failures.push("Client review portal must be noindex and non-cacheable");
+  }
+}
+
 const redirectsPath = path.join(dist, "_redirects");
 if (!(await exists(redirectsPath))) {
   failures.push("Missing Cloudflare Pages rewrite for the private client review SPA route");
