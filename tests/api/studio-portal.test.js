@@ -53,6 +53,12 @@ function makeDb() {
         if (sql.includes("FROM creative_client_comments")) {
           return { results: comments.filter((item) => item.client_id === values[0] && item.asset_id === values[1]) };
         }
+        if (sql.includes("FROM creative_client_review_events")) {
+          return { results: reviews.filter((item) => item[1] === values[0] && item[3] === values[1]).map((item) => ({
+            id: item[0], client_id: item[1], project_id: item[2], asset_id: item[3],
+            reviewer_email: item[4], decision: item[5], notes: item[6], asset_sha256: item[7], created_at: item[8]
+          })) };
+        }
         return { results: [] };
       },
       async run() {
@@ -153,6 +159,11 @@ test("client review is append-only, bound to the exact asset hash and separate f
   });
   assert.equal(accepted.status, 201);
   assert.equal(db.reviews.length, 1);
+  const history = await send(db, "portal/assets/" + assetA + "/review", { token });
+  assert.equal(history.status, 200);
+  const reviewRows = (await history.json()).reviews;
+  assert.equal(reviewRows.length, 1);
+  assert.equal(reviewRows[0].decision, "changes_requested");
   assert.equal(db.assets.get(assetA).status, "generated");
   assert.equal(db.audits.length, 1);
 });
