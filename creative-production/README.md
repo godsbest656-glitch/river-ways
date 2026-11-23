@@ -1,6 +1,6 @@
 # River Ways Creative Production Engine
 
-**Status:** isolated implementation foundation. Strategy supports an optional, explicitly configured OpenAI-compatible model route; no provider credentials or live inference are configured or verified. Renderer execution remains gated pending local hardware and exact-version verification.
+**Status:** isolated implementation foundation. Strategy and channel copy support separate, optional, explicitly configured OpenAI-compatible model routes; no provider credentials or live inference are configured or verified. Renderer execution remains gated pending local hardware and exact-version verification.
 
 This module establishes a local-first production workspace for River Ways. It is deliberately separate from the public Cloudflare Pages runtime: video models, GPU workloads, media files and rendering belong on an authorised workstation or private production machine, not in a public website request handler.
 
@@ -34,7 +34,8 @@ The render adapters run local CLIs without a shell, require explicit approval, r
 
 - No model weights are downloaded or bundled.
 - No model inference is invoked by this CLI.
-- Strategy, copy, concept, storyboard, image, video, render, QA and delivery queue types are not yet executable by the Studio worker; they remain visibly marked as adapter-pending in the Studio task selector.
+- Concept, storyboard, image, video, render, QA and delivery queue types are not yet executable by the Studio worker; they remain visibly marked as adapter-pending in the Studio task selector.
+- Strategy and copy model routes are implemented but remain inactive until an operator configures separate routes and secret environment variables. No real provider request has been verified.
 - A loopback-only ComfyUI API adapter is implemented and unit-tested against mocked API responses; no live ComfyUI server or model inference has been verified. No model-specific workflow adapter is enabled.
 - No HyperFrames or Remotion render is claimed as tested.
 - No remote GPU service, public upload endpoint, client portal, automated publishing or unattended client delivery is enabled.
