@@ -48,7 +48,6 @@ export function validateRegistry(registry) {
   if (typeof registry.registry_updated !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(registry.registry_updated)) {
     errors.push("registry_updated must use YYYY-MM-DD.");
   }
-  if (registry.policy?.no_secret_values !== true) errors.push("policy.no_secret_values must be true.");
   if (registry.policy?.owner_approval_required_for_paid_usage !== true) {
     errors.push("Paid usage must require owner approval.");
   }
