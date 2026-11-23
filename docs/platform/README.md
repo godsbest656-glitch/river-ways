@@ -24,6 +24,7 @@ A document describing a planned capability does not prove it exists. Use the sta
 - [Reusable component architecture](./component-architecture.md)
 - [Engineering resource registry](./ENGINEERING_RESOURCE_REGISTRY.md)
 - [Integration adoption register](./INTEGRATION_ADOPTION_REGISTER.md) — repository verification, adoption decisions and gates.
+- [Ecosystem branch reconciliation](./ECOSYSTEM_BRANCH_RECONCILIATION_2026-11-23.md) — verified branches, open PRs and integration boundaries.
 - [Adobe ecosystem register](../integrations/ADOBE_ECOSYSTEM_REGISTER.md) — official Adobe extension paths and community MCP/SDK candidates.
 - [Repository reconciliation](./REPOSITORY_RECONCILIATION_2026-11-10.md)
 
