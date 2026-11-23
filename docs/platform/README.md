@@ -14,6 +14,7 @@ A document describing a planned capability does not prove it exists. Use the sta
 
 ## Documents
 
+- [Ecosystem master architecture](./ECOSYSTEM_MASTER_ARCHITECTURE.md) — complete agency, workforce, application, data and integration architecture.
 - [Product requirements](./PRD.md)
 - [Architecture](./architecture.md)
 - [Binding product and engineering rules](./rules.md)
@@ -22,6 +23,8 @@ A document describing a planned capability does not prove it exists. Use the sta
 - [Project memory and decision register](./Memory.md)
 - [Reusable component architecture](./component-architecture.md)
 - [Engineering resource registry](./ENGINEERING_RESOURCE_REGISTRY.md)
+- [Integration adoption register](./INTEGRATION_ADOPTION_REGISTER.md) — repository verification, adoption decisions and gates.
+- [Adobe ecosystem register](../integrations/ADOBE_ECOSYSTEM_REGISTER.md) — official Adobe extension paths and community MCP/SDK candidates.
 - [Repository reconciliation](./REPOSITORY_RECONCILIATION_2026-11-10.md)
 
 ## Operating rule
