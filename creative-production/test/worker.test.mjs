@@ -127,3 +127,53 @@ test('strategy and copy adapters create scoped, traceable draft artifacts only',
     await assert.rejects(prepareDraftJob({ ...job, id: 'job-strategy-1234', job_type: 'strategy', client_id: 'other-client-123' }, { productionRoot: root }), /scope does not match/);
   } finally { await rm(root, { recursive: true, force: true }); }
 });
+
+test('strategy worker uses the explicit model route and records model provenance', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-model-strategy-'));
+  try {
+    await prepareProject(job, { productionRoot: root });
+    const env = {
+      STUDIO_MODEL_ROUTES_JSON: JSON.stringify({
+        strategy: {
+          provider: 'openai-compatible',
+          baseUrl: 'https://api.example.test/v1',
+          model: 'strategy-test-v1',
+          apiKeyEnv: 'STRATEGY_TEST_KEY'
+        }
+      }),
+      STRATEGY_TEST_KEY: 'test-secret'
+    };
+    const model = {
+      positioning: 'A clear operational visibility proposition.',
+      audienceSegments: ['Owners seeking operational clarity'],
+      channelStrategy: [{
+        channel: 'LinkedIn', role: 'Decision-maker education',
+        action: 'Publish evidence-led explainers', metric: 'Qualified demo requests'
+      }],
+      measurementPlan: ['Track qualified demo requests'],
+      risks: ['Audience fit needs validation'],
+      assumptions: ['A demo route exists']
+    };
+    const result = await prepareDraftJob(
+      { ...job, id: 'job-model-strategy-1234', job_type: 'strategy' },
+      {
+        productionRoot: root,
+        env,
+        fetchImpl: async (url, options) => {
+          assert.equal(String(url), 'https://api.example.test/v1/chat/completions');
+          assert.equal(options.headers.authorization, 'Bearer test-secret');
+          return new Response(JSON.stringify({
+            choices: [{ message: { content: JSON.stringify(model) } }]
+          }), { status: 200 });
+        }
+      }
+    );
+    assert.equal(result.generatedBy, 'configured-model-route');
+    const artifact = JSON.parse(await readFile(result.localArtifactPath, 'utf8'));
+    assert.equal(artifact.provenance.model, 'strategy-test-v1');
+    assert.equal(artifact.status, 'draft');
+    assert.equal(result.publishable, false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
