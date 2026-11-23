@@ -168,7 +168,7 @@ export async function runWorker({
       method: 'POST', body: { jobTypes: ['project_init', 'strategy', 'copy'] }
     }, fetchImpl);
     if (claim.job) {
-      log('Claimed project setup job ' + claim.job.id);
+      log('Claimed ' + claim.job.job_type + ' job ' + claim.job.id);
       const result = await processClaimedJob(claim.job, config, { fetchImpl, log });
       processed += 1;
       log('Job ' + result.jobId + ': ' + result.status);
