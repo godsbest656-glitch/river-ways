@@ -31,4 +31,6 @@ A document describing a planned capability does not prove it exists. Use the sta
 
 ## Operating rule
 
+Run `npm run validate:integrations` after changes to `integrations/registry.json`. The registry contains source and adoption metadata only; it must never contain credentials. The registry validator is included in the platform regression tests.
+
 Preserve existing website and operational work. Build the smallest useful, testable slice. Do not introduce a new service merely because it appears in the resource registry. No production deployment, DNS change, paid service, paid API, paid model route or client-data migration is authorized by these documents.
