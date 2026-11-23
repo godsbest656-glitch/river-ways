@@ -152,3 +152,14 @@ See [MODEL_INSTALLATION.md](./MODEL_INSTALLATION.md) for per-model hardware/lice
 The authenticated local worker can now claim `project_init`, `strategy` and `copy` jobs. Strategy and copy adapters are deterministic brief-to-document transforms, not AI inference. They write traceable JSON drafts under the client-scoped project `jobs/<job-id>/` directory and refuse to run unless the local project metadata matches the claimed client and project IDs.
 
 The strategy draft carries the saved objective, audience, market, platforms and deliverables plus explicit approval gaps. The copy foundation carries the supplied primary message and platform list, but intentionally leaves feature claims, proof points, supporting pillars and calls to action empty until verified inputs are supplied. Both outputs remain non-publishable drafts. Image, video, rendering, QA, delivery and publishing are not unlocked by these adapters.
+
+
+## Local rendering CLI
+
+HyperFrames rendering is available through the explicit approval-gated CLI after installing the local renderer dependencies:
+
+```bash
+npm run render -- --project <project-directory> --renderer hyperframes --approved
+```
+
+For Remotion, supply `--entry` and `--composition-id`, and also pass `--license-acknowledged --free-license-eligible` after confirming the current licence terms and eligibility. The CLI refuses to overwrite an existing output. A successful CLI invocation is not proof that a renderer, GPU, model or client asset has been configured or approved for production.
