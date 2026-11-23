@@ -7,7 +7,7 @@ This module establishes a local-first production workspace for River Ways. It is
 ## What is implemented
 
 - A dependency-free Node.js CLI to validate a campaign brief and initialise a structured production project, including a SHAPED CURRENT motion starter composition.
-- A local Studio worker that securely claims `project_init`, `strategy` and `copy` jobs, validates the saved draft brief, creates client-isolated local artifacts and reports completion/failure to the River Ways Studio API.\n- An optional strategy-only OpenAI-compatible adapter. It requires an explicit provider, model, HTTPS base URL and API-key environment-variable route; it validates structured output and records model provenance. No default model or silent fallback is used after a configured provider fails.
+- A local Studio worker that securely claims `project_init`, `strategy`, `copy`, `concept` and `storyboard` jobs, validates the saved draft brief, creates client-isolated local artifacts and reports completion/failure to the River Ways Studio API.
 - Explicit draft/approved/rejected brief state. Initialising a project never implies client approval.
 - Separate generated, approved and rejected asset folders; separate HyperFrames and Remotion composition folders.
 - A doctor command that reports OS, CPU, total/free RAM, free disk, NVIDIA GPU model/VRAM/driver, CUDA compiler, Python, FFmpeg and ffprobe.
