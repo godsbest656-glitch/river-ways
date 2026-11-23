@@ -52,10 +52,10 @@ test("copy adapter is inactive without its own explicit route", async () => {
 });
 
 test("copy route requires explicit model, public HTTPS endpoint and secret env", async () => {
-  assert.throws(() => generateCopyDraft(brief, { env: {
+  await assert.rejects(generateCopyDraft(brief, { env: {
     STUDIO_MODEL_ROUTES_JSON: JSON.stringify({ copy: { provider: "other" } })
   } }), /Unsupported copy model provider/);
-  assert.throws(() => generateCopyDraft(brief, { env: {
+  await assert.rejects(generateCopyDraft(brief, { env: {
     STUDIO_MODEL_ROUTES_JSON: JSON.stringify({ copy: {
       provider: "openai-compatible", model: "m", baseUrl: "http://localhost", apiKeyEnv: "COPY_TEST_KEY"
     } }), COPY_TEST_KEY: "secret"
