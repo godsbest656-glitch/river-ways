@@ -114,7 +114,7 @@ export async function prepareProject(job, {
 }
 
 export async function prepareDraftJob(job, { productionRoot, env = process.env, fetchImpl = fetch } = {}) {
-  if (!['strategy', 'copy'].includes(job?.job_type)) throw new Error('Unsupported draft job type: ' + String(job?.job_type));
+  if (!['strategy', 'copy', 'concept', 'storyboard'].includes(job?.job_type)) throw new Error('Unsupported draft job type: ' + String(job?.job_type));
   if (!job.project?.brief || !job.project?.slug || !job.client_id || !job.project_id || !job.id) throw new Error('Claimed job is missing its scoped project brief');
   const validation = validateBrief(job.project.brief);
   if (!validation.valid) throw new Error('Project brief is invalid: ' + validation.errors.join('; '));
@@ -124,7 +124,7 @@ export async function prepareDraftJob(job, { productionRoot, env = process.env, 
   if (metadata.source?.studioClientId !== job.client_id || metadata.source?.studioProjectId !== job.project_id) throw new Error('Local project scope does not match claimed job');
   const modelDraft = job.job_type === 'strategy'
     ? await generateStrategyDraft(job.project.brief, { env, fetchImpl })
-    : await generateCopyDraft(job.project.brief, { env, fetchImpl });
+    : job.job_type === 'copy' ? await generateCopyDraft(job.project.brief, { env, fetchImpl }) : null;
   const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
   const jobRoot = path.join(target, 'jobs', job.id);
   await mkdir(jobRoot, { recursive: true });
@@ -170,7 +170,7 @@ export async function runWorker({
   let processed = 0;
   while (!signal?.aborted) {
     const claim = await apiRequest(config, 'worker/claim', {
-      method: 'POST', body: { jobTypes: ['project_init', 'strategy', 'copy'] }
+      method: 'POST', body: { jobTypes: ['project_init', 'strategy', 'copy', 'concept', 'storyboard'] }
     }, fetchImpl);
     if (claim.job) {
       log('Claimed ' + claim.job.job_type + ' job ' + claim.job.id);
