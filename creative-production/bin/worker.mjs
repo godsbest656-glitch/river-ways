@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { slugify, validateBrief } from './creative.mjs';
 import { prepareDraftArtifact } from './draft-adapters.mjs';
 import { generateStrategyDraft } from './model-strategy-adapter.mjs';
+import { generateCopyDraft } from './model-copy-adapter.mjs';
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(DIR, '../..');
@@ -123,7 +124,8 @@ export async function prepareDraftJob(job, { productionRoot, env = process.env, 
   if (metadata.source?.studioClientId !== job.client_id || metadata.source?.studioProjectId !== job.project_id) throw new Error('Local project scope does not match claimed job');
   const modelDraft = job.job_type === 'strategy'
     ? await generateStrategyDraft(job.project.brief, { env, fetchImpl })
-    : null;
+    : await generateCopyDraft(job.project.brief, { env, fetchImpl });
+  const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
   const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
   const jobRoot = path.join(target, 'jobs', job.id);
   await mkdir(jobRoot, { recursive: true });
