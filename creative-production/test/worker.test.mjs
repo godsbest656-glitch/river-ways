@@ -252,6 +252,9 @@ test('concept and storyboard jobs produce structured draft-only creative plans',
         assert.equal(artifact.scenes.length, 6);
         assert.ok(artifact.scenes.every(scene => scene.generationStatus === 'blocked-pending-approval'));
         assert.equal(artifact.audio.rightsStatus, 'not-reviewed');
+        assert.equal(artifact.productionHandoff.artifactType, 'creative-production-handoff');
+        assert.equal(artifact.productionHandoff.shots.length, 6);
+        assert.equal(artifact.productionHandoff.releaseGate.generationAllowed, false);
       }
     }
   } finally {
