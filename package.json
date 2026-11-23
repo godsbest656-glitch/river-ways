@@ -18,7 +18,8 @@
     "test:lighthouse": "lhci autorun",
     "test:platform": "node --test tests/platform/*.test.js",
     "test:creative": "node --test creative-production/test/*.test.mjs",
-    "test:studio": "node --test tests/api/studio.test.js"
+    "test:studio": "node --test tests/api/studio.test.js",
+    "validate:integrations": "node scripts/validate-integration-registry.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
