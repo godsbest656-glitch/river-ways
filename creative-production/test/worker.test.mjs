@@ -94,7 +94,7 @@ test('worker claims only project setup jobs and exits after one empty poll', asy
     log: () => {}
   });
   assert.equal(result.processed, 0);
-  assert.deepEqual(request.body.jobTypes, ['project_init', 'strategy', 'copy']);
+  assert.deepEqual(request.body.jobTypes, ['project_init', 'strategy', 'copy', 'concept', 'storyboard']);
   assert.equal(request.headers.get('CF-Access-Client-Id'), 'id');
   assert.equal(request.headers.get('CF-Access-Client-Secret'), 'secret');
 });
@@ -110,7 +110,7 @@ test('strategy and copy adapters create scoped, traceable draft artifacts only',
   const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-drafts-'));
   try {
     await prepareProject(job, { productionRoot: root });
-    for (const jobType of ['strategy', 'copy']) {
+    for (const jobType of ['strategy', 'copy', 'concept', 'storyboard']) {
       const result = await prepareDraftJob({ ...job, id: 'job-' + jobType + '-1234', job_type: jobType }, { productionRoot: root });
       assert.equal(result.status, 'draft-prepared');
       assert.equal(result.publishable, false);
@@ -226,6 +226,34 @@ test('copy worker uses only its separate explicit model route and writes a revie
     assert.equal(artifact.artifactType, 'channel-copy-draft');
     assert.equal(artifact.provenance.model, 'copy-test-v1');
     assert.equal(artifact.status, 'draft');
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+
+test('concept and storyboard jobs produce structured draft-only creative plans', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-creative-plans-'));
+  try {
+    await prepareProject(job, { productionRoot: root });
+    for (const jobType of ['concept', 'storyboard']) {
+      const result = await prepareDraftJob(
+        { ...job, id: 'job-' + jobType + '-5678', job_type: jobType },
+        { productionRoot: root, env: {} }
+      );
+      assert.equal(result.status, 'draft-prepared');
+      assert.equal(result.publishable, false);
+      const artifact = JSON.parse(await readFile(result.localArtifactPath, 'utf8'));
+      assert.equal(artifact.status, 'draft');
+      if (jobType === 'concept') {
+        assert.equal(artifact.concepts.length, 3);
+        assert.equal(artifact.selectionRequired, true);
+      } else {
+        assert.equal(artifact.scenes.length, 6);
+        assert.ok(artifact.scenes.every(scene => scene.generationStatus === 'blocked-pending-approval'));
+        assert.equal(artifact.audio.rightsStatus, 'not-reviewed');
+      }
+    }
   } finally {
     await rm(root, { recursive: true, force: true });
   }
