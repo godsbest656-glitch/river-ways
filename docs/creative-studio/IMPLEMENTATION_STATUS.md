@@ -19,11 +19,11 @@
 - Added private R2 upload and authenticated asset streaming endpoints. Uploads are size-limited, content-type allowlisted and hashed server-side; registration verifies the stored object metadata matches the worker/client/project/job and SHA-256.
 - Added an internal `/studio/` workspace UI for client workspaces, draft projects, job queue, production status, private asset previews and agency review. It is noindex/no-store.
 - Added a local worker daemon in `creative-production/bin/worker.mjs` with Cloudflare Access service-token authentication, explicit HTTPS API target, queue polling, heartbeats, bounded lease-aware execution, completion/failure reporting and client-isolated local project directories.
-- The worker/API claim allowlist now includes `project_init`, `strategy` and `copy`. Strategy and copy are deterministic, source-traceable brief transforms that write non-publishable JSON drafts; they are not AI inference and leave unsupported claims/proof/CTAs empty.
+- The worker/API claim allowlist includes `project_init`, `strategy` and `copy`. Copy remains a deterministic, source-traceable brief transform. Strategy now has an opt-in OpenAI-compatible provider adapter with explicit model routing, secret-by-environment-variable handling, structured-output validation, bounded output fields and provenance. No provider key or live inference is configured; the deterministic strategy adapter remains the no-route behavior.
 
 ## Architecture boundary
 
-The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API, internal Studio UI and local worker daemon are present in code. The worker claims `project_init`, `strategy` and `copy`. Project setup creates a draft local scaffold. Strategy and copy produce deterministic, source-traceable, non-publishable JSON drafts; they are not provider-backed model inference. The worker does not claim concept, storyboard, image, video, render, QA or delivery jobs.
+The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API, internal Studio UI and local worker daemon are present in code. The worker claims `project_init`, `strategy` and `copy`. Project setup creates a draft local scaffold. Copy produces a deterministic, source-traceable, non-publishable JSON draft. Strategy uses a deterministic adapter unless an explicit `STUDIO_MODEL_ROUTES_JSON` strategy route is configured. The optional route supports an OpenAI-compatible HTTPS endpoint, requires an explicit model ID and separately supplied API-key environment variable, validates structured output and records provider/model provenance. A configured provider failure fails the job; it does not silently fall back. No provider credentials or live inference have been configured or verified. The worker does not claim concept, storyboard, image, video, render, QA or delivery jobs.
 
 D1 stores metadata and audit records, not media bytes. Media storage must be private and client-scoped. A client must not be able to access another client's brief, job, asset or approval record.
 
@@ -107,3 +107,14 @@ No line above is considered complete solely because a placeholder, plan, mock, o
 - Root `package.json` preserves the website's existing React/Three.js dependencies and adds explicit Studio/creative test scripts. Topic-branch CI now runs the creative worker tests.
 - The latest observed workflow run is pending; no test pass is claimed yet.
 - Cloudflare Access, Preview D1, private R2, service-token connectivity and provider inference remain unconfigured/unverified. No deployment or migration was performed.
+
+
+## Explicit strategy model route (2026-11-23)
+
+- Added `creative-production/bin/model-strategy-adapter.mjs` for strategy-only OpenAI-compatible inference.
+- The adapter is disabled unless `STUDIO_MODEL_ROUTES_JSON.strategy` names a supported provider, public HTTPS base URL, explicit model ID and API-key environment variable. The key itself is read from the worker environment and is never stored in the route JSON or repository.
+- The adapter asks for structured JSON, rejects invalid/oversized responses and validates the required strategy fields before saving a draft.
+- The saved artifact records provider, model and generation time. It remains draft-only, requires human review and is not publishable.
+- If no route exists, the deterministic strategy adapter remains active. If a configured route fails or returns invalid output, the job fails; there is no silent deterministic fallback.
+- Added unit tests for missing/invalid routes, endpoint policy, provider errors, malformed output, provenance and worker-level integration.
+- This is implementation code and mocked test coverage only. No provider credentials, provider account, live inference, commercial data terms or deployment configuration have been verified.
