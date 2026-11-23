@@ -126,7 +126,6 @@ export async function prepareDraftJob(job, { productionRoot, env = process.env, 
     ? await generateStrategyDraft(job.project.brief, { env, fetchImpl })
     : await generateCopyDraft(job.project.brief, { env, fetchImpl });
   const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
-  const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
   const jobRoot = path.join(target, 'jobs', job.id);
   await mkdir(jobRoot, { recursive: true });
   const outputPath = path.join(jobRoot, job.job_type + '-draft.json');
