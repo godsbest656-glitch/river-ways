@@ -94,7 +94,7 @@ export function resolveStrategyRoute(env = process.env) {
   }
   const apiKey = env[route.apiKeyEnv];
   if (typeof apiKey !== "string" || !apiKey.trim()) throw new Error("Strategy model API key environment variable is not configured");
-  return { provider: route.provider, model: route.model.trim(), baseUrl: base.toString().replace(/\\/$/, ""), apiKey };
+  return { provider: route.provider, model: route.model.trim(), baseUrl: base.toString().replace(/\/$/, ""), apiKey };
 }
 
 export async function generateStrategyDraft(brief, {
