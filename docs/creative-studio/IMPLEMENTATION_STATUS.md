@@ -98,3 +98,17 @@ No line above is considered complete solely because a placeholder, plan, mock, o
 - Outputs are stored per job under the client-scoped local project, marked draft/non-publishable, and refuse overwrites.
 - Unit tests cover output provenance, claim restrictions and cross-client scope rejection. CI is running for this change; passing status is not yet confirmed.
 - These adapters are deterministic scaffolding, not model-generated strategy/copy and not a completed campaign deliverable.
+
+
+## Reconciled worker status (2026-11-23)
+
+This section supersedes earlier statements in this document that the worker claims only `project_init` or that the strategy/copy adapters are pending.
+
+- The Studio API worker allowlist and local worker claim request both support exactly `project_init`, `strategy` and `copy`.
+- `project_init` creates a client-scoped local project scaffold from a draft brief.
+- `strategy` and `copy` create deterministic, source-traceable JSON drafts under the same client/project scope. They are not provider-backed model inference.
+- The worker has automated tests for project setup, draft artifact creation, source provenance, tenant-scope mismatch rejection, claim types and API completion reporting. Those tests still require a passing CI run on the final branch HEAD before they are called verified.
+- The worker does not claim or execute concept, storyboard, image, video, render, QA or delivery jobs. No live Access, D1, R2, provider inference, ComfyUI or Adobe connection has been verified.
+- The latest implementation fix changes the worker's claim log to report the actual job type instead of labelling every claim as project setup.
+
+The next executable gate is to recover and verify the exact provider-backed runtime source, define a narrow adapter contract, and connect one non-production strategy task only after that source and its permissions are verified. Do not replace or duplicate an existing runtime based on an unverified branch name.
