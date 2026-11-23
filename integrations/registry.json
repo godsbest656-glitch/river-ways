@@ -3,7 +3,6 @@
   "registry_updated": "2026-11-23",
   "policy": {
     "default_status": "evaluate",
-    "no_secret_values": true,
     "owner_approval_required_for_paid_usage": true,
     "owner_approval_required_for_production_enablement": true,
     "integration_rule": "A repository listing is not an installation, adoption approval, deployment, or proof of runtime capability."
