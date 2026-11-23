@@ -1,0 +1,563 @@
+{
+  "schema_version": 1,
+  "registry_updated": "2026-11-23",
+  "policy": {
+    "default_status": "evaluate",
+    "no_secret_values": true,
+    "owner_approval_required_for_paid_usage": true,
+    "owner_approval_required_for_production_enablement": true,
+    "integration_rule": "A repository listing is not an installation, adoption approval, deployment, or proof of runtime capability."
+  },
+  "integrations": [
+    {
+      "id": "rea-video",
+      "name": "Rea-Video",
+      "category": "creative-intelligence",
+      "status": "evaluate",
+      "source": "https://github.com/JuneYaooo/rea-video",
+      "upstream": "https://github.com/JuneYaooo/rea-video",
+      "license": {
+        "status": "verified",
+        "expression": "Apache-2.0"
+      },
+      "deployment": {
+        "mode": "local-tool",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "reference-video-analysis",
+        "shot-breakdown",
+        "video-md-report"
+      ],
+      "constraints": [
+        "Use only rights-cleared reference media.",
+        "Do not upload client footage to an unapproved external service."
+      ],
+      "next_gate": "Run a sandbox analysis on a rights-cleared test clip and verify output provenance."
+    },
+    {
+      "id": "awesome-opus-video-library",
+      "name": "Awesome Opus 5.5 Videos",
+      "category": "creative-reference",
+      "status": "reference-only",
+      "source": "https://github.com/yihui-dev/awesome-opus5-5-videos",
+      "upstream": "https://github.com/yihui-dev/awesome-opus5-5-videos",
+      "license": {
+        "status": "verified",
+        "expression": "MIT for repository code; source media and prompts require individual rights review"
+      },
+      "deployment": {
+        "mode": "curated-library",
+        "boundary": "reference"
+      },
+      "capabilities": [
+        "prompt-discovery",
+        "video-reference-index"
+      ],
+      "constraints": [
+        "Do not assume every referenced video or prompt grants reuse rights."
+      ],
+      "next_gate": "Curate prompt metadata and source links; exclude media without reuse permission."
+    },
+    {
+      "id": "lemo-opuscar",
+      "name": "Lemo-Opuscar",
+      "category": "creative-reference",
+      "status": "evaluate",
+      "source": "https://github.com/lemomo-ai/lemo-opuscar",
+      "upstream": "https://github.com/lemomo-ai/lemo-opuscar",
+      "license": {
+        "status": "custom",
+        "expression": "Custom project licence; commercial-use review required"
+      },
+      "deployment": {
+        "mode": "curated-library",
+        "boundary": "reference"
+      },
+      "capabilities": [
+        "cinematic-style-reference",
+        "code-generated-film-examples"
+      ],
+      "constraints": [
+        "Do not assume commercial reuse rights for included films, styles or assets."
+      ],
+      "next_gate": "Review the complete licence and attribution terms before internal or client reuse."
+    },
+    {
+      "id": "effectcraft",
+      "name": "EffectCraft",
+      "category": "motion-graphics",
+      "status": "evaluate",
+      "source": "https://github.com/storytold/effectcraft",
+      "upstream": "https://github.com/storytold/effectcraft",
+      "license": {
+        "status": "pending",
+        "expression": "README advertises MIT OR Apache-2.0; verify the exact licence files and release terms"
+      },
+      "deployment": {
+        "mode": "local-desktop",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "compositing",
+        "keyframe-animation",
+        "visual-effects",
+        "render-queue"
+      ],
+      "constraints": [
+        "Project describes itself as young and fast-moving; validate stability and interchange formats."
+      ],
+      "next_gate": "Build from a pinned commit in an isolated environment and test a deterministic export."
+    },
+    {
+      "id": "pixelfx",
+      "name": "PixelFX",
+      "category": "motion-graphics",
+      "status": "reference-only",
+      "source": "https://github.com/patch-gg/pixelfx",
+      "upstream": "https://github.com/patch-gg/pixelfx",
+      "license": {
+        "status": "verified",
+        "expression": "MIT for repository code; inspect individual asset provenance"
+      },
+      "deployment": {
+        "mode": "curated-library",
+        "boundary": "reference"
+      },
+      "capabilities": [
+        "pixel-art-effects",
+        "sprite-sheet-export"
+      ],
+      "constraints": [
+        "Specialist pixel-art scope; not a general motion graphics engine."
+      ],
+      "next_gate": "Test one exported sprite sheet in a client-authorised game or campaign prototype."
+    },
+    {
+      "id": "comfyui",
+      "name": "ComfyUI",
+      "category": "image-generation",
+      "status": "existing-foundation",
+      "source": "https://github.com/Comfy-Org/ComfyUI",
+      "upstream": "https://github.com/Comfy-Org/ComfyUI",
+      "license": {
+        "status": "verified",
+        "expression": "GPL-3.0; model and checkpoint licences are separate"
+      },
+      "deployment": {
+        "mode": "local-service",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "node-based-image-generation",
+        "workflow-execution",
+        "visual-model-pipelines"
+      ],
+      "constraints": [
+        "River Ways adapter is loopback-only in the inspected code.",
+        "No live ComfyUI server or model inference is verified.",
+        "Never expose the ComfyUI API publicly."
+      ],
+      "next_gate": "Capture workstation hardware, install a reviewed version and pass a low-cost local smoke test."
+    },
+    {
+      "id": "remotion",
+      "name": "Remotion",
+      "category": "video-composition",
+      "status": "evaluate",
+      "source": "https://github.com/remotion-dev/remotion",
+      "upstream": "https://github.com/remotion-dev/remotion",
+      "license": {
+        "status": "conditional",
+        "expression": "Proprietary/source-available licence; verify current company and automation eligibility"
+      },
+      "deployment": {
+        "mode": "local-cli",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "react-video-composition",
+        "programmatic-rendering"
+      ],
+      "constraints": [
+        "Do not assume OSI open-source status or free automated rendering."
+      ],
+      "next_gate": "Complete licence and cost review, then benchmark against HyperFrames on the same composition."
+    },
+    {
+      "id": "remotion-skills",
+      "name": "Remotion Skills",
+      "category": "agent-skills",
+      "status": "reference-only",
+      "source": "https://github.com/remotion-dev/skills",
+      "upstream": "https://github.com/remotion-dev/skills",
+      "license": {
+        "status": "pending",
+        "expression": "Verify repository licence and skill compatibility"
+      },
+      "deployment": {
+        "mode": "project-skill",
+        "boundary": "reference"
+      },
+      "capabilities": [
+        "video-composition-guidance",
+        "agent-instructions"
+      ],
+      "constraints": [
+        "Do not override River Ways root instructions, ASD-STE100 rules or approval controls."
+      ],
+      "next_gate": "Review skill content and integrate only non-conflicting, source-attributed guidance."
+    },
+    {
+      "id": "hyperframes",
+      "name": "HyperFrames",
+      "category": "video-composition",
+      "status": "existing-foundation",
+      "source": "https://github.com/heygen-com/hyperframes",
+      "upstream": "https://github.com/heygen-com/hyperframes",
+      "license": {
+        "status": "verified",
+        "expression": "Apache-2.0; review bundled dependencies and FFmpeg build"
+      },
+      "deployment": {
+        "mode": "local-cli",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "html-video-composition",
+        "css-motion",
+        "local-rendering"
+      ],
+      "constraints": [
+        "River Ways has a starter template and renderer adapter.",
+        "No real render has been verified."
+      ],
+      "next_gate": "Install the pinned local CLI, run lint/check and produce a real approved internal test MP4."
+    },
+    {
+      "id": "threejs",
+      "name": "Three.js",
+      "category": "3d-and-web-motion",
+      "status": "evaluate",
+      "source": "https://github.com/mrdoob/three.js",
+      "upstream": "https://github.com/mrdoob/three.js",
+      "license": {
+        "status": "verified",
+        "expression": "MIT"
+      },
+      "deployment": {
+        "mode": "web-library",
+        "boundary": "public-web"
+      },
+      "capabilities": [
+        "webgl",
+        "webgpu",
+        "interactive-3d"
+      ],
+      "constraints": [
+        "Use progressive enhancement and reduced-motion fallbacks.",
+        "Measure mobile performance and bundle impact."
+      ],
+      "next_gate": "Prototype one bounded scene and pass mobile performance and accessibility review."
+    },
+    {
+      "id": "gsap",
+      "name": "GSAP",
+      "category": "3d-and-web-motion",
+      "status": "evaluate",
+      "source": "https://github.com/greensock/GSAP",
+      "upstream": "https://github.com/greensock/GSAP",
+      "license": {
+        "status": "pending",
+        "expression": "Verify current core and plugin licence terms for selected version"
+      },
+      "deployment": {
+        "mode": "web-library-or-local-render",
+        "boundary": "public-web"
+      },
+      "capabilities": [
+        "timeline-animation",
+        "kinetic-typography",
+        "motion-sequencing"
+      ],
+      "constraints": [
+        "Avoid overlapping animation libraries and preserve reduced-motion behaviour."
+      ],
+      "next_gate": "Review licence and test a single representative interaction before adoption."
+    },
+    {
+      "id": "blender-mcp",
+      "name": "Blender MCP",
+      "category": "3d-production",
+      "status": "evaluate",
+      "source": "https://github.com/ahujasid/blender-mcp",
+      "upstream": "https://github.com/ahujasid/blender-mcp",
+      "license": {
+        "status": "pending",
+        "expression": "Verify exact repository licence and dependency licences"
+      },
+      "deployment": {
+        "mode": "local-desktop",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "agent-to-blender-bridge"
+      ],
+      "constraints": [
+        "Audit tool schemas, subprocess execution, file access and application identity before enabling."
+      ],
+      "next_gate": "Review source and run a read-only local sandbox test with synthetic assets."
+    },
+    {
+      "id": "ffmpeg",
+      "name": "FFmpeg",
+      "category": "media-processing",
+      "status": "existing-foundation",
+      "source": "https://github.com/FFmpeg/FFmpeg",
+      "upstream": "https://github.com/FFmpeg/FFmpeg",
+      "license": {
+        "status": "conditional",
+        "expression": "LGPL by default; GPL-enabled build options and linked components can change obligations"
+      },
+      "deployment": {
+        "mode": "local-cli",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "transcoding",
+        "media-packaging",
+        "ffprobe-validation"
+      ],
+      "constraints": [
+        "No production workstation binary or exact build configuration has been verified."
+      ],
+      "next_gate": "Record exact binary version, build configuration and licence notices; run media QA on a test file."
+    },
+    {
+      "id": "adobe-uxp",
+      "name": "Adobe UXP",
+      "category": "creative-application-integration",
+      "status": "adopt-candidate",
+      "source": "https://developer.adobe.com/uxp/",
+      "upstream": "https://developer.adobe.com/uxp/",
+      "license": {
+        "status": "conditional",
+        "expression": "Adobe developer terms and per-application API requirements apply"
+      },
+      "deployment": {
+        "mode": "desktop-plugin",
+        "boundary": "local-desktop"
+      },
+      "capabilities": [
+        "adobe-plugin-development",
+        "application-native-extension"
+      ],
+      "constraints": [
+        "Application support and API availability vary by product and version."
+      ],
+      "next_gate": "Inventory installed Adobe applications and select one supported application for a UXP proof."
+    },
+    {
+      "id": "adobepy",
+      "name": "adobepy",
+      "category": "creative-application-integration",
+      "status": "evaluate",
+      "source": "https://github.com/dcc-mcp/adobepy",
+      "upstream": "https://github.com/dcc-mcp/adobepy",
+      "license": {
+        "status": "pending",
+        "expression": "Root LICENSE path was not found in the initial check; resolve full licence before use"
+      },
+      "deployment": {
+        "mode": "local-broker",
+        "boundary": "local-desktop"
+      },
+      "capabilities": [
+        "python-adobe-sdk",
+        "local-json-rpc-broker",
+        "uxp-cep-bridges"
+      ],
+      "constraints": [
+        "Inspect platform support, release provenance, broker authentication and application-instance attestation."
+      ],
+      "next_gate": "Verify licence, supported Windows versions, release signatures and tool operation allowlists."
+    },
+    {
+      "id": "cavi-adobe-mcp",
+      "name": "Cavi Adobe MCP",
+      "category": "creative-application-integration",
+      "status": "blocked",
+      "source": "https://github.com/cavi-ai/adobe-mcp",
+      "upstream": "https://github.com/cavi-ai/adobe-mcp",
+      "license": {
+        "status": "verified",
+        "expression": "MIT"
+      },
+      "deployment": {
+        "mode": "local-desktop",
+        "boundary": "local-desktop"
+      },
+      "capabilities": [
+        "photoshop-mcp",
+        "illustrator-mcp",
+        "animate-mcp",
+        "dimension-mcp"
+      ],
+      "constraints": [
+        "README requires macOS, Python 3.15+ and local automation access; current workstation context is Windows."
+      ],
+      "next_gate": "Reconsider only if a supported macOS worker becomes available."
+    },
+    {
+      "id": "jonohobs-adobe-mcp",
+      "name": "Adobe MCP Server by Jonohobs",
+      "category": "creative-application-integration",
+      "status": "evaluate",
+      "source": "https://github.com/Jonohobs/adobe-mcp",
+      "upstream": "https://github.com/Jonohobs/adobe-mcp",
+      "license": {
+        "status": "verified",
+        "expression": "MIT"
+      },
+      "deployment": {
+        "mode": "local-desktop",
+        "boundary": "local-desktop"
+      },
+      "capabilities": [
+        "windows-adobe-automation",
+        "com-extendscript-bridge"
+      ],
+      "constraints": [
+        "README claims broad Adobe app coverage; inspect each app adapter and supported version.",
+        "Review arbitrary command and filesystem exposure."
+      ],
+      "next_gate": "Perform a source/security audit and read-only test against one installed Adobe application."
+    },
+    {
+      "id": "premiere-uxp-samples",
+      "name": "Adobe Premiere Pro UXP Samples",
+      "category": "creative-application-integration",
+      "status": "reference-only",
+      "source": "https://github.com/AdobeDocs/uxp-premiere-pro-samples",
+      "upstream": "https://github.com/AdobeDocs/uxp-premiere-pro-samples",
+      "license": {
+        "status": "pending",
+        "expression": "Check repository and sample-level licence notices before reuse"
+      },
+      "deployment": {
+        "mode": "developer-reference",
+        "boundary": "reference"
+      },
+      "capabilities": [
+        "premiere-uxp-api-examples",
+        "plugin-development-reference"
+      ],
+      "constraints": [
+        "Use sample manifests as the authority for minimum Premiere and UXP versions."
+      ],
+      "next_gate": "Select one sample and verify it against the installed Premiere Pro version."
+    },
+    {
+      "id": "postiz",
+      "name": "Postiz",
+      "category": "social-publishing",
+      "status": "evaluate",
+      "source": "https://github.com/gitroomhq/postiz-app",
+      "upstream": "https://github.com/gitroomhq/postiz-app",
+      "license": {
+        "status": "verified",
+        "expression": "AGPL-3.0; review network-use and modified-service obligations"
+      },
+      "deployment": {
+        "mode": "separate-service",
+        "boundary": "external-service"
+      },
+      "capabilities": [
+        "social-account-connections",
+        "scheduling",
+        "publishing",
+        "analytics"
+      ],
+      "constraints": [
+        "No service, account connection or publishing UI is verified on this branch.",
+        "Require OAuth, tenant isolation and exact-content approval."
+      ],
+      "next_gate": "Reconcile the existing Postiz design branch with the Studio auth model and complete AGPL review."
+    },
+    {
+      "id": "paperclip",
+      "name": "Paperclip",
+      "category": "ai-workforce",
+      "status": "evaluate",
+      "source": "https://github.com/paperclipai/paperclip",
+      "upstream": "https://github.com/paperclipai/paperclip",
+      "license": {
+        "status": "pending",
+        "expression": "Verify upstream licence and dependency terms at selection time"
+      },
+      "deployment": {
+        "mode": "separate-service",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "agent-workforce-management",
+        "goals",
+        "task-assignment"
+      ],
+      "constraints": [
+        "Must not replace the existing execution runtime or become the permissions authority."
+      ],
+      "next_gate": "Compare its current capabilities with the existing agent runtime and avoid duplicate task systems."
+    },
+    {
+      "id": "ag-ui",
+      "name": "AG-UI",
+      "category": "agent-interaction",
+      "status": "evaluate",
+      "source": "https://github.com/ag-ui-protocol/ag-ui",
+      "upstream": "https://github.com/ag-ui-protocol/ag-ui",
+      "license": {
+        "status": "pending",
+        "expression": "Verify repository and protocol package licences at selection time"
+      },
+      "deployment": {
+        "mode": "application-protocol",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "agent-ui-event-streaming",
+        "human-in-the-loop-events"
+      ],
+      "constraints": [
+        "Protocol does not replace orchestration, authentication or authorisation."
+      ],
+      "next_gate": "Prototype an event stream behind the existing Agent Gateway and test reconnect/replay behaviour."
+    },
+    {
+      "id": "twenty-crm",
+      "name": "Twenty CRM",
+      "category": "crm",
+      "status": "evaluate",
+      "source": "https://github.com/twentyhq/twenty",
+      "upstream": "https://github.com/twentyhq/twenty",
+      "license": {
+        "status": "pending",
+        "expression": "Verify current community and enterprise licence boundaries"
+      },
+      "deployment": {
+        "mode": "separate-service",
+        "boundary": "private-worker"
+      },
+      "capabilities": [
+        "contacts",
+        "companies",
+        "deals",
+        "crm-workflows"
+      ],
+      "constraints": [
+        "Do not create a second client/contact system before deciding the CRM system of record."
+      ],
+      "next_gate": "Map the current lead schema and client lifecycle before deciding whether to adopt or extend."
+    }
+  ]
+}
