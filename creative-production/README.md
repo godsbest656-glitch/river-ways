@@ -1,13 +1,13 @@
 # River Ways Creative Production Engine
 
-**Status:** isolated implementation foundation; model inference and renderer execution remain gated pending local hardware and exact-version verification.
+**Status:** isolated implementation foundation. Strategy supports an optional, explicitly configured OpenAI-compatible model route; no provider credentials or live inference are configured or verified. Renderer execution remains gated pending local hardware and exact-version verification.
 
 This module establishes a local-first production workspace for River Ways. It is deliberately separate from the public Cloudflare Pages runtime: video models, GPU workloads, media files and rendering belong on an authorised workstation or private production machine, not in a public website request handler.
 
 ## What is implemented
 
 - A dependency-free Node.js CLI to validate a campaign brief and initialise a structured production project, including a SHAPED CURRENT motion starter composition.
-- A local Studio worker that securely claims only `project_init` jobs, validates the saved draft brief, creates a client-isolated local project scaffold and reports completion/failure to the River Ways Studio API.
+- A local Studio worker that securely claims `project_init`, `strategy` and `copy` jobs, validates the saved draft brief, creates client-isolated local artifacts and reports completion/failure to the River Ways Studio API.\n- An optional strategy-only OpenAI-compatible adapter. It requires an explicit provider, model, HTTPS base URL and API-key environment-variable route; it validates structured output and records model provenance. No default model or silent fallback is used after a configured provider fails.
 - Explicit draft/approved/rejected brief state. Initialising a project never implies client approval.
 - Separate generated, approved and rejected asset folders; separate HyperFrames and Remotion composition folders.
 - A doctor command that reports OS, CPU, total/free RAM, free disk, NVIDIA GPU model/VRAM/driver, CUDA compiler, Python, FFmpeg and ffprobe.
