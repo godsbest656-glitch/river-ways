@@ -15,6 +15,7 @@ npm run dev
 npm run build
 npm run test:api
 npm run test:portfolio
+npm run test:creative
 npm run test:lighthouse
 npm run validate:portfolio
 python scripts/validate_migrations.py
@@ -38,6 +39,9 @@ The browser suite tests desktop and mobile Chromium journeys against the generat
 - `public/growth-diagnostic/`, `public/field-guide/`, `public/privacy/` — maintained static experiences and notice.
 - `functions/api/contact.js` — validated same-origin enquiry endpoint.
 - `migrations/0001_leads.sql` through `0003_lead_operations.sql` — UUID lead storage, attribution and operational follow-up schema.
+- `migrations/0004_creative_studio.sql` — client-scoped creative projects, jobs, asset metadata, approvals and audit events.
+- `public/studio/` and `functions/api/studio/` — internal noindex Creative Studio workspace and Access-protected API.
+- `creative-production/` — local production worker, brief/rights validation, draft adapters, renderer/model adapters and media QA. Heavy inference/rendering stays off Cloudflare Pages.
 - `docs/design/` — master design, architecture, project skills and acceptance gates.
 - `docs/ops/PRODUCTION_ENVIRONMENT_CHECKLIST.md` — Cloudflare D1, Resend and release-readiness requirements.
 
@@ -45,7 +49,9 @@ The browser suite tests desktop and mobile Chromium journeys against the generat
 
 - The portfolio currently contains illustrative capability studies and River Ways-owned demonstrations; do not imply they are commissioned client case studies or verified client outcomes.
 - The Growth Diagnostic keeps answers and scores in the browser. Only the approved journey/engagement identifiers and source attribution may accompany the enquiry handoff.
-- D1 migrations are validated locally in CI, but this does not mean they have been applied to Cloudflare Preview or Production.
+- D1 migrations are validated locally in CI, but this does not mean they have been applied to Cloudflare Preview or Production. Migration 0004 is not applied until a dedicated Preview database is configured and explicitly approved.
+- `/studio/` and `/api/studio/*` are internal-only code paths. Do not expose them until Cloudflare Access, the exact staff allowlist, worker audience, Preview D1 and private R2 binding are configured and tested.
+- Strategy and copy worker jobs currently produce deterministic, source-traceable drafts. They are not provider-backed AI inference, final creative deliverables or publishable content.
 - Resend provider acceptance does not prove inbox delivery.
 - No production deployment, DNS change, production D1 migration or secret change is authorised by a passing build or test run.
 - Open a pull request only when the owner authorises a Preview review, because PR activity triggers automatic Cloudflare Preview deployment.
