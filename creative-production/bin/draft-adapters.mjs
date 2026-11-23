@@ -1,3 +1,5 @@
+import { createProductionHandoffManifest } from './production-handoff.mjs';
+
 const SAFE_CONSTRAINTS = [
   'Draft only: requires agency and client review before use.',
   'Use verified product capabilities only; no feature claims were supplied by this adapter.',
@@ -47,21 +49,46 @@ export async function prepareDraftArtifact(type, brief) {
       ['05', 'The value', 'Connect the verified capability to the audience objective without promising results.', 'Use a restrained visual summary; no invented metrics or testimonials.'],
       ['06', 'The next step', 'Present the approved call to action and destination.', 'Use only the confirmed CTA, URL and contact details.']
     ];
-    return {
+    const scenes = beats.map(([id, title, narrationIntent, visualDirection]) => ({
+      id, title, durationSeconds: 5, narrationIntent, narration: null,
+      visualDirection, onScreenCopy: null,
+      assetRequirements: [
+        { assetId: id + '-brand-system', role: 'brand-system', mediaType: 'image-or-vector', required: true, source: 'client-approved-library', rightsStatus: 'not-reviewed' },
+        { assetId: id + '-primary-visual', role: 'scene-visual', mediaType: 'image-or-video', required: true, source: 'approved-client-asset-or-rights-cleared-generation', rightsStatus: 'not-reviewed' },
+        ...(id === '03' || id === '04' ? [{ assetId: id + '-product-proof', role: 'product-proof', mediaType: 'screen-capture-or-video', required: true, source: 'verified-product-capture', rightsStatus: 'not-reviewed' }] : [])
+      ],
+      promptSpec: {
+        status: 'template-needs-approved-inputs',
+        task: 'visual-development',
+        subject: null,
+        sceneIntent: narrationIntent,
+        composition: visualDirection,
+        styleReference: 'SHAPED CURRENT: premium editorial, sea-and-sky blue, dimensional but legible',
+        cameraOrMotion: 'Define shot size, camera movement and subject movement after concept approval.',
+        lighting: 'Define from approved art direction.',
+        aspectRatio: '16:9',
+        durationSeconds: 5,
+        negativePrompt: 'No fabricated interface, unreadable text, unsupported product features, invented metrics, logos or identifiable people without permission.',
+        requiredInputs: ['approved concept id', 'approved reference assets', 'verified factual claims', 'rights-cleared territory']
+      },
+      transition: 'purposeful-cut', generationStatus: 'blocked-pending-approval'
+    }));
+    const storyboard = {
       schemaVersion: '1.0', artifactType: 'storyboard-draft', status: 'draft',
       campaign: brief.campaign.name, title: brief.primaryMessage,
       format: { durationSeconds: 30, aspectRatios: ['16:9', '9:16', '1:1'], frameRate: 30 },
-      scenes: beats.map(([id, title, narrationIntent, visualDirection]) => ({
-        id, title, durationSeconds: 5, narrationIntent, narration: null,
-        visualDirection, onScreenCopy: null, assetRequirements: ['Approved brand assets', 'Rights-cleared media'],
-        transition: 'purposeful-cut', generationStatus: 'blocked-pending-approval'
-      })),
+      scenes,
       audio: { music: null, voiceover: null, soundDesign: null, rightsStatus: 'not-reviewed' },
       productionNotes: ['This is a timing and narrative scaffold, not a rendered film.', 'Replace all null copy with approved wording.', 'Confirm aspect ratio, voice, music and media rights before production.'],
       requiredBeforeApproval: ['Select and approve a creative concept.', 'Supply verified product captures and approved claims.', 'Approve narration, on-screen copy and CTA.', 'Clear all music, footage, talent and territory rights.'],
       constraints: [...SAFE_CONSTRAINTS, ...(brief.constraints ?? [])],
       source: { type: 'saved-project-brief', client: brief.client.name, campaign: brief.campaign.name }
     };
+    storyboard.productionHandoff = createProductionHandoffManifest(storyboard, {
+      clientName: brief.client.name,
+      campaignName: brief.campaign.name
+    });
+    return storyboard;
   }
   if (type === 'strategy') {
     return {
