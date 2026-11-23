@@ -11,7 +11,7 @@ The API independently verifies the `Cf-Access-Jwt-Assertion` signature against t
 | Name | Purpose |
 |---|---|
 | `LEADS_DB` | D1 binding for the existing River Ways operations database; includes migration 0004 after it is reviewed and applied to the correct environment. |
-| `CREATIVE_ASSETS` | Private R2 bucket binding for generated media. Configure bucket access only for the Pages Functions worker; do not make the bucket public.
+| `CREATIVE_ASSETS` | Private R2 bucket binding for generated media. Configure bucket access only for the Pages Functions worker; do not make the bucket public. |
 | `CF_ACCESS_TEAM_DOMAIN` | Cloudflare Access team domain, hostname only. |
 | `CF_ACCESS_AUD` | Access application audience tag for River Ways Studio staff. |
 | `STUDIO_ALLOWED_EMAILS` | Comma-separated exact staff email allowlist. |
@@ -41,7 +41,11 @@ All routes require a valid Cloudflare Access JWT. Mutations reject cross-origin 
 - The current approval endpoint is agency-staff review. A separate client reviewer role and client-facing approval portal are not implemented yet.
 - Private R2 upload and authenticated file streaming are implemented, but no R2 bucket has been provisioned or bound in Preview. Asset URLs are not public or permanent.
 - Worker claim, five-minute renewable leases, stale-claim recovery and bounded retry limits are implemented in code; live service-token/worker behavior is not yet verified.
-- The local worker daemon is implemented for the `project_init` task only. It claims typed jobs, renews leases, runs the existing CLI without a shell, writes an isolated local project scaffold and reports completion/failure. It does not generate campaign copy, images or video.
+- The local worker daemon and API allowlist support three job types: `project_init`, `strategy` and `copy`.
+- `project_init` creates an isolated local project scaffold and a draft brief.
+- `strategy` creates a deterministic, source-traceable strategy draft from saved brief fields. It is not AI inference.
+- `copy` creates a deterministic, source-traceable copy draft from supplied message/platform fields. It does not invent claims, proof points or calls to action. It is not AI inference.
+- The worker does not yet execute concept, storyboard, image, video, render, QA or delivery jobs. Those types remain outside the worker claim allowlist until their adapters, approvals and runtime gates are implemented and tested.
 - The Studio UI is implemented for client/project/job management and asset preview/agency review.
 - The API has no public signup and no client can list or access another client's records without an authorised staff identity. Tenant relationship constraints are enforced in D1; endpoint queries must continue to scope by `client_id`.
 
@@ -54,7 +58,7 @@ The worker runs on a River Ways-controlled workstation, not in Cloudflare Pages.
 - `RIVER_WAYS_PRODUCTION_ROOT`: optional local output root; defaults to the repository's `production/` directory.
 - `STUDIO_WORKER_POLL_MS`: optional polling interval, clamped to 1–60 seconds.
 
-From `creative-production/`, run `npm run worker -- --once` for a single poll or `npm run worker` to keep polling. The current worker claims only `project_init` jobs. It deliberately does not execute strategy, copy, image, video or render jobs until their task adapters, approvals and runtime gates are implemented. A project setup job creates folders and a draft brief only; it does not create marketing assets or approve production.
+From `creative-production/`, run `npm run worker -- --once` for a single poll or `npm run worker` to keep polling. The worker claims only the three job types listed above. A project setup job creates folders and a draft brief. Strategy and copy jobs create non-publishable JSON drafts. None of these jobs generates final marketing assets, approves production or delivers work.
 
 ## Required Preview setup (not performed)
 
@@ -63,7 +67,7 @@ From `creative-production/`, run `npm run worker -- --once` for a single poll or
 3. Create Cloudflare Access applications/policies for the Studio route and API; configure staff identity allowlist and separate worker audience.
 4. Provision a private R2 bucket and bind it as `CREATIVE_ASSETS`; configure the environment values above in Preview only.
 5. Verify unauthenticated access is rejected and an allowlisted staff identity can create a client/project/job.
-6. Verify a worker service token can claim and complete only `project_init` jobs; other queued job types must remain untouched.
+6. Verify a worker service token can claim and complete `project_init`, `strategy` and `copy` jobs only; other queued job types must remain untouched.
 7. Verify tenant isolation and exact-asset-hash approval behavior.
 8. Configure private object storage and test upload/preview before registering real creative media.
 9. Do not open a pull request or create a Cloudflare Preview until the owner explicitly authorises Preview review.
