@@ -7,7 +7,7 @@
 
 ## 1. Adoption rules
 
-A repository is not an integration merely because it exists or appears in a social-media list.
+A repository is not an integration merely because it exists or appears in a social-media list. The machine-readable candidate inventory is `integrations/registry.json`; run `npm run validate:integrations` after every registry change.
 
 Every candidate must pass:
 1. exact repository identity and upstream activity check;
