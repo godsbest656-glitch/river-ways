@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0",
+  "client": {
+    "name": "Avenize",
+    "id": "avenize"
+  },
+  "campaign": {
+    "name": "Global market-entry and customer-acquisition foundation",
+    "slug": "avenize-market-entry-foundation",
+    "targetTerritories": [
+      "Nigeria"
+    ],
+    "launchMarket": "Lagos, Nigeria"
+  },
+  "objective": "Establish Avenize as a credible premium Business Operating System brand, explain its verified value to business owners, and create a measurable path from qualified interest to product demonstration, adoption and revenue.",
+  "audience": "SME owners and directors, founders, entrepreneurs, professional service businesses, agencies and consultancies, retail and distribution businesses, growing technology companies, and operations executives. Initial activation market: Lagos, Nigeria.",
+  "primaryMessage": "The state of your business in seconds.",
+  "platforms": [
+    "LinkedIn",
+    "Facebook",
+    "Instagram",
+    "TikTok",
+    "YouTube",
+    "X",
+    "WhatsApp Business"
+  ],
+  "deliverables": [
+    {
+      "type": "launch-campaign-concept",
+      "quantity": 1
+    },
+    {
+      "type": "social-campaign-adaptations",
+      "quantity": 1
+    },
+    {
+      "type": "corporate-presentation",
+      "quantity": 1
+    },
+    {
+      "type": "product-brochure",
+      "quantity": 1
+    },
+    {
+      "type": "executive-one-page-introduction",
+      "quantity": 1
+    },
+    {
+      "type": "product-demonstration-video",
+      "quantity": 1
+    },
+    {
+      "type": "business-owner-workshop-campaign",
+      "quantity": 1
+    },
+    {
+      "type": "partnership-proposal",
+      "quantity": 2
+    }
+  ],
+  "brandKit": {
+    "direction": "Premium global Business Operating System brand. Obsidian and charcoal with electric-lime accents; restrained glassmorphism and neofuturistic details; cinematic editorial art direction; realistic business photography; authentic Avenize product interface only.",
+    "approvedAssets": [
+      "Client-supplied Avenize logo in this conversation; client must provide the canonical source file to the River Ways workspace before production."
+    ],
+    "restrictedAssets": [
+      "Do not redraw or rebrand the Avenize logo.",
+      "Do not use invented product screenshots or interface states.",
+      "Do not invent features, pricing, customer testimonials, endorsements or performance claims.",
+      "Niyi Adesanya and LIMBsimple are partnership prospects, not confirmed endorsers or partners."
+    ]
+  },
+  "constraints": [
+    "Initial marketing budget is zero; no paid spend or subscription is assumed.",
+    "Do not publish, send outreach, commit funds, or make partnership commitments without explicit approval.",
+    "Use verified product capabilities only.",
+    "Use genuine product screenshots and demonstrations after product-owner verification.",
+    "Client approvals must identify exact asset version and usage scope."
+  ],
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null
+  },
+  "rights": {
+    "clientAssetsApprovedForGeneration": false,
+    "modelLicenseReviewed": false,
+    "musicRightsCleared": false,
+    "territoryReviewed": false,
+    "hardwareCompatibilityReviewed": false
+  }
+}
