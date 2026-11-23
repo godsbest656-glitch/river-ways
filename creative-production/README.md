@@ -34,7 +34,8 @@ The render adapters run local CLIs without a shell, require explicit approval, r
 
 - No model weights are downloaded or bundled.
 - No model inference is invoked by this CLI.
-- Concept, storyboard, image, video, render, QA and delivery queue types are not yet executable by the Studio worker; they remain visibly marked as adapter-pending in the Studio task selector.
+- Image, video, render, QA and delivery queue types are not yet executable by the Studio worker; they remain visibly marked as adapter-pending in the Studio task selector.
+- Concept and storyboard currently use deterministic draft scaffolds. They do not call a model, generate media or imply creative approval.
 - Strategy and copy model routes are implemented but remain inactive until an operator configures separate routes and secret environment variables. No real provider request has been verified.
 - A loopback-only ComfyUI API adapter is implemented and unit-tested against mocked API responses; no live ComfyUI server or model inference has been verified. No model-specific workflow adapter is enabled.
 - No HyperFrames or Remotion render is claimed as tested.
@@ -148,11 +149,11 @@ See [MODEL_INSTALLATION.md](./MODEL_INSTALLATION.md) for per-model hardware/lice
 - Remotion licensing: https://www.remotion.pro/license
 
 
-## Studio strategy and copy draft jobs
+## Studio strategy, copy, concept and storyboard draft jobs
 
-The authenticated local worker can now claim `project_init`, `strategy` and `copy` jobs. Strategy and copy adapters are deterministic brief-to-document transforms, not AI inference. They write traceable JSON drafts under the client-scoped project `jobs/<job-id>/` directory and refuse to run unless the local project metadata matches the claimed client and project IDs.
+The authenticated local worker can now claim `project_init`, `strategy`, `copy`, `concept` and `storyboard` jobs. Concept and storyboard adapters are deterministic brief-to-document scaffolds, not AI inference. Strategy and copy use deterministic brief-to-document transforms when their separate optional model routes are not configured. They write traceable JSON drafts under the client-scoped project `jobs/<job-id>/` directory and refuse to run unless the local project metadata matches the claimed client and project IDs.
 
-The strategy draft carries the saved objective, audience, market, platforms and deliverables plus explicit approval gaps. The copy foundation carries the supplied primary message and platform list, but intentionally leaves feature claims, proof points, supporting pillars and calls to action empty until verified inputs are supplied. Both outputs remain non-publishable drafts. Image, video, rendering, QA, delivery and publishing are not unlocked by these adapters.
+The strategy draft carries the saved objective, audience, market, platforms and deliverables plus explicit approval gaps. The copy foundation carries the supplied primary message and platform list, but intentionally leaves feature claims, proof points, supporting pillars and calls to action empty until verified inputs are supplied. All four outputs remain non-publishable drafts. Concept drafts provide three reviewable creative territories. Storyboard drafts provide a six-scene, 30-second narrative scaffold with null narration and on-screen copy, and block generation pending approval. Image, video, rendering, QA, delivery and publishing are not unlocked by these adapters.
 
 
 ## Local rendering CLI
