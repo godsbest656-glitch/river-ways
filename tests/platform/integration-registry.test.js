@@ -5,7 +5,7 @@ import { loadRegistry, validateRegistry } from "../../scripts/validate-integrati
 test("the committed integration registry is valid", () => {
   const registry = loadRegistry();
   assert.deepEqual(validateRegistry(registry), []);
-  assert.equal(registry.integrations.length, 20);
+  assert.equal(registry.integrations.length, 22);
 });
 
 test("the validator rejects duplicate integration identifiers", () => {
