@@ -165,3 +165,25 @@ npm run render -- --project <project-directory> --renderer hyperframes --approve
 ```
 
 For Remotion, supply `--entry` and `--composition-id`, and also pass `--license-acknowledged --free-license-eligible` after confirming the current licence terms and eligibility. The CLI refuses to overwrite an existing output. A successful CLI invocation is not proof that a renderer, GPU, model or client asset has been configured or approved for production.
+
+## Shot-level production hand-off contract
+
+The storyboard worker now attaches a machine-readable `creative-production-handoff` manifest to each storyboard artifact. This is a production-planning and review contract. It does not render media, submit generation requests, approve assets or deliver files.
+
+The current storyboard contains six 5-second shots. Each shot records:
+
+- A stable shot ID, sequence number, timeline start and duration.
+- Its visual intent and structured prompt template, including composition, motion/camera direction, lighting, aspect ratio, duration, exclusions and required inputs.
+- Required asset records with role, media type, source and an initial `not-reviewed` rights state. Product-proof shots explicitly require verified product captures.
+- Generation and approval state, which remain blocked until the required human decisions are recorded.
+
+The manifest also records project and campaign identity, output format, asset path and approval placeholders, and global gates for brief approval, concept approval, brand-kit approval, factual-claim verification, media/audio rights and final delivery approval. Its release gate reports generation and delivery as disallowed and lists the outstanding blockers.
+
+Validate a hand-off manifest with the production module's exported validator. The contract rejects malformed shot timing, unsafe identifiers, incomplete prompt specifications and manifests that attempt to enable generation or delivery without satisfying the approval and rights requirements. Tests cover the six-shot timeline, blocked release state, missing approvals, unsafe identifiers and worker artifact output:
+
+```bash
+node --test creative-production/test/production-handoff.test.mjs
+node --test creative-production/test/worker.test.mjs
+```
+
+**Operational boundary:** a valid hand-off manifest means the production brief is structured for review. It is not evidence that source assets exist, rights have been granted, a client has approved the concept, a renderer is connected, or any image/video has been generated. Keep generation, rendering, QA, delivery and publishing disabled until the relevant adapters are implemented and verified and every required approval is recorded.
