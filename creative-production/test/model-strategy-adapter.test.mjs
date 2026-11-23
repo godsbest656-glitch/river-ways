@@ -87,7 +87,7 @@ test("strategy adapter rejects malformed provider output and HTTP errors", async
     generateStrategyDraft(brief, { env, fetchImpl: async () => new Response("{}", { status: 429 }) }),
     /HTTP 429/
   );
-  const incomplete = JSON.stringify({ positioning: "Only this field" });
+  const incomplete = JSON.stringify({ positioning: "Only this field", channelStrategy: [] });
   await assert.rejects(
     generateStrategyDraft(brief, { env, fetchImpl: async () => new Response(JSON.stringify({ choices: [{ message: { content: incomplete } }] }), { status: 200 }) }),
     /audienceSegments/
