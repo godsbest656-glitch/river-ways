@@ -1,7 +1,7 @@
 # Creative Studio — integration status
 
-**Working branch:** `feat/river-ways-creative-studio-foundation`  
-**Website base:** `build/river-ways-execution-agency-agents`  
+**Working branch:** `feat/studio-on-shaped-current`  
+**Website base:** `feat/river-ways-liquid-current` (SHAPED CURRENT)  
 **Purpose:** integrate River Ways' existing local creative-production engine into the agency platform without putting GPU inference or rendering in public Cloudflare Pages requests.
 
 ## Completed in this slice
@@ -23,7 +23,7 @@
 
 ## Architecture boundary
 
-The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API, internal Studio UI and local worker daemon are present in code. The worker currently claims only `project_init`; it creates a draft local scaffold and reports completion. It is not yet a general creative-production executor.
+The public River Ways site is a React/Vite static experience deployed to Cloudflare Pages. Local GPU inference and video rendering must not run inside public Pages request handlers. The local creative engine remains a workstation/private production process. The secure job/control API, internal Studio UI and local worker daemon are present in code. The worker claims `project_init`, `strategy` and `copy`. Project setup creates a draft local scaffold. Strategy and copy produce deterministic, source-traceable, non-publishable JSON drafts; they are not provider-backed model inference. The worker does not claim concept, storyboard, image, video, render, QA or delivery jobs.
 
 D1 stores metadata and audit records, not media bytes. Media storage must be private and client-scoped. A client must not be able to access another client's brief, job, asset or approval record.
 
@@ -75,8 +75,8 @@ Avenize is configured as the first draft client workspace from the supplied clie
 |---|---|---|
 | Brand foundation | Brief and logo reference recorded | Approved brand kit, exact logo files/variants, colour and typography tokens |
 | Product truth | Claims restricted to verified capabilities | Product feature inventory and approved screenshots/demo capture |
-| Campaign strategy | Brief captured; strategy adapter pending | Approved audience/message/channel plan with source notes |
-| Copy and sales kit | Copy adapter pending | Approved corporate deck, brochure, one-pager, demo script and WhatsApp sequence |
+| Campaign strategy | Deterministic strategy draft available | Evidence-backed audience/message/channel plan and owner review |
+| Copy and sales kit | Deterministic copy foundation draft available | Verified product facts, proof, CTA and approved collateral |
 | Creative concepts | Adapter pending | Approved concepts, storyboards and shot lists |
 | Image/video | Local generation foundation exists; no live inference verified | Rights-cleared models/assets, hardware validation, sample outputs and human review |
 | Render and QA | Local renderer/media QA code exists; no real render verified | Reproducible render, media QA report and visual review |
@@ -96,5 +96,14 @@ No line above is considered complete solely because a placeholder, plan, mock, o
 - Strategy output preserves brief-supplied objective, audience, market, platforms and deliverables and lists evidence/approval gaps.
 - Copy output preserves the supplied primary message and platform list but leaves supporting pillars, feature claims, proof points and calls to action empty until verified inputs are supplied.
 - Outputs are stored per job under the client-scoped local project, marked draft/non-publishable, and refuse overwrites.
-- Unit tests cover output provenance, claim restrictions and cross-client scope rejection. CI is running for this change; passing status is not yet confirmed.
+- Unit tests cover output provenance, claim restrictions and cross-client scope rejection. Topic-branch CI includes the API and creative worker suites; the current run must pass before this integration is accepted.
 - These adapters are deterministic scaffolding, not model-generated strategy/copy and not a completed campaign deliverable.
+
+
+## SHAPED CURRENT integration slice (2026-11-23)
+
+- The Studio foundation was selectively ported onto `feat/river-ways-liquid-current` as `feat/studio-on-shaped-current`; the divergent website branch history was not merged wholesale.
+- The port includes the Studio Pages Functions, Access JWT verifier, internal `/studio/` interface, migration 0004, local worker, deterministic strategy/copy adapters and isolated tests.
+- Root `package.json` preserves the website's existing React/Three.js dependencies and adds explicit Studio/creative test scripts. Topic-branch CI now runs the creative worker tests.
+- The latest observed workflow run is pending; no test pass is claimed yet.
+- Cloudflare Access, Preview D1, private R2, service-token connectivity and provider inference remain unconfigured/unverified. No deployment or migration was performed.
