@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="same-origin">
+  <title>Creative Studio — River Ways</title>
+  <link rel="stylesheet" href="/studio/studio.css">
+  <script type="module" src="/studio/studio.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="River Ways home"><span class="brand-mark">R</span><span>River Ways</span></a>
+      <div class="top-meta"><span class="live-dot"></span><span>Agency operations</span><span class="divider">/</span><strong>Creative Studio</strong></div>
+    </header>
+
+    <section class="intro">
+      <div class="eyebrow">PRODUCTION OPERATIONS <span>•</span> INTERNAL</div>
+      <h1>Make the work.<br><em>Move the work.</em></h1>
+      <p>Manage client briefs, creative projects and production jobs from one workspace. Media generation and rendering are executed by authorised production workers, not by this browser.</p>
+    </section>
+
+    <section id="notice" class="notice" role="status" aria-live="polite">Connecting to the secured Studio API…</section>
+
+    <section class="workspace" aria-label="Creative Studio workspace">
+      <aside class="sidebar">
+        <div class="section-kicker">WORKSPACES</div>
+        <div id="client-list" class="client-list"><div class="skeleton"></div></div>
+        <button id="new-client-toggle" class="button button-quiet" type="button">＋ New client</button>
+        <form id="client-form" class="mini-form hidden">
+          <label for="client-name">Client name</label>
+          <input id="client-name" name="name" maxlength="120" required placeholder="Avenize">
+          <label for="client-slug">Workspace slug</label>
+          <input id="client-slug" name="slug" maxlength="80" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="avenize">
+          <button class="button button-primary" type="submit">Create workspace</button>
+        </form>
+      </aside>
+
+      <div class="main-panel">
+        <div class="panel-heading">
+          <div><div class="section-kicker">SELECTED CLIENT</div><h2 id="selected-client">No workspace selected</h2></div>
+          <span id="client-status" class="status">—</span>
+        </div>
+
+        <div class="metrics" aria-label="Production counts">
+          <div class="metric"><span>Projects</span><strong id="metric-projects">—</strong></div>
+          <div class="metric"><span>Queued jobs</span><strong id="metric-queued">—</strong></div>
+          <div class="metric"><span>In production</span><strong id="metric-running">—</strong></div>
+          <div class="metric"><span>Awaiting review</span><strong id="metric-review">—</strong></div>
+        </div>
+
+        <section class="panel-section">
+          <div class="section-title"><div><div class="section-kicker">01 / BRIEFS & PROJECTS</div><h3>Project register</h3></div><button id="new-project-toggle" class="button button-secondary" type="button" disabled>＋ New project</button></div>
+          <div id="project-list" class="project-list"><p class="muted">Select a client workspace to view its projects.</p></div>
+          <form id="project-form" class="editor-form hidden">
+            <label for="project-name">Project name</label>
+            <input id="project-name" name="name" required maxlength="160" placeholder="Avenize market entry">
+            <label for="project-slug">Project slug</label>
+            <input id="project-slug" name="slug" required maxlength="80" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="market-entry">
+            <label for="project-objective">Objective</label>
+            <textarea id="project-objective" name="objective" required rows="2">Generate qualified product demonstrations and build a measurable customer-acquisition pipeline.</textarea>
+            <label for="project-brief">Draft brief (JSON)</label>
+            <textarea id="project-brief" name="brief" rows="12" spellcheck="false" required></textarea>
+            <p class="hint">New projects are always saved as drafts. This does not approve the brief or grant permission to generate with client assets.</p>
+            <div class="form-actions"><button id="cancel-project" class="button button-quiet" type="button">Cancel</button><button class="button button-primary" type="submit">Save draft project</button></div>
+          </form>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-title"><div><div class="section-kicker">02 / PRODUCTION QUEUE</div><h3>Jobs & execution</h3></div><button id="new-job-toggle" class="button button-secondary" type="button" disabled>＋ Queue job</button></div>
+          <form id="job-form" class="mini-form horizontal hidden">
+            <label for="job-project">Project</label><select id="job-project" required></select>
+            <label for="job-type">Task</label><select id="job-type"><option value="project_init">Project setup (local)</option><option value="strategy">Strategy (adapter pending)</option><option value="copy">Copywriting (adapter pending)</option><option value="concept">Creative concept (adapter pending)</option><option value="storyboard">Storyboard (adapter pending)</option><option value="image">Image production (adapter pending)</option><option value="video">Video production (adapter pending)</option><option value="render">Render (adapter pending)</option><option value="qa">Quality assurance (adapter pending)</option><option value="delivery">Delivery preparation (adapter pending)</option></select>
+            <button class="button button-primary" type="submit">Add to queue</button>
+          </form>
+          <div id="job-list" class="job-list"><p class="muted">Select a client workspace to view production jobs.</p></div>
+          <p class="hint">Queue records are persistent. Actual execution requires a connected, authorised worker. No assets are automatically published or delivered.</p>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-title"><div><div class="section-kicker">03 / ASSET LIBRARY</div><h3>Generated work & review</h3></div></div>
+          <div id="asset-list" class="asset-list"><p class="muted">Select a client workspace to view its assets.</p></div>
+          <p class="hint">Agency review applies to the exact asset hash and declared usage scope. Client sign-off and publishing controls remain separate gates.</p>
+        </section>
+
+        <section class="panel-section safeguards">
+          <div class="section-kicker">PRODUCTION SAFEGUARDS</div>
+          <div class="guard-grid">
+            <div><strong>Brief approval</strong><span>Drafts cannot pass the production rights gate.</span></div>
+            <div><strong>Asset provenance</strong><span>Generated outputs must carry model and source records.</span></div>
+            <div><strong>Human review</strong><span>Technical QA is not client approval.</span></div>
+            <div><strong>Release control</strong><span>Publishing and delivery require explicit approval.</span></div>
+          </div>
+        </section>
+      </div>
+    </section>
+    <footer>River Ways · Creative Demand Engineering <span>Private agency workspace · No client media is stored in this page.</span></footer>
+  </main>
+</body>
+</html>
