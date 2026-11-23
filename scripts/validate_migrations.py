@@ -7,6 +7,7 @@ EXPECTED_FILES = [
     "0001_leads.sql",
     "0002_lead_pipeline_attribution.sql",
     "0003_lead_operations.sql",
+    "0004_creative_studio.sql",
 ]
 
 files = sorted(MIGRATIONS.glob("*.sql"))
@@ -120,3 +121,76 @@ print(
     f"{len(required_indexes)} indexes, 2 triggers, the ops_open_leads view, "
     "default values, follow-up overdue logic and CHECK constraints."
 )
+
+
+creative_tables = {
+    row[0] for row in db.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE 'creative_%'"
+    )
+}
+required_creative_tables = {
+    "creative_clients", "creative_projects", "creative_jobs",
+    "creative_assets", "creative_approval_events", "creative_audit_events",
+}
+if creative_tables != required_creative_tables:
+    raise SystemExit(f"Unexpected Creative Studio tables: {sorted(creative_tables)}")
+
+creative_job_columns = {row[1] for row in db.execute("PRAGMA table_info(creative_jobs)")}
+required_job_columns = {"max_attempts", "heartbeat_at", "lease_expires_at", "last_error"}
+if not required_job_columns.issubset(creative_job_columns):
+    raise SystemExit(f"Missing worker lease columns: {sorted(required_job_columns - creative_job_columns)}")
+
+creative_indexes = {
+    row[1] for row in db.execute("PRAGMA index_list(creative_jobs)")
+}
+if "idx_creative_jobs_queue" not in creative_indexes:
+    raise SystemExit("Missing creative job queue index")
+
+db.execute(
+    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+    ("client-a", "client-a", "Client A", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
+    "INSERT INTO creative_clients (id, slug, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+    ("client-b", "client-b", "Client B", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
+    """INSERT INTO creative_projects
+       (id, client_id, slug, name, objective, brief_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+    ("project-a", "client-a", "launch", "Launch", "Test client-scoped project", "{}", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
+    """INSERT INTO creative_jobs
+       (id, client_id, project_id, job_type, payload_json, available_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+    ("job-a", "client-a", "project-a", "concept", "{}", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
+    """INSERT INTO creative_assets
+       (id, client_id, project_id, job_id, version, asset_type, media_type, filename, storage_key, sha256, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+    ("asset-a", "client-a", "project-a", "job-a", 1, "concept", "application/json", "concept.json", "private/client-a/concept.json", "a" * 64, "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+)
+db.execute(
+    """INSERT INTO creative_approval_events
+       (id, client_id, project_id, asset_id, reviewer_id, decision, usage_scope, asset_sha256, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+    ("approval-a", "client-a", "project-a", "asset-a", "reviewer-a", "changes_requested", "internal-review", "a" * 64, "2026-11-17T10:00:00Z"),
+)
+try:
+    db.execute(
+        """INSERT INTO creative_jobs
+           (id, client_id, project_id, job_type, payload_json, available_at, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        ("job-cross-tenant", "client-b", "project-a", "concept", "{}", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z", "2026-11-17T10:00:00Z"),
+    )
+except sqlite3.IntegrityError:
+    pass
+else:
+    raise SystemExit("Cross-client creative job reference was accepted")
+
+if db.execute("PRAGMA foreign_key_check").fetchall():
+    raise SystemExit("Creative Studio schema contains foreign-key violations")
+
+print("Validated client-scoped Creative Studio tables, queue index, approval history and cross-client foreign-key isolation.")
