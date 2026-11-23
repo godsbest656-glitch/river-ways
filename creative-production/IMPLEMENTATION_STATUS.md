@@ -1,5 +1,7 @@
 # River Ways Creative Production — Implementation Status
 
+> **Scope note (23 November 2026):** This file records the local creative-production engine snapshot dated 7 November 2026. It does not describe the later integrated Creative Studio application. For the integrated UI, API, D1 records, R2 routes and worker contract, read [docs/creative-studio/IMPLEMENTATION_STATUS.md](../docs/creative-studio/IMPLEMENTATION_STATUS.md) and [ACCESS_AND_OPERATIONS.md](../docs/creative-studio/ACCESS_AND_OPERATIONS.md). The local engine remains a separate workstation/private-worker component.
+
 **Snapshot:** 7 November 2026  
 **Working branch:** `feat/creative-production-engine-integration`  
 **Base snapshot:** `build/river-ways-execution-agency-agents` at `ddeb463c2d6bc4a21a2f651a6d45497548002bcf` (GitHub compare showed 0 commits behind; later status-only commits may increase the ahead count)  
@@ -53,7 +55,7 @@ Node.js v22.16.0 isolated harness: **15 tests passed in the prior isolated harne
 3. No HyperFrames or Remotion real render has been performed; renderer tests use mocked CLI processes.
 4. No GPU, VRAM, RAM, CUDA/driver, storage or OS compatibility assessment has been captured.
 5. The nested HyperFrames package is version-pinned, but its package lock has not been generated because package installation/network access was unavailable; run `npm install` in `creative-production/` and commit the resulting lockfile before relying on reproducible installs.
-6. No internal Creative Studio UI, job database, authentication, multi-user permissions, client portal, publishing integration or automated batch approval workflow exists yet.
+6. This local engine package does not contain the integrated Studio UI, D1 job database or Cloudflare Access API. Those application-side components are tracked separately in `docs/creative-studio/IMPLEMENTATION_STATUS.md`. A client-facing reviewer portal, social publishing integration and automated batch approval workflow remain unimplemented.
 6. No client assets may be submitted to a model or used for fine-tuning without explicit written permission.
 7. The public website has not been changed to claim this is an operational, production-proven service.
 8. No Preview, production deployment, merge or PR has been initiated.
