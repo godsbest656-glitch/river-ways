@@ -80,7 +80,7 @@ test("strategy adapter calls the explicitly routed model and returns a review-on
 
 test("strategy adapter rejects malformed provider output and HTTP errors", async () => {
   await assert.rejects(
-    generateStrategyDraft(brief, { env, fetchImpl: async () => new Response("{}", { status: 200 }) }),
+    generateStrategyDraft(brief, { env, fetchImpl: async () => new Response(JSON.stringify({ choices: [{ message: { content: "not-json" } }] }), { status: 200 }) }),
     /did not return valid JSON/
   );
   await assert.rejects(
