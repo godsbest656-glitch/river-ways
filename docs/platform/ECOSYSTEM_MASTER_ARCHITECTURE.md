@@ -150,6 +150,8 @@ Do not introduce Temporal, NATS, a second agent runtime or a second queue until 
 
 ### 5.6 Integration adapter contract
 
+The machine-readable candidate register is stored in `integrations/registry.json`. Validate it with `npm run validate:integrations`; the validator and regression tests are stored in `scripts/validate-integration-registry.mjs` and `tests/platform/integration-registry.test.js`. Registry entries describe candidate status and controls. They do not activate a connector or store credentials.
+
 Every integration must declare:
 - owner and business purpose;
 - upstream repository/service and exact version or commit;
