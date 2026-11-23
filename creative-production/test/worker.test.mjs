@@ -177,3 +177,56 @@ test('strategy worker uses the explicit model route and records model provenance
     await rm(root, { recursive: true, force: true });
   }
 });
+
+
+test('copy worker uses only its separate explicit model route and writes a review-only artifact', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'river-ways-model-copy-'));
+  try {
+    await prepareProject(job, { productionRoot: root });
+    const env = {
+      STUDIO_MODEL_ROUTES_JSON: JSON.stringify({
+        copy: {
+          provider: 'openai-compatible',
+          baseUrl: 'https://copy.example.test/v1',
+          model: 'copy-test-v1',
+          apiKeyEnv: 'COPY_TEST_KEY'
+        }
+      }),
+      COPY_TEST_KEY: 'copy-secret'
+    };
+    const copy = {
+      channelCopy: [{
+        platform: 'LinkedIn',
+        hook: 'Understand your business faster.',
+        body: 'The state of your business in seconds.',
+        callToAction: null,
+        hashtags: [],
+        claimReferences: ['The state of your business in seconds.'],
+        reviewNotes: ['Confirm the conversion destination.']
+      }],
+      assumptions: ['The audience understands the need for business visibility.']
+    };
+    const result = await prepareDraftJob(
+      { ...job, id: 'job-model-copy-1234', job_type: 'copy' },
+      {
+        productionRoot: root,
+        env,
+        fetchImpl: async (url, options) => {
+          assert.equal(String(url), 'https://copy.example.test/v1/chat/completions');
+          assert.equal(options.headers.authorization, 'Bearer copy-secret');
+          return new Response(JSON.stringify({
+            choices: [{ message: { content: JSON.stringify(copy) } }]
+          }), { status: 200 });
+        }
+      }
+    );
+    assert.equal(result.generatedBy, 'configured-model-route');
+    assert.equal(result.publishable, false);
+    const artifact = JSON.parse(await readFile(result.localArtifactPath, 'utf8'));
+    assert.equal(artifact.artifactType, 'channel-copy-draft');
+    assert.equal(artifact.provenance.model, 'copy-test-v1');
+    assert.equal(artifact.status, 'draft');
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
