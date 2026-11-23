@@ -121,7 +121,10 @@ export async function prepareDraftJob(job, { productionRoot, env = process.env, 
   const target = projectDirectory(job, productionRoot);
   const metadata = JSON.parse(await readFile(path.join(target, 'project.json'), 'utf8'));
   if (metadata.source?.studioClientId !== job.client_id || metadata.source?.studioProjectId !== job.project_id) throw new Error('Local project scope does not match claimed job');
-  const modelDraft = job.job_type === 'strategy'\n    ? await generateStrategyDraft(job.project.brief, { env, fetchImpl })\n    : null;\n  const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
+  const modelDraft = job.job_type === 'strategy'
+    ? await generateStrategyDraft(job.project.brief, { env, fetchImpl })
+    : null;
+  const result = modelDraft ?? await prepareDraftArtifact(job.job_type, job.project.brief);
   const jobRoot = path.join(target, 'jobs', job.id);
   await mkdir(jobRoot, { recursive: true });
   const outputPath = path.join(jobRoot, job.job_type + '-draft.json');
