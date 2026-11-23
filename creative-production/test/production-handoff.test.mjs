@@ -56,3 +56,15 @@ test('handoff rejects unsafe identifiers and malformed shot specifications', asy
     clientName: 'Client', campaignName: 'Campaign'
   }), /blocked prompt specification/);
 });
+
+test('handoff rejects missing, non-string and unsafe asset identifiers', async () => {
+  const storyboard = await prepareDraftArtifact('storyboard', brief);
+  const cases = [undefined, null, '', 42, '../escape'];
+  for (const assetId of cases) {
+    const malformed = structuredClone(storyboard);
+    malformed.scenes[0].assetRequirements[0].assetId = assetId;
+    assert.throws(() => createProductionHandoffManifest(malformed, {
+      clientName: 'Client', campaignName: 'Campaign'
+    }), /assetId must be a safe identifier/);
+  }
+});

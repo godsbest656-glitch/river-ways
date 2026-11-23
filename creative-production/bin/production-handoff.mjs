@@ -33,16 +33,18 @@ export function createProductionHandoffManifest(storyboard, {
       throw new Error('Each shot requires at least one asset requirement');
     }
     const assets = scene.assetRequirements.map((asset) => {
-      if (!asset || !SAFE_ID.test(asset.assetId) || !requireText(asset.role, 'asset role') ||
-          !requireText(asset.mediaType, 'asset mediaType') || !requireText(asset.source, 'asset source')) {
-        throw new Error('Shot asset requirements must have safe ids, roles, media types and sources');
+      if (!asset || typeof asset.assetId !== 'string' || !SAFE_ID.test(asset.assetId)) {
+        throw new Error('Shot asset assetId must be a safe identifier');
       }
+      const role = requireText(asset.role, 'asset role');
+      const mediaType = requireText(asset.mediaType, 'asset mediaType');
+      const source = requireText(asset.source, 'asset source');
       return {
         assetId: asset.assetId,
-        role: asset.role,
-        mediaType: asset.mediaType,
+        role,
+        mediaType,
         required: asset.required === true,
-        source: asset.source,
+        source,
         rightsStatus: asset.rightsStatus ?? 'not-reviewed',
         selectedAssetPath: null,
         approvedBy: null,
