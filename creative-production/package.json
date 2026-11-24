@@ -18,6 +18,6 @@
     "worker": "node bin/worker.mjs"
   },
   "devDependencies": {
-    "hyperframes": "0.9.18"
+    "hyperframes": "0.9.91"
   }
 }

@@ -58,7 +58,12 @@ jobs:
         run: npm run test:api
       - name: Install pinned local HyperFrames CLI
         run: npm install --prefix creative-production --no-save --no-package-lock
+      - name: Audit pinned local HyperFrames renderer
+        run: npm audit --prefix creative-production --audit-level=high
       - name: Verify pinned HyperFrames CLI and starter composition
+        env:
+          HYPERFRAMES_NO_TELEMETRY: '1'
+          DO_NOT_TRACK: '1'
         run: |
           creative-production/node_modules/.bin/hyperframes --version
           creative-production/node_modules/.bin/hyperframes lint creative-production/templates/hyperframes
