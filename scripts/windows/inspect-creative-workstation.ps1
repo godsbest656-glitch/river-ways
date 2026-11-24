@@ -5,11 +5,11 @@ param()
 
 $ErrorActionPreference = 'SilentlyContinue'
 
-function Get-CommandVersion([string]$Name, [string[]]$Args = @('--version')) {
+function Get-CommandVersion([string]$Name, [string[]]$Arguments = @('--version')) {
     $cmd = Get-Command $Name -ErrorAction SilentlyContinue | Select-Object -First 1
     if (-not $cmd) { return $null }
     $version = $null
-    try { $version = (& $cmd.Source @Args 2>&1 | Select-Object -First 1).ToString().Trim() } catch {}
+    try { $version = (& $cmd.Source @Arguments 2>&1 | Select-Object -First 1).ToString().Trim() } catch {}
     return [ordered]@{ path = $cmd.Source; version = $version }
 }
 
@@ -33,6 +33,9 @@ $programFiles = @($env:ProgramFiles, [Environment]::GetEnvironmentVariable('Prog
 $os = Get-CimInstance Win32_OperatingSystem
 $computer = Get-CimInstance Win32_ComputerSystem
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+$disks = @(Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | ForEach-Object {
+    [ordered]@{ drive = $_.DeviceID; sizeBytes = $_.Size; freeBytes = $_.FreeSpace }
+})
 $gpus = @(Get-CimInstance Win32_VideoController | ForEach-Object {
     [ordered]@{ name = $_.Name; driverVersion = $_.DriverVersion; adapterRamBytes = $_.AdapterRAM }
 })
@@ -80,6 +83,7 @@ $inventory = [ordered]@{
         logicalProcessors = $cpu.NumberOfLogicalProcessors
     }
     graphics = $gpus
+    fixedDisks = $disks
     adobeApplications = $adobeApps
     developerTools = $tools
     notes = @(

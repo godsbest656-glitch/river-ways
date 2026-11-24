@@ -22,7 +22,7 @@ An integration is complete only when its correct deployment mode has been applie
 
 ## 2. Repository register
 
-This is the implementation register for the 22 candidates. The machine-readable source register remains the authority for full source URLs, licence expressions, constraints and next gates.
+This is the implementation register for the 22 candidates. The machine-readable source register is integrations/registry.json. Validate it with npm run validate:integrations; run npm run test:platform for its regression tests.
 
 | Repository | Intended mode | Current decision | Next execution gate |
 |---|---|---|---|
@@ -34,8 +34,8 @@ This is the implementation register for the 22 candidates. The machine-readable 
 | ComfyUI | Private local service | Existing foundation; not runtime-verified | Inspect workstation, pin install, local-only smoke test |
 | Remotion | Private local CLI | Evaluate | Licence/cost eligibility and benchmark |
 | Remotion Skills | Project skill | Reference only | Review skill content and policy compatibility |
-| HyperFrames | Private local CLI | Existing foundation; renderer not verified | Pin install, lint/check and real internal test MP4 |
-| Three.js | Public web dependency | Evaluate | Bounded scene prototype, mobile performance and reduced-motion tests |
+| HyperFrames | Private local CLI | Existing foundation; pinned 0.9.18; renderer not verified | CI install/lint, then real internal test MP4 |
+| Three.js | Public web dependency | Existing dependency; runtime use unverified | Confirm component usage, then bounded scene and mobile/reduced-motion tests |
 | GSAP | Web/local dependency | Evaluate | Confirm licence; test one bounded interaction |
 | Blender MCP | Private desktop bridge | Evaluate | Tool, filesystem and subprocess audit; read-only sandbox test |
 | FFmpeg | Private local CLI | Existing foundation; binary not verified | Record build configuration and licence; media QA test |
@@ -62,6 +62,8 @@ This is the implementation register for the 22 candidates. The machine-readable 
 
 ### Wave 1 — Existing local creative foundation
 
+The current code pins HyperFrames 0.9.18. Upstream v0.9.91 was released on 24 November 2026. Keep the pinned version until the adapter passes a compatibility test against the newer release. ComfyUI v0.46.0 removes DirectML support; do not select it for a Windows machine until its GPU backend is confirmed.
+
 1. FFmpeg: verify binary build and codec/licence configuration.
 2. HyperFrames: install a pinned release in an isolated project environment and render a synthetic internal test.
 3. ComfyUI: install only on a compatible local workstation; bind to loopback; use a synthetic test workflow and approved model licences.
@@ -69,6 +71,8 @@ This is the implementation register for the 22 candidates. The machine-readable 
 5. Record versions, hashes, test outputs and resource use.
 
 ### Wave 2 — Creative and web capabilities
+
+Three.js and React Three Fiber are already declared in the root website package. Their use in a shipped route or component is not verified. Do not add a second 3D stack.
 
 1. Three.js and GSAP: licence and bundle review, then one progressive-enhancement prototype.
 2. EffectCraft and PixelFX: separate specialist tests; do not treat either as a universal editor.
@@ -114,7 +118,7 @@ No integration receives client data or production credentials during a sandbox t
 
 The Creative Studio branch has a tested draft workflow and production hand-off manifest. It does not prove that a renderer, Adobe host, ComfyUI server, FFmpeg binary, Postiz service, CRM service or external agent service is installed or running.
 
-GitHub CI verifies repository code. It does not install software on the user's Windows workstation or provision external services.
+GitHub CI verifies repository code. The topic workflow now installs the pinned HyperFrames CLI in its isolated runner and lints the starter composition. This is CI installation only; it does not install software on the user's Windows workstation or provision external services.
 
 Production deployment remains a separate release action. Before enabling it, verify the target environment, required secrets, database migrations, object storage, access policies, health checks and rollback. Keep public website deployment separate from private creative workers.
 

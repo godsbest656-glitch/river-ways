@@ -56,8 +56,18 @@ jobs:
           include-hidden-files: true
       - name: Test enquiry API
         run: npm run test:api
+      - name: Install pinned local HyperFrames CLI
+        run: npm install --prefix creative-production --no-save --no-package-lock
+      - name: Verify pinned HyperFrames CLI and starter composition
+        run: |
+          creative-production/node_modules/.bin/hyperframes --version
+          creative-production/node_modules/.bin/hyperframes lint creative-production/templates/hyperframes
       - name: Test local creative production worker
         run: npm run test:creative
+      - name: Validate ecosystem integration registry
+        run: npm run validate:integrations
+      - name: Test platform governance contracts
+        run: npm run test:platform
       - name: Test portfolio contracts
         run: npm run test:portfolio
       - name: Validate public portfolio data
